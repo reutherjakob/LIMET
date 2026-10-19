@@ -1,10 +1,18 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 $_SESSION["elementID"] = getPostInt("elementID");
 $_SESSION["variantenID"] = getPostInt("variantenID");
 
+
 $mysqli = utils_connect_sql();
+
+$variantenMap = [];
+$res = $mysqli->query("SELECT idtabelle_Varianten, Variante FROM tabelle_varianten ORDER BY idtabelle_Varianten");
+while ($v = $res->fetch_assoc()) {
+    $variantenMap[(int)$v['idtabelle_Varianten']] = $v['Variante'];
+}
+
 $stmt = $mysqli->prepare(
     "SELECT tabelle_projekt_varianten_kosten.Kosten 
      FROM tabelle_projekt_varianten_kosten 
@@ -25,7 +33,7 @@ $row = $result->fetch_assoc();
 
 <div class='row'>
     <div class='col-xxl-6' id="elementGewerk"></div>
-    <!--- for the import of getElementGewerke.php on elementsInProject.php --->
+    <!--- for the import of getElementGewerke.php on roombook_elementsInProject.php --->
     <div class='col-xxl-6'>
         <div class="card">
             <div class='card-header d-inline-flex customCardx  flex-nowrap'>
@@ -34,12 +42,10 @@ $row = $result->fetch_assoc();
                         <label for='variante'>Variante </label>
                         <select class='form-control form-control-sm me-1 ms-1' id='variante'>
                             <?php
-                            $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                             $selectedID = $_SESSION["variantenID"];
-                            foreach ($options as $key => $value) {
-                                $optionValue = $key + 1;
+                            foreach ($variantenMap as $optionValue => $value) {
                                 $selected = ($optionValue == $selectedID) ? 'selected' : '';
-                                echo "<option value='$optionValue' $selected>$value</option>";
+                                echo "<option value='" . (int)$optionValue . "' $selected>" . htmlspecialchars($value) . "</option>";
                             }
                             ?>
                         </select>
@@ -189,7 +195,7 @@ $row = $result->fetch_assoc();
                         ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
                         WHERE tabelle_projekt_varianten_kosten_aenderung.projekt = ?
                         AND tabelle_projekt_varianten_kosten_aenderung.element = ?
-                        ORDER BY tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC";
+                        ORDER BY tabelle_varianten.idtabelle_Varianten, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC";
 
                 $stmt = $mysqli->prepare($sql);
                 $stmt->bind_param("ii", $_SESSION["projectID"], $_SESSION["elementID"]);
@@ -285,7 +291,7 @@ $row = $result->fetch_assoc();
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script src="saveElementParameters.js"></script>
 <script>
     var tablePossibleElementParameters;
@@ -330,7 +336,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -361,7 +367,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -399,7 +405,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.'
             },
@@ -552,7 +558,7 @@ $row = $result->fetch_assoc();
             data: {"elementID": elementID, "variantenID": variantenID},
             type: "POST",
             success: function (data) {
-                makeToaster(data.trim(), true);  //alert(data);
+                makeToaster(data.trim(), true);  // makeToaster(data, true);
                 $.ajax({
                     url: "getStandardElementParameters.php",
                     data: {"elementID": elementID},

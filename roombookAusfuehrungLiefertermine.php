@@ -1,7 +1,8 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 init_page_serversides();
+require_once '_utils/_csrf.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,8 +11,10 @@ init_page_serversides();
     <title>RB - Ausführung</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
@@ -214,7 +217,8 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ? ) AND
             "order": [[1, "asc"]],
             "orderMulti": true,
             "language": {
-                "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                url: '/_utils/de-DE.json' 
+,
                 search: "", searchPlaceholder: "Suche..."
             },
             "mark": true,
@@ -265,7 +269,7 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ? ) AND
             data: {"elements": elementIDs, "lieferdatum": lieferdatum},
             success: function (data) {
                 $('#saveLieferdatumModal').modal('hide');
-                alert(data);
+                 makeToaster(data, true);
                 window.location.replace("roombookAusfuehrungLiefertermine.php");
             }
         });

@@ -1,13 +1,21 @@
+<?php
+require_once '_utils/_utils.php';
+init_page_serversides("x");
+$excelfilename = buildExcelFilename('Los_Aenderungen');
+require_once '_utils/_csrf.php';
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>Los-Änderungshistorie</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
 
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
 
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -21,10 +29,7 @@
 </head>
 
 <body>
-<?php
-require_once 'utils/_utils.php';
-init_page_serversides("x");
-?>
+
 
 <div id="limet-navbar"></div>
 <div class="container-fluid">
@@ -121,9 +126,10 @@ init_page_serversides("x");
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script charset="utf-8">
     var tableAenderungen;
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
 
     function debounce(func, wait) {
         let timeout;
@@ -300,7 +306,7 @@ init_page_serversides("x");
             pageLength: 25,
             lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.',
                 searchPlaceholder: 'Suche..',
@@ -318,8 +324,10 @@ init_page_serversides("x");
                     extend: 'excel',
                     className: "btn btn-light btn-outline-dark fas fa-file-excel",
                     text: '',
+                    filename: $excelfilename,
                     exportOptions: { columns: ':visible' },
                     attr: { 'data-bs-toggle': 'tooltip', 'data-bs-title': 'Download als Excel' }
+
                 },
                 {
                     extend: 'searchBuilder',

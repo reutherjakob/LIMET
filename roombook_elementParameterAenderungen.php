@@ -1,11 +1,18 @@
+<?php
+require_once '_utils/_utils.php';
+init_page_serversides("", "x");
+require_once '_utils/_csrf.php';
+?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>Element Parameter Änderungen</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -19,25 +26,54 @@
           rel="stylesheet">
 
     <style>
-        .diff-cell { font-family: monospace; font-size: 0.85rem; }
-        .val-old   { color: #dc3545; text-decoration: line-through; opacity: .8; }
-        .val-new   { color: #198754; font-weight: 600; }
-        .arrow     { color: #6c757d; margin: 0 4px; }
-        .badge-user { font-size: .75rem; background: #e9ecef; color: #495057;
-            border-radius: 4px; padding: 2px 6px; }
-        #cardHeaderSub { gap: .35rem; }
-        .dt-search input { min-width: 180px; }
+        .diff-cell {
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+
+        .val-old {
+            color: #dc3545;
+            text-decoration: line-through;
+            opacity: .8;
+        }
+
+        .val-new {
+            color: #198754;
+            font-weight: 600;
+        }
+
+        .arrow {
+            color: #6c757d;
+            margin: 0 4px;
+        }
+
+        .badge-user {
+            font-size: .75rem;
+            background: #e9ecef;
+            color: #495057;
+            border-radius: 4px;
+            padding: 2px 6px;
+        }
+
+        #cardHeaderSub {
+            gap: .35rem;
+        }
+
+        .dt-search input {
+            min-width: 180px;
+        }
 
         /* subtle row highlight for wert change vs einheit change */
-        tr.chg-wert   td:nth-child(7) { background: #fff3cd55; }
-        tr.chg-einheit td:nth-child(8){ background: #cff4fc55; }
+        tr.chg-wert td:nth-child(7) {
+            background: #fff3cd55;
+        }
+
+        tr.chg-einheit td:nth-child(8) {
+            background: #cff4fc55;
+        }
     </style>
 </head>
 
-<?php
-require_once 'utils/_utils.php';
-init_page_serversides("", "x");
-?>
 
 <body>
 <div class="container-fluid">
@@ -84,7 +120,8 @@ init_page_serversides("", "x");
                     <th></th>
                     <th></th>
                     <th><input type="text" class="form-control form-control-sm col-search" placeholder="Element…"></th>
-                    <th><input type="text" class="form-control form-control-sm col-search" placeholder="Parameter…"></th>
+                    <th><input type="text" class="form-control form-control-sm col-search" placeholder="Parameter…">
+                    </th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -129,56 +166,58 @@ init_page_serversides("", "x");
 
         function escHtml(s) {
             return String(s)
-                .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-                .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
         /* ── DataTable ───────────────────────────────────────── */
         const table = $('#changesTable').DataTable({
             ajax: {
-                url:  'getElementParameterChanges.php',
+                url: 'getElementParameterChanges.php',
                 type: 'POST',
                 dataSrc: 'data'
             },
             columns: [
-                { data: 0, width: '50px', visible: false },                      /* id        */
+                {data: 0, width: '50px', visible: false},                      /* id        */
                 {                                                  /* timestamp */
                     data: 1,
                     render: function (d) {
                         if (!d) return '–';
-                        const dt = new Date(d.replace(' ','T'));
+                        const dt = new Date(d.replace(' ', 'T'));
                         return dt.toLocaleString('de-AT', {
-                            day:'2-digit', month:'2-digit', year:'numeric',
-                            hour:'2-digit', minute:'2-digit'
+                            day: '2-digit', month: '2-digit', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit'
                         });
                     }
                 },
                 {                                                  /* user */
                     data: 2,
-                    render: function(d) {
+                    render: function (d) {
                         return '<span class="badge-user">' + escHtml(d) + '</span>';
                     }
                 },
-                { data: 3 },                                       /* element   */
-                { data: 4 },                                       /* parameter */
-                { data: 5, width: '40px', className: 'text-center' }, /* variante */
+                {data: 3},                                       /* element   */
+                {data: 4},                                       /* parameter */
+                {data: 5, width: '40px', className: 'text-center'}, /* variante */
                 {                                                  /* wert diff */
                     data: null,
-                    render: function(_, __, row) {
+                    render: function (_, __, row) {
                         return diffCell(row[6], row[7]);
                     }
                 },
                 {                                                  /* einheit diff */
                     data: null,
-                    render: function(_, __, row) {
+                    render: function (_, __, row) {
                         return diffCell(row[8], row[9]);
                     }
                 },
-                { data: 10, visible: false },                      /* wertChg   */
-                { data: 11, visible: false },                      /* einheitChg */
+                {data: 10, visible: false},                      /* wertChg   */
+                {data: 11, visible: false},                      /* einheitChg */
             ],
             order: [[1, 'desc']],
-            language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json' },
+            language: {
+                url: '/_utils/de-DE.json'
+            },
             scrollY: '70vh',
             scrollCollapse: true,
             paging: true,
@@ -190,22 +229,44 @@ init_page_serversides("", "x");
                 bottomEnd: ['pageLength', 'paging', 'buttons']
             },
             buttons: [
-                { extend:'copy',   text:'<i class="fas fa-copy"></i>',       titleAttr:'Kopieren',          className:'btn btn-sm btn-outline-dark bg-white' },
-                { extend:'excel',  text:'<i class="fas fa-file-excel"></i>', titleAttr:'Excel Export',      className:'btn btn-sm btn-outline-dark bg-white' },
-                { extend:'pdf',    text:'<i class="fas fa-file-pdf"></i>',   titleAttr:'PDF Export',        className:'btn btn-sm btn-outline-dark bg-white' },
-                { extend:'colvis', text:'<i class="fas fa-columns"></i>',    titleAttr:'Spalten togglen',   className:'btn btn-sm btn-outline-dark bg-white' },
+                {
+                    extend: 'copy',
+                    text: '<i class="fas fa-copy"></i>',
+                    titleAttr: 'Kopieren',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i>',
+                    titleAttr: 'Excel Export',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf"></i>',
+                    titleAttr: 'PDF Export',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                },
+                {
+                    extend: 'colvis',
+                    text: '<i class="fas fa-columns"></i>',
+                    titleAttr: 'Spalten togglen',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                },
                 {
                     text: '<i class="fas fa-sync-alt"></i>',
                     titleAttr: 'Daten neu laden',
                     className: 'btn btn-sm btn-outline-dark bg-white',
-                    action: function() { table.ajax.reload(null, false); }
+                    action: function () {
+                        table.ajax.reload(null, false);
+                    }
                 }
             ],
-            rowCallback: function(row, data) {
+            rowCallback: function (row, data) {
                 if (data[10]) $(row).addClass('chg-wert');
                 if (data[11]) $(row).addClass('chg-einheit');
             },
-            initComplete: function() {
+            initComplete: function () {
                 /* move DT controls to card header */
                 $('.dt-search label').remove();
                 $('.dt-search').children()
@@ -216,7 +277,7 @@ init_page_serversides("", "x");
 
                 /* populate user filter */
                 const users = new Set();
-                table.column(2).data().each(function(v) {
+                table.column(2).data().each(function (v) {
                     const m = v.match(/>([^<]+)<\/span>/);
                     if (m) users.add(m[1]);
                 });
@@ -227,15 +288,15 @@ init_page_serversides("", "x");
         });
 
         /* ── Column search (footer inputs) ──────────────────── */
-        $('#changesTable tfoot input.col-search').each(function(i) {
+        $('#changesTable tfoot input.col-search').each(function (i) {
             const colIdx = $(this).closest('th').index();
-            $(this).on('keyup change', function() {
+            $(this).on('keyup change', function () {
                 table.column(colIdx).search(this.value).draw();
             });
         });
 
         /* ── Date-from filter ────────────────────────────────── */
-        $.fn.dataTable.ext.search.push(function(settings, data) {
+        $.fn.dataTable.ext.search.push(function (settings, data) {
             const from = $('#dateFrom').val();
             if (!from) return true;
             // data[1] is the rendered locale string; re-parse from raw via order data
@@ -248,18 +309,22 @@ init_page_serversides("", "x");
 
         /* Reload table when date changes */
         let dateTimer;
-        $('#dateFrom').on('change', function() {
+        $('#dateFrom').on('change', function () {
             clearTimeout(dateTimer);
-            dateTimer = setTimeout(function() { table.ajax.reload(null, false); }, 600);
+            dateTimer = setTimeout(function () {
+                table.ajax.reload(null, false);
+            }, 600);
         });
 
         /* ── User filter ─────────────────────────────────────── */
-        $.fn.dataTable.ext.search.push(function(settings, data, rowIndex) {
+        $.fn.dataTable.ext.search.push(function (settings, data, rowIndex) {
             const sel = $('#userFilter').val();
             if (!sel) return true;
             return data[2].indexOf(sel) !== -1;
         });
-        $('#userFilter').on('change', function() { table.draw(); });
+        $('#userFilter').on('change', function () {
+            table.draw();
+        });
 
     });
 </script>

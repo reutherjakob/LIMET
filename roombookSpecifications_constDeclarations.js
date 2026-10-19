@@ -9,7 +9,7 @@ function title2data(columnsDefinition, title) {
 }*/
 
 const buttonRanges = [
-    {name: 'All', start: 6, end: 171, longName: 'Alle Spalten'},
+    {name: 'All', start: 6, end: 174, longName: 'Alle Spalten'},
     {name: 'RA', start: 7, end: 26, longName: 'Raum'},
     {name: 'HKLS', start: 27, end: 36, longName: 'HKLS'},
     {name: 'ET', start: 37, end: 58, longName: 'Elektro'},
@@ -20,7 +20,7 @@ const buttonRanges = [
     {name: '-ET', start: 121, end: 132, longName: 'Labor-ET'},
     {name: '-HT', start: 133, end: 142, longName: 'Labor-HT'},
     {name: '-H2O', start: 143, end: 151, longName: 'Labor-H2O'},
-    {name: 'GCP', start: 152, end: 171, longName: 'GCP'},
+    {name: 'GCP', start: 152, end: 174, longName: 'GCP'},
 ];
 
 
@@ -146,14 +146,13 @@ const columnsDefinition = [
     {data: 'Nutzfläche_Soll', defaultContent: '-', title: 'Nutzfläche Soll[m2]', visible: false, case: "num"}, // 65| AR-End
 
 
-
-    {data: '1 Kreis O2', title: '1_K O2', visible: false, case: "bit"}, // 66 | MG-Start !!!
-    {data: '2 Kreis O2', title: '2_K O2', visible: false, case: "bit"}, // 66 | MG
+    {data: '1 Kreis O2', title: '1K O2', visible: false, case: "bit"}, // 66 | MG-Start !!!
+    {data: '2 Kreis O2', title: '2K O2', visible: false, case: "bit"}, // 66 | MG
     {data: 'CO2', title: 'CO2', visible: false, case: "bit"}, // 67 | MG
-    {data: '1 Kreis Va', title: '1_K Va', visible: false, case: "bit"}, // 68 | MG / LAB-Start
-    {data: '2 Kreis Va', title: '2_K Va', visible: false, case: "bit"}, // 69 | MG / LAB
-    {data: '1 Kreis DL-5', title: '1_K DL5', visible: false, case: "bit"}, // 70 | MG / LAB
-    {data: '2 Kreis DL-5', title: '2_K DL5', visible: false, case: "bit"}, // 71 | MG / LAB
+    {data: '1 Kreis Va', title: '1K Va', visible: false, case: "bit"}, // 68 | MG / LAB-Start
+    {data: '2 Kreis Va', title: '2K Va', visible: false, case: "bit"}, // 69 | MG / LAB
+    {data: '1 Kreis DL-5', title: '1K DL5', visible: false, case: "bit"}, // 70 | MG / LAB
+    {data: '2 Kreis DL-5', title: '2K DL5', visible: false, case: "bit"}, // 71 | MG / LAB
     {data: 'DL-10', title: 'DL-10', visible: false, case: "bit"}, // 72 | MG / LAB
     {data: 'DL-tech', title: 'DL-tech', visible: false, case: "bit"}, // 73 | MG / LAB
     {data: 'NGA', title: 'NGA', visible: false, case: "bit"}, // 74 | MG / LAB
@@ -191,7 +190,7 @@ const columnsDefinition = [
     {data: 'C2H2', title: 'C2H2', visible: false, case: 'bit'}, // 106 | LAB / -GAS
     {data: 'Propan_Butan', title: 'Propan_Butan', visible: false, case: 'num'}, // 107 | LAB / -GAS
     {data: 'N2H2', title: 'N2H2', visible: false, case: 'num'}, // 108 | LAB / -GAS
-    {data: 'Inertgas', title: 'Inertgas', visible: false, case: 'num'}, // 109 | LAB / -GAS
+    {data: 'Inertgas', title: ($projectID === 75 ? 'Großgeräte' : 'Inertgas'), visible: false, case: 'num'}, // 109 | LAB / -GAS
     {data: 'Ar_CO2_Mix', title: 'AR CO2 Mix', visible: false, case: 'num'}, // 110 | LAB / -GAS
     {data: 'ArCal15', title: 'ArCal15', visible: false, case: 'num'}, // 111 | LAB / -GAS
     {data: 'O2_Mangel', title: 'O2_Mangel', visible: false, case: 'num'}, // 112 | LAB / -GAS
@@ -260,4 +259,9 @@ const columnsDefinition = [
     {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""}, // 168 | GCP
     {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""}, // 169 | GCP
     {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""}, // 170 | GCP-End
-]
+
+    {data: 'HT_Kühlwasser', title: 'HT_Kühlwasser', visible: false, case: "bit"}, // 170 | GCP-End
+    {data: 'HT_Spezialabwasser', title: 'HT_Spezialabwasser', visible: false, case: ""}, // 170 | GCP-End
+    {data: 'Nutzwasser', title: 'Nutzwasser', visible: false, case: "bit"}, // 170 | GCP-End
+
+];

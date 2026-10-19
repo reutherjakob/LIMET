@@ -1,7 +1,7 @@
 <?php
 // 25 FX
 session_start();
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 
 $value = getPostInt('value');
 $bool_unique = getPostString('Unique') === "true";

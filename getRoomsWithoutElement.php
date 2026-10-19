@@ -1,6 +1,6 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -46,12 +46,12 @@ echo " <table class='table table-responsive table-striped table-bordered table-s
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-    echo "<td>" . $row["Raumnr"] . "</td>";
-    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-    echo "<td>" . $row["MT-relevant"] . "</td>";
-    echo "<td>" . $row["Entfallen"] . "</td>";
+    echo "<td>" . h($row["idTABELLE_Räume"]) . "</td>";
+    echo "<td>" . h($row["Raumnr"] ). "</td>";
+    echo "<td>" . h($row["Raumbezeichnung"]) . "</td>";
+    echo "<td>" . h($row["Raumbereich Nutzer"]) . "</td>";
+    echo "<td>" . h($row["MT-relevant"]) . "</td>";
+    echo "<td>" . h($row["Entfallen"]) . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -123,7 +123,7 @@ $mysqli->close();
             order: [[1, "asc"]],
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: ""
             },
             select: {

@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides();
 $mysqli = utils_connect_sql();
 $projectID = (int)$_SESSION["projectID"] ?? null;
@@ -48,11 +48,10 @@ $stmt = $mysqli->prepare("
         AND pk.tabelle_elemente_idTABELLE_Elemente = reh.TABELLE_Elemente_idTABELLE_Elemente
     WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
       AND pk.Kosten = '0'
-      AND pk.tabelle_projekte_idTABELLE_Projekte = ?
     GROUP BY reh.TABELLE_Elemente_idTABELLE_Elemente, reh.tabelle_Varianten_idtabelle_Varianten
 ");
 
-$stmt->bind_param("ii", $projectID, $projectID);
+$stmt->bind_param("i", $projectID);
 $stmt->execute();
 $result = $stmt->get_result();
 

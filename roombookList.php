@@ -1,8 +1,44 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 init_page_serversides();
+require_once '_utils/_csrf.php';
+
+
+// ---------------------------------------------------------------
+// Kumulation: an / aus (URL) + Merkmale, nach denen getrennt wird (Session)
+// ---------------------------------------------------------------
+$kumuliert = isset($_GET['kumuliert']) && $_GET['kumuliert'] === '1';
+
+// Merkmale, nach denen der User "getrennt halten" kann (Element ist immer getrennt)
+$GRUPPEN_OPTIONEN = [
+    'bereich'  => 'Raumbereich',
+    'variante' => 'Variante',
+    'geschoss' => 'Geschoss',
+    'be'       => 'Bauetappe (BE)',
+    'ba'       => 'Bauabschnitt (BA)',
+    'bestand'  => 'Bestand',
+    'los'      => 'Los-Nr',
+    'budget'   => 'Budget',
+];
+$GRUPPEN_STANDARD = ['bereich', 'variante', 'geschoss', 'ba'];
+$SESSION_KEY_GRUPPEN = 'rb_liste_kumulation_gruppen';
+
+if (isset($_GET['gruppe'])) {
+    // Auswahl aus URL übernehmen (nur erlaubte Werte) und für die Sitzung merken
+    $gewaehlt = array_values(array_intersect(
+        array_keys($GRUPPEN_OPTIONEN),
+        array_filter(explode(',', (string)$_GET['gruppe']))
+    ));
+    $_SESSION[$SESSION_KEY_GRUPPEN] = $gewaehlt;
+} elseif (isset($_SESSION[$SESSION_KEY_GRUPPEN]) && is_array($_SESSION[$SESSION_KEY_GRUPPEN])) {
+    $gewaehlt = $_SESSION[$SESSION_KEY_GRUPPEN];
+} else {
+    $gewaehlt = $GRUPPEN_STANDARD;
+}
+
+$excelfilename = buildExcelFilename($kumuliert ? 'Elementliste_kumuliert' : 'Elementliste');
+
 ?>
 
 <!DOCTYPE html>
@@ -11,9 +47,10 @@ init_page_serversides();
     <title>RB-Liste</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
 
 
-    <link rel="icon" href="/Logo/iphone_favicon.png">
+    <link rel="icon" href="/Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -25,8 +62,8 @@ init_page_serversides();
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <?php //include_theme_css(); ?>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+
 
 </head>
 
@@ -35,11 +72,50 @@ init_page_serversides();
     <div id="limet-navbar"></div>
     <div class="mt-2 card">
         <div class="card-header">
-            <div class=" row">
-                <div class="col-4">
+            <div class="row g-2">
+                <div class="col-12 col-xl-5 d-flex flex-wrap align-items-center gap-3">
                     <b>Elemente im Projekt</b>
+
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox"
+                               id="chkKumuliert" <?= $kumuliert ? 'checked' : '' ?>>
+                        <label class="form-check-label" for="chkKumuliert">Kumuliert</label>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                id="btnGruppen" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                aria-expanded="false" <?= $kumuliert ? '' : 'disabled' ?>>
+                            <i class="fas fa-layer-group"></i> Getrennt nach
+                            <span class="badge bg-secondary"><?= count($gewaehlt) + 1 ?></span>
+                        </button>
+                        <div class="dropdown-menu p-3">
+                            <div class="small text-muted mb-2">Eigene Zeile je unterschiedlichem Wert:</div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="grp_element" checked disabled>
+                                <label class="form-check-label" for="grp_element">Element <span class="text-muted small">(immer)</span></label>
+                            </div>
+                            <?php foreach ($GRUPPEN_OPTIONEN as $key => $label): ?>
+                                <div class="form-check">
+                                    <input class="form-check-input chk-gruppe" type="checkbox"
+                                           id="grp_<?= h($key) ?>" value="<?= h($key) ?>"
+                                        <?= in_array($key, $gewaehlt, true) ? 'checked' : '' ?>>
+                                    <label class="form-check-label text-nowrap" for="grp_<?= h($key) ?>"><?= h($label) ?></label>
+                                </div>
+                            <?php endforeach; ?>
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnGruppenStandard">Standard</button>
+                                <button type="button" class="btn btn-sm btn-primary flex-fill" id="btnGruppenAnwenden">Anwenden</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
+                            data-bs-target="#infoKumulationModal" title="Wie funktioniert die Kumulation?">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
                 </div>
-                <div class="col-8 d-flex align-items-center justify-content-end" id="dt-header-container"></div>
+                <div class="col-12 col-xl-7 d-flex align-items-center justify-content-end" id="dt-header-container"></div>
             </div>
         </div>
         <div class="card-body" id="elementLots">
@@ -106,6 +182,84 @@ init_page_serversides();
             $stmt->execute();
             $result = $stmt->get_result();
 
+            // ---------------------------------------------------------------
+            // 1) Alle Zeilen normalisiert einsammeln
+            // ---------------------------------------------------------------
+            $rows = [];
+            while ($row = $result->fetch_assoc()) {
+                $ep = ((int)$row["Standort"] === 0) ? 0 : (float)$row["EP"];
+                $kommentar = trim((string)($row["Kurzbeschreibung"] ?? ''));
+                $rows[] = [
+                    'raumnr'     => $_SESSION["projectName"] === "GCP" ? $row["Raumnummer_Nutzer"] : $row["Raumnr"],
+                    'raum'       => $row["Raumbezeichnung"],
+                    'bereich'    => $row["Raumbereich Nutzer"],
+                    'geschoss'   => $row["Geschoss"],
+                    'be'         => $row["Bauetappe"],
+                    'ba'         => $row["Bauabschnitt"],
+                    'elementid'  => $row["ElementID"],
+                    'element'    => $row["Bezeichnung"],
+                    'anzahl'     => $row["Anzahl"] + 0,
+                    'variante'   => $row["Variante"],
+                    'bestand'    => ($row["Neu/Bestand"] == 0 ? "Ja" : "Nein"),
+                    'standort'   => $row["Standort"],
+                    'verwendung' => $row["Verwendung"],
+                    'ep'         => $ep,
+                    'los'        => $row["LosNr_Extern"],
+                    'budget'     => $row["Budgetnummer"],
+                    'gewerk'     => $row["Gewerke_Nr"],
+                    'ghg'        => $row["GHG"],
+                    'losbez'     => $row["LosBezeichnung_Extern"],
+                    'comments'   => $kommentar !== '' ? [$kommentar] : [],
+                    'raw'        => $row,
+                ];
+            }
+            $stmt->close();
+            $mysqli->close();
+
+            // ---------------------------------------------------------------
+            // 2) Optional kumulieren: Element + vom User gewählte Merkmale
+            // ---------------------------------------------------------------
+            $MEHRERE = 'mehrere';
+            if ($kumuliert) {
+                // Spalten, die bei unterschiedlichen Werten "mehrere" zeigen
+                $mergeKeys = ['raumnr', 'raum', 'bereich', 'geschoss', 'be', 'ba', 'element', 'variante', 'bestand',
+                    'standort', 'verwendung', 'ep', 'los', 'budget', 'gewerk', 'ghg', 'losbez'];
+                $groups = [];
+                foreach ($rows as $r) {
+                    // Standort = 0: Element wird hier nur verwendet, steht aber woanders
+                    // -> wird dort (Standort = 1) gezählt, hier nicht nochmal
+                    if ((int)$r['standort'] === 0) {
+                        continue;
+                    }
+
+                    // Gruppenschlüssel: Element + alle gewählten Merkmale
+                    $keyParts = [(string)$r['elementid']];
+                    foreach ($gewaehlt as $g) {
+                        $keyParts[] = (string)$r[$g];
+                    }
+                    $key = implode("\x1F", $keyParts);
+
+                    if (!isset($groups[$key])) {
+                        $r['raw'] = null; // im kumulierten Modus kein Bearbeiten
+                        $groups[$key] = $r;
+                        continue;
+                    }
+                    $grp = &$groups[$key];
+                    $grp['anzahl'] += $r['anzahl'];
+                    foreach ($mergeKeys as $k) {
+                        if ((string)$grp[$k] !== (string)$r[$k]) {
+                            $grp[$k] = $MEHRERE;
+                        }
+                    }
+                    $grp['comments'] = array_values(array_unique(array_merge($grp['comments'], $r['comments'])));
+                    unset($grp);
+                }
+                $rows = array_values($groups);
+            }
+
+            // ---------------------------------------------------------------
+            // 3) Ausgabe
+            // ---------------------------------------------------------------
             echo "<table class='table table-striped table-hover compact table-bordered' id='tableRoombookList'>
             <thead><tr>
                 <th>Raumnr</th>
@@ -114,85 +268,141 @@ init_page_serversides();
                 <th>Geschoss</th>
                 <th>BE</th>
                 <th>BA</th>
-                <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='ID'><i class='fas fa-fingerprint'></i></div> </th>
+                <th data-export-title='ElementID'> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='ID'><i class='fas fa-fingerprint'></i></div> </th>
                 <th>Element</th>
                 <th>Stk</th>
                 <th>Variante</th>  
                 <th>Bestand</th>
-                <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>
-                <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Verwendung'> <i class='fas fa-cogs'></i></div> </th>
+                <th data-export-title='Standort'> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>
+                <th data-export-title='Verwendung'> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Verwendung'> <i class='fas fa-cogs'></i></div> </th>
                 <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Einheitspreis'> <i class='fas fa-euro-sign'></i> </div></th>
-                <th>EP-Excel</th>                                                            
+                <th data-export-title='Einheitspreis'>EP-Excel</th>
                 <th>Los-Nr</th>
                 <th>Budget</th>                                                                
                 <th>Gewerk</th>
                 <th>GHG</th>
                 <th>Los Bezeichnung</th>  
-                <th> <div class='d-flex justify-content-centeralign-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'></i></div></th>
+                <th data-export-title='Kommentar'>  <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'></i></div></th>
                 <th>   <i class='fas fa-edit'></i> </th>
             </tr>
             </thead>";
             echo "<tbody>";
 
-            while ($row = $result->fetch_assoc()) {
+            $td = fn($v) => "<td>" . h((string)$v) . "</td>";
+
+            foreach ($rows as $r) {
                 echo "<tr>";
-                if ($_SESSION["projectName"] === "GCP") {
-                    echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
-                } else {
-                    echo "<td>" . $row["Raumnr"] . "</td>";
-                }
-                echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-                echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                echo "<td>" . $row["Geschoss"] . "</td>";
-                echo "<td>" . $row["Bauetappe"] . "</td>";
-                echo "<td>" . $row["Bauabschnitt"] . "</td>";
-                echo "<td>" . $row["ElementID"] . "</td>";
-                echo "<td>" . $row["Bezeichnung"] . "</td>";
-                echo "<td>" . $row["Anzahl"] . "</td>";
-                echo "<td>" . $row["Variante"] . "</td>";
-                echo "<td>" . ($row["Neu/Bestand"] == 0 ? "Ja" : "Nein") . "</td>";
-                echo "<td>" . $row["Standort"] . "</td>";
-                echo "<td>" . $row["Verwendung"] . "</td>";
+                echo $td($r['raumnr']);
+                echo $td($r['raum']);
+                echo $td($r['bereich']);
+                echo $td($r['geschoss']);
+                echo $td($r['be']);
+                echo $td($r['ba']);
+                echo $td($r['elementid']);
+                echo $td($r['element']);
+                echo $td($r['anzahl']);
+                echo $td($r['variante']);
+                echo $td($r['bestand']);
+                echo $td($r['standort']);
+                echo $td($r['verwendung']);
+                // Anzeige: deutsches Format
+                echo $td(is_numeric($r['ep']) ? format_money($r['ep']) : $r['ep']);
+                // Excel: Punkt als Dezimaltrenner -> Export schreibt echte Zahl (Format #,##0.00)
+                echo $td(is_numeric($r['ep']) ? number_format((float)$r['ep'], 2, '.', ',') : $r['ep']);
+                echo $td($r['los']);
+                echo $td($r['budget']);
+                echo $td($r['gewerk']);
+                echo $td($r['ghg']);
+                echo $td($r['losbez']);
 
-                $ep = ($row["Standort"] == 0) ? 0 : $row["EP"];
-                echo "<td>" . format_money($ep) . "</td>";
-                echo "<td>" . $ep . "</td>";
-
-                echo "<td>" . $row["LosNr_Extern"] . "</td>";
-                echo "<td>" . $row["Budgetnummer"] . "</td>";
-                echo "<td>" . $row["Gewerke_Nr"] . "</td>";
-                echo "<td>" . $row["GHG"] . "</td>";
-                echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
-                if (!empty($row["Kurzbeschreibung"])) {
+                if (!empty($r['comments'])) {
                     echo "<td><button type='button' class='btn btn-sm btn-outline-dark' 
                         data-bs-toggle='popover' 
                         data-bs-placement='top' 
-                        data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
+                        data-bs-content='" . htmlspecialchars(implode(' | ', $r['comments']), ENT_QUOTES) . "' 
                         title='Kommentar'>
                         <i class='fa fa-comment'></i></button></td>";
                 } else {
                     echo "<td></td>";
                 }
 
-                echo "<td>
-    <button type='button' class='btn btn-sm btn-outline-secondary edit-entry-btn'
-        data-id='" . $row["rhe_id"] . "'
-        data-variantenid='" . $row["idtabelle_Varianten"] . "'
-        data-anzahl='" . $row["Anzahl"] . "'
-        data-bestand='" . $row["Neu/Bestand"] . "'
-        data-standort='" . $row["Standort"] . "'
-        data-verwendung='" . $row["Verwendung"] . "'
-        data-ep='" . $row["EP"] . "'
-        data-comment='" . htmlspecialchars($row["Kurzbeschreibung"] ?? '', ENT_QUOTES) . "'>
-        <i class='fas fa-edit'></i>
-    </button>
-</td>";
+                if ($r['raw'] !== null) {
+                    $row = $r['raw'];
+                    echo "<td>
+                        <button type='button' class='btn btn-sm btn-outline-secondary edit-entry-btn'
+                            data-id='" . $row["rhe_id"] . "'
+                            data-variantenid='" . $row["idtabelle_Varianten"] . "'
+                            data-anzahl='" . $row["Anzahl"] . "'
+                            data-bestand='" . $row["Neu/Bestand"] . "'
+                            data-standort='" . $row["Standort"] . "'
+                            data-verwendung='" . $row["Verwendung"] . "'
+                            data-ep='" . $row["EP"] . "'
+                            data-comment='" . htmlspecialchars($row["Kurzbeschreibung"] ?? '', ENT_QUOTES) . "'>
+                            <i class='fas fa-edit'></i>
+                        </button>
+                    </td>";
+                } else {
+                    echo "<td></td>";
+                }
                 echo "</tr>";
-
             }
             echo "</tbody></table>";
-            $mysqli->close();
             ?>
+        </div>
+    </div>
+</div>
+
+
+<!-- Info Kumulation Modal -->
+<div class="modal fade" id="infoKumulationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-info-circle text-info"></i> Kumulierte Ansicht</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><b>Ohne Haken bei „Kumuliert“</b><br>
+                    Jede Zeile ist genau ein Element in einem Raum. Nur hier können Einträge bearbeitet werden.</p>
+
+                <p class="mb-2"><b>Mit Haken bei „Kumuliert“</b><br>
+                    Gleiche Elemente werden zu einer Zeile zusammengefasst, die Stückzahlen (Stk) werden addiert.</p>
+
+                <div class="alert alert-warning small mb-2">
+                    <i class="fab fa-periscope"></i> <b>Standort = Nein</b><br>
+                    Diese Einträge sind in der kumulierten Ansicht <b>nicht enthalten</b>.
+                    Das Element wird in diesem Raum nur verwendet, steht aber in einem anderen Raum
+                    und wird dort (Standort = Ja) bereits gezählt. So wird nichts doppelt gezählt.
+                </div>
+
+                <p class="mb-2"><b>„Getrennt nach“</b><br>
+                    Hier legen Sie fest, welche Merkmale <u>nicht</u> zusammengefasst werden.
+                    Für jeden unterschiedlichen Wert eines angehakten Merkmals entsteht eine eigene Zeile.
+                    Das Element ist immer getrennt.</p>
+
+                <div class="alert alert-light border small mb-2">
+                    <b>Beispiel:</b> Element „Waschbecken“ steht in 3 Räumen, 2× Variante A und 1× Variante B.<br>
+                    Mit „Variante“ angehakt: <b>2 Zeilen</b> (A mit Stk 2, B mit Stk 1).<br>
+                    Ohne „Variante“: <b>1 Zeile</b> mit Stk 3, Variante = „mehrere“.
+                </div>
+
+                <p class="mb-2"><b>„mehrere“</b><br>
+                    Steht in einer Spalte, wenn die zusammengefassten Einträge dort unterschiedliche Werte haben
+                    (z.B. verschiedene Räume oder Preise).</p>
+
+                <p class="mb-2"><b>Kommentare</b><br>
+                    Alle unterschiedlichen Kommentare der Gruppe werden zusammengeführt.</p>
+
+                <p class="mb-2"><b>Standard</b><br>
+                    Getrennt nach Raumbereich, Variante, Geschoss und Bauabschnitt.
+                    Ihre Auswahl bleibt für Ihre Sitzung gespeichert.</p>
+
+                <p class="mb-0"><b>Excel</b><br>
+                    Der Export enthält immer genau die aktuelle Ansicht.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Schließen</button>
+            </div>
         </div>
     </div>
 </div>
@@ -258,9 +468,93 @@ init_page_serversides();
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
+
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
+    const GRUPPEN_STANDARD = <?= json_encode($GRUPPEN_STANDARD) ?>;
+
+    // Spalten-Indizes der Tabelle
+    const COL_EP_DISPLAY = 13;
+    const COL_EP_EXCEL = 14;
+    const COL_LOSNR = 15;
+    const COL_EDIT = 21;
+    const COL_COUNT = 22;
+
+    // Spalten, die in Excel landen (Anzeige-EP und Edit-Button raus)
+    const EXPORT_COLUMNS = [...Array(COL_COUNT).keys()]
+        .filter(i => i !== COL_EP_DISPLAY && i !== COL_EDIT);
+
+    // 0 -> A, 25 -> Z, 26 -> AA ...
+    function excelColLetter(idx) {
+        let s = '';
+        idx++;
+        while (idx > 0) {
+            const m = (idx - 1) % 26;
+            s = String.fromCharCode(65 + m) + s;
+            idx = Math.floor((idx - 1) / 26);
+        }
+        return s;
+    }
+
+    // Zahlenzellen einer Excel-Spalte in Textzellen umwandeln
+    // (entspricht dem Apostroph beim Eintippen, nur ohne sichtbares Zeichen)
+    function forceTextColumn(sheet, colLetter) {
+        const ns = sheet.documentElement.namespaceURI;
+        const re = new RegExp('^' + colLetter + '\\d+$');
+        $('row c', sheet).each(function () {
+            const cell = this;
+            if (!re.test(cell.getAttribute('r'))) return;
+            if (cell.getAttribute('t') === 'inlineStr') return; // ist schon Text
+            const v = cell.getElementsByTagName('v')[0];
+            if (!v) return;
+            const text = v.textContent;
+            cell.removeChild(v);
+            cell.removeAttribute('s');
+            cell.setAttribute('t', 'inlineStr');
+            const is = sheet.createElementNS(ns, 'is');
+            const t = sheet.createElementNS(ns, 't');
+            t.textContent = text;
+            is.appendChild(t);
+            cell.appendChild(is);
+        });
+    }
+
+    // Seite mit neuen Kumulations-Einstellungen laden
+    function reloadKumulation(kumuliert, gruppen) {
+        const url = new URL(window.location.href);
+        if (kumuliert) {
+            url.searchParams.set('kumuliert', '1');
+        } else {
+            url.searchParams.delete('kumuliert');
+        }
+        if (Array.isArray(gruppen)) {
+            url.searchParams.set('gruppe', gruppen.join(','));
+        }
+        window.location.href = url.toString();
+    }
+
     $(document).ready(function () {
+
+        // Checkbox "Kumuliert" -> Seite neu laden
+        $('#chkKumuliert').on('change', function () {
+            reloadKumulation(this.checked);
+        });
+
+        // "Getrennt nach" übernehmen
+        $('#btnGruppenAnwenden').on('click', function () {
+            const gruppen = $('.chk-gruppe:checked').map(function () {
+                return this.value;
+            }).get();
+            reloadKumulation(true, gruppen);
+        });
+
+        // Standardauswahl setzen (noch nicht anwenden)
+        $('#btnGruppenStandard').on('click', function () {
+            $('.chk-gruppe').each(function () {
+                this.checked = GRUPPEN_STANDARD.includes(this.value);
+            });
+        });
 
         const dt = new DataTable('#tableRoombookList', {
             select: true,
@@ -270,12 +564,10 @@ init_page_serversides();
             scrollY: '85vh',       // Höhe des sichtbaren Bereichs
             scrollCollapse: true,  // schrumpft wenn weniger Zeilen
             paging: true,
-            //pageLength: 50,
-            // lengthMenu: [[25, 50, 100, 250, -1], ['25', '50', '100', '250', 'Alle']],
 
             columnDefs: [
                 {
-                    targets: [14],
+                    targets: [COL_EP_EXCEL],
                     visible: false,
                     searchable: false
                 }
@@ -283,55 +575,40 @@ init_page_serversides();
             order: [[2, "asc"]],
 
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                search: "",
-                // info: "",
-                //  infoEmpty: "",
-                //  infoFiltered: "_TOTAL_ gefiltert von _MAX_; ",
-                select: {
-
-                    rows: {
-                        _: "- %d ausgewählt",
-                        0: "",
-                        1: "- 1 ausgewählt"
-                    },
-
-                    columns: {
-                        _: "",
-                        0: "",
-                        1: ""
-                    },
-
-                    cells: {
-                        _: "",
-                        0: "",
-                        1: ""
-                    },
-                }
+                url: "/_utils/de-DE.json",
             },
             buttons: [
                 {
                     extend: 'excelHtml5',
                     text: '',
-                    className: 'fas fa-file-excel btn btn-sm btn-outline-success bg-white',
+                    titleAttr: "Download as Excel",
+                    filename: $excelfilename,
+                    className: 'fas fa-file-excel btn btn-outline-success bg-light ms-2',
                     exportOptions: {
-                        columns: ':not(:eq(12)):not(:eq(21))',
+                        columns: EXPORT_COLUMNS,
                         format: {
-                            body: function (data, row, column) {
-                                if (column === 14) {
-                                    return "'" + data; // Apostroph voranstellen
+                            header: function (data, columnIdx, node) {
+                                const exportTitle = node ? node.getAttribute('data-export-title') : null;
+                                return exportTitle || DataTable.Buttons.stripData(data, null);
+                            },
+                            body: function (data, row, column, node) {
+                                // Kommentar steckt im Popover-Button
+                                const match = String(data).match(/data-bs-content='([^']*)'/);
+                                if (match) {
+                                    return DataTable.Buttons.stripData(match[1], null);
                                 }
-                                if (column === 19) {
-                                    var match = data.match(/data-bs-content='([^']*)'/);
-                                    return match ? match[1] : '';
-                                }
-                                return data;
+                                return DataTable.Buttons.stripData(data, null);
                             }
                         }
+                    },
+                    customize: function (xlsx) {
+                        const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        // Los-Nr immer als Text (z.B. "1.10" bleibt "1.10")
+                        forceTextColumn(sheet, excelColLetter(EXPORT_COLUMNS.indexOf(COL_LOSNR)));
                     }
                 }, {
                     extend: 'searchBuilder',
-                    className: 'btn btn-sm bg-white btn-outline-dark' // add your btn-sm here with desired styles
+                    className: 'btn btn-outline-secondary fa fa-search bg-light me-2',
                 }
             ],
 
@@ -339,32 +616,30 @@ init_page_serversides();
                 $('#tableRoombookList_wrapper .dt-info').appendTo('#dt-header-container');
                 $('#tableRoombookList_wrapper .dt-buttons').appendTo('#dt-header-container');
                 $('#tableRoombookList_wrapper .dt-search').appendTo('#dt-header-container');
-                //    $('#tableRoombookList_wrapper .dt-paging').appendTo('#dt-header-container');
             }
         });
 
 
-        $(function () {
-            // Enable all popovers
-            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-            const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                return new bootstrap.Popover(popoverTriggerEl, {
-                    container: 'body',
-                    trigger: 'focus', // ensures popover closes when focus is lost
-                    placement: 'left' // optional
-                });
+        // Popovers aktivieren
+        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                container: 'body',
+                trigger: 'focus',
+                placement: 'left'
             });
-            // Close any open popover when clicking outside
-            $(document).on('click', function (e) {
-                $('[data-bs-toggle="popover"]').each(function () {
-                    if (
-                        !$(this).is(e.target) &&                              // Not the clicked element
-                        $(this).has(e.target).length === 0 &&                // Not inside the clicked element
-                        $('.popover').has(e.target).length === 0             // Not inside the actual popover
-                    ) {
-                        $(this).popover('hide');                             // Hide it
-                    }
-                });
+        });
+
+        // Offene Popover schließen bei Klick außerhalb
+        $(document).on('click', function (e) {
+            $('[data-bs-toggle="popover"]').each(function () {
+                if (
+                    !$(this).is(e.target) &&
+                    $(this).has(e.target).length === 0 &&
+                    $('.popover').has(e.target).length === 0
+                ) {
+                    $(this).popover('hide');
+                }
             });
         });
 
@@ -381,7 +656,7 @@ init_page_serversides();
             $('#editEntryModal').modal('show');
         });
 
-// Speichern
+        // Speichern
         $('#saveEditEntry').on('click', function () {
             const standort = $('#edit_standort').val();
             const verwendung = $('#edit_verwendung').val();
@@ -405,55 +680,55 @@ init_page_serversides();
                     $('#editEntryModal').modal('hide');
                     makeToaster(data.trim(), true);
 
-                    const id       = $('#edit_id').val();
-                    const anzahl   = $('#edit_amount').val();
-                    const bestand  = $('#edit_bestand').val();
+                    const id = $('#edit_id').val();
+                    const anzahl = $('#edit_amount').val();
+                    const bestand = $('#edit_bestand').val();
                     const standort = $('#edit_standort').val();
                     const verwendung = $('#edit_verwendung').val();
                     const variantenID = $('#edit_variantenID').val();
-                    const comment  = $('#edit_comment').val();
+                    const comment = $('#edit_comment').val();
                     const varianteText = $('#edit_variantenID option:selected').text();
 
                     // Zeile anhand der rhe_id finden (Edit-Button mit data-id)
                     const btn = $(`.edit-entry-btn[data-id='${id}']`);
-                    const row = dt.row(btn.closest('tr'));
 
                     // data-* Attribute am Button aktualisieren für nächstes Öffnen
-                    btn.data('anzahl',     anzahl)
-                        .data('bestand',    bestand)
-                        .data('standort',   standort)
+                    btn.data('anzahl', anzahl)
+                        .data('bestand', bestand)
+                        .data('standort', standort)
                         .data('verwendung', verwendung)
                         .data('variantenid', variantenID)
-                        .data('comment',    comment);
+                        .data('comment', comment);
 
                     // Zellen direkt im DOM updaten (Scroller rendert DOM-Nodes direkt)
                     const cells = btn.closest('tr').find('td');
-                    cells.eq(8).text(anzahl);                                          // Stk
-                    cells.eq(9).text(varianteText);                                    // Variante
-                    cells.eq(10).text(bestand  === '0' ? 'Ja' : 'Nein');              // Bestand
-                    cells.eq(11).text(standort);                                       // Standort
-                    cells.eq(12).text(verwendung);                                     // Verwendung
-                    // Zeile 13 (Anzeige): muss formatiert sein wie format_money()
-// Zeile 14 (Excel):   muss "," als Dezimaltrenner haben
+                    cells.eq(8).text(anzahl);                                // Stk
+                    cells.eq(9).text(varianteText);                          // Variante
+                    cells.eq(10).text(bestand === '0' ? 'Ja' : 'Nein');      // Bestand
+                    cells.eq(11).text(standort);                             // Standort
+                    cells.eq(12).text(verwendung);                           // Verwendung
 
-                    const epRaw = btn.data('ep');  // z.B. 1234.89 (JS float)
-// Für Anzeige (col 13):
-                    const epFormatted = standort === '0' ? '0,00'
-                        : parseFloat(epRaw).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-// Für Excel (col 14):
-                    const epExcel = standort === '0' ? '0'
-                        : parseFloat(epRaw).toFixed(2).replace('.', ',');
+                    // EP Anzeige (deutsch) + EP Excel (Punkt als Dezimaltrenner -> echte Zahl im Export)
+                    const epNum = standort === '0' ? 0 : parseFloat(btn.data('ep'));
+                    const epFormatted = epNum.toLocaleString('de-DE', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    const epExcel = epNum.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
 
-                    cells.eq(13).text(epFormatted);
-                    cells.eq(14).text(epExcel);
+                    // Spalte 14 ist ausgeblendet -> über die DataTables-API setzen
+                    const dtRow = dt.row(btn.closest('tr'));
+                    cells.eq(COL_EP_DISPLAY).text(epFormatted);
+                    dt.cell(dtRow.index(), COL_EP_EXCEL).data(epExcel);
                 }
             });
         });
-
 
     });
 
 </script>
 </body>
 </html>
-

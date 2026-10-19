@@ -1,10 +1,14 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
-check_login();
 
-$comment = getPostString("comment");
-$roombookID = $_SESSION("roombookID");
+// 26 FX - unchecked#
+require_once '_utils/_utils.php';
+check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
+
+$roombookID = getPostInt('id');
+$comment = getPostString('comment');
 
 if ($comment !== "" && $roombookID !== 0) {
     $mysqli = utils_connect_sql();

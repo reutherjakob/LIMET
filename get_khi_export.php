@@ -24,7 +24,7 @@
 
 ob_start();
 
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides();
 
 $projectID = (int)($_SESSION['projectID'] ?? 0);
@@ -57,6 +57,23 @@ $PARAM_GLEICH = 133;  // Gleichzeitigkeitsfaktor
 $PARAM_NETZ = 82;   // Netzform (AV/SV/ZSV/USV/Akku...)
 $PARAM_GLT = 109;  // GLT (Gebäudeleittechnik) -> ZLT-Datenpunkt-Zählung
 
+/**
+ * Verschiebt alle Spalten-Keys >= $from um +1 nach rechts,
+ * damit an Position $from eine neue Spalte eingefügt werden kann.
+ */
+function shift_cols(array $arr, int $from): array
+{
+    $out = [];
+    foreach ($arr as $k => $v) {
+        $k = (int)$k;
+        $out[$k >= $from ? $k + 1 : $k] = $v;
+    }
+    ksort($out);
+    return $out;
+}
+
+// Neue Spalte "Großgerät" (tabelle_räume.Inertgas) – letzte Spalte unter "Allgemein"
+$COL_GROSSGERAET = 18;
 // ==========================================================================
 
 $mysqli = utils_connect_sql();
@@ -84,9 +101,10 @@ SELECT
     r.`Anmerkung BauStatik`,
     r.`Fussboden OENORM B5220`,
     r.`Allgemeine Hygieneklasse`,
-    r.Strahlenanwendung,
+   r.Anwendungsgruppe, 
+    r.Inertgas,
     r.Abdunkelbarkeit,
-    r.Anwendungsgruppe,
+    r.Anwendungsgruppe, 
     r.ET_Anschlussleistung_W            AS RaumAnschlussleistungOhneGLZ,
     r.`ET_RJ45-Ports`,
     r.`EL_Laser 16A CEE Stk`,
@@ -120,8 +138,9 @@ FROM tabelle_räume AS r
 LEFT JOIN tabelle_räume_has_tabelle_elemente AS re
        ON re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
 WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
-  AND r.Bauabschnitt IN ($btPlaceholders)
-  AND r.Entfallen <> 1
+    AND r.Bauabschnitt IN ($btPlaceholders)
+    AND r.Entfallen <> 1
+    AND r.`MT-relevant` = 1
 GROUP BY r.idTABELLE_Räume
 ORDER BY r.idTABELLE_Räume
 ";
@@ -285,14 +304,20 @@ $MAP = [
 ];
 // Spalten die IMMER als Text geschrieben werden (sonst auto: numerisch → Zahl)
 $FORCE_TEXT = [2 => 1, 3 => 1, 4 => 1, 7 => 1, 13 => 1, 14 => 1, 15 => 1, 18 => 1, 27 => 1, 28 => 1, 38 => 1];
+// Spalte "Großgerät" einschieben
+$MAP = shift_cols($MAP, $COL_GROSSGERAET);
+$MAP[$COL_GROSSGERAET] = ['q1', 'Inertgas'];
+ksort($MAP);
+$FORCE_TEXT = shift_cols($FORCE_TEXT, $COL_GROSSGERAET);
 
+$COLS = max(array_keys($MAP)); // jetzt 51
 /* ---------- Datenzeilen für RESULTAT bauen ------------------------------- */
 $dataRows = [];
 foreach ($rows1 as $r) {
     $id = $r['idTABELLE_Räume'];
     $q2 = $leistById[$id] ?? [];
     $row = [];
-    for ($c = 1; $c <= 50; $c++) {
+    for ($c = 1; $c <= $COLS; $c++) {
         [$srcKind, $key] = $MAP[$c];
         if ($srcKind === null) {
             $row[$c] = ['', false];
@@ -321,7 +346,18 @@ foreach ($rows1 as $r) {
 $RES_H = json_decode(<<<'JSON_RES'
 {"1": {"8": "Allgemein", "18": "Elektro", "28": "Haustechnik", "39": "Med.Gase", "50": "nicht notwendig?"}, "2": {"2": "Parameter-bezeichnung Revit", "7": "Nummer", "8": "MT_ELEM_Spülbecken", "9": "MT_ELEM_Ausgussbecken_und_Waschrinne", "10": "MT_ELEM_Desinfektionsmittel-\nzumischgerät", "11": "MT_ELEM_Leibschüsselspüler ", "12": "MT_ELEM_Hockerausguss ", "13": "MT_ALLG_Statikanforderung", "14": "MT_ALLG_ÖNORM-B5220", "15": "MT_ALLG_Hygieneklasse", "16": "MT_ALLG_Strahlenanwendung", "17": "MT_ALLG_Abdunkelbarkeit", "18": "MT_ET_ÖVE-E8101", "19": "MT_ET_RaumAnschlusslOhneGlz", "20": "MT_ET_AV", "21": "MT_ET_SV", "22": "MT_ET_ZSV", "23": "MT_ET_USV", "24": "MT_ET_RJ45-Ports", "25": "MT_ET_CEE16A-Laser", "26": "MT_ET_CEE16A-Röntgen", "27": "MT_ET_Anmerkungen", "28": "MT_HT_ÖNORM-H6020", "29": "MT_HT_Abluft-DigestorWerkbank", "30": "MT_HT_Abluft-Sicherheitsschrank", "31": "MT_HT_Abluft-SicherheitsschrankUnterbau", "32": "MT_HT_Punktabsaugung", "33": "MT_HT_AbwärmeMT", "34": "MT_HT_VE-Wasser", "35": "MT_HT_Notdusche", "36": "MT_HT_Max-Raumtemperatur", "37": "MT_HT_Min-Raumtemperatur", "38": "MT_HT_Anmerkungen", "39": "MT_GAS_1-Kreis-O2", "40": "MT_GAS_2-Kreise-O2", "41": "MT_GAS_1-Kreis-Va", "42": "MT_GAS_2-Kreise-Va", "43": "MT_GAS_1-Kreis-DL5", "44": "MT_GAS_2-Kreise-DL5", "45": "MT_GAS_NGA", "46": "MT_GAS_DLtech", "47": "MT_GAS_N2O", "48": "MT_GAS_CO2", "49": "MT_GAS_DL10"}, "3": {"2": "Datentyp", "8": "Ganzzahl", "9": "Ganzzahl", "10": "Ganzzahl", "11": "Ganzzahl", "12": "Ganzzahl", "13": "Text", "14": "Text", "15": "Text", "16": "Text", "17": "Text", "18": "Text", "19": "Ganzzahl", "20": "Ganzzahl", "21": "Ganzzahl", "22": "Ganzzahl", "23": "Ganzzahl", "24": "Ganzzahl", "25": "Ganzzahl", "26": "Ganzzahl", "27": "Text", "28": "Text", "29": "Ganzzahl", "30": "Ganzzahl", "31": "Ganzzahl", "32": "Ganzzahl", "33": "Ganzzahl", "34": "Ja/Nein", "35": "Text", "36": "Ganzzahl", "37": "Ganzzahl", "38": "Text", "39": "Ja/Nein", "40": "Ja/Nein", "41": "Ja/Nein", "42": "Ja/Nein", "43": "Ja/Nein", "44": "Ja/Nein", "45": "Ja/Nein", "46": "Ja/Nein", "47": "Ja/Nein", "48": "Ja/Nein", "49": "Ja/Nein"}, "4": {"2": "Einheit", "8": "Stk.", "9": "Stk.", "10": "Stk.", "11": "Stk.", "12": "Stk.", "19": "Ganzzahl in Watt", "20": "Ganzzahl in Watt", "21": "Ganzzahl in Watt", "22": "Ganzzahl in Watt", "23": "Ganzzahl in Watt", "24": "Stk.", "25": "Stk.", "26": "Stk.", "29": "Stk.", "30": "Stk.", "31": "Stk.", "32": "Stk.", "33": "Ganzzahl in Watt", "36": "Ganzzahl in °C", "37": "Ganzzahl in °C"}, "5": {"2": "Bezeichnung Raumbuch", "7": "Raumnummer", "8": "Spülbecken MT ", "9": "Ausgussbecken MT ", "10": "Desinfektionsmittel-\nzumischgerät", "11": "Leibschüsselspüler ", "12": "Hockerausguss ", "13": "Statikanforderung", "14": "ÖNORM B5220\nleitfähigkeit Böden", "15": "Hygieneklasse", "16": "Strahlenanwendung", "17": "Abdunkelbarkeit", "18": "ÖVE E8101", "19": "Raum Anschlussl. ohne Glz.", "20": "Raum Anschlussl. mit Glz.\nAV", "21": "Raum Anschlussl. mit Glz.\nSV", "22": "Raum Anschlussl. mit Glz.\nZSV", "23": "Raum Anschlussl. mit Glz.\nUSV", "24": "RJ45-Ports\n(IT-Anschluss)", "25": "CEE16A Laser", "26": "CEE16A Röntgen", "27": "Anmerkungen zur\nET-Planung", "28": "ÖNORM H6020\nKrankenhauslüftung", "29": "Abluft Digestor/Werkbank", "30": "Abluft Sicherheitsschrank", "31": "Abluft Sicherheitsschrank Unterbau", "32": "Punktabsaugung", "33": "Abwärme MT", "34": "VE Wasser", "35": "Notdusche", "36": "Max. Raumtemperatur", "37": "Min. Raumtemperatur", "38": "Anmerkungen zur\nHT-Planung", "39": "1 Kreis O2", "40": "2 Kreise O2", "41": "1 Kreis Va", "42": "2 Kreise Va", "43": "1 Kreis DL5", "44": "2 Kreise DL5", "45": "NGA", "46": "DLtech", "47": "N2O", "48": "CO2", "49": "DL10", "50": "ZLT Datenpunkt (medizinisch)"}, "6": {"1": "id LIMET", "16": "0 = Nein;\n1 = Ja;", "17": "0 = Nein;\n1 = Ja;", "35": "derzeit keine im Projekt vorgesehen. Spalte könnte entfallen", "39": "0 = Nein;\n1 = Ja;", "40": "0 = Nein;\n1 = Ja;", "41": "0 = Nein;\n1 = Ja;", "42": "0 = Nein;\n1 = Ja;", "43": "0 = Nein;\n1 = Ja;", "44": "0 = Nein;\n1 = Ja;", "45": "0 = Nein;\n1 = Ja;", "46": "0 = Nein;\n1 = Ja;", "47": "im Projekt kein Thema; könnte entfallen", "48": "0 = Nein;\n1 = Ja;", "49": "0 = Nein;\n1 = Ja;", "50": "Anzahl Elemente mit GLT"}, "7": {"1": "idTABELLE_Räume", "2": "Raumbezeichnung", "3": "Raumbereich Nutzer", "4": "Bauabschnitt", "5": "Entfallen", "6": "MT-relevant", "7": "Nummer", "8": "MT_ELEM_Spülbecken", "9": "MT_ELEM_Ausgussbecken", "10": "MT_ELEM_Desinfektionsmittel-\nzumischgerät", "11": "MT_ELEM_Leibschüsselspüler ", "12": "MT_ELEM_Hockerausguss ", "13": "MT_ALLG_Statikanforderung", "14": "MT_ALLG_ÖNORM-B5220", "15": "MT_ALLG_Hygieneklasse", "16": "MT_ALLG_Strahlenanwendung", "17": "MT_ALLG_Abdunkelbarkeit", "18": "MT_ET_ÖVE-E8101", "19": "MT_ET_RaumAnschlusslOhneGlz", "20": "MT_ET_AV", "21": "MT_ET_SV", "22": "MT_ET_ZSV", "23": "MT_ET_USV", "24": "MT_ET_RJ45-Ports", "25": "MT_ET_CEE16A-Laser", "26": "MT_ET_CEE16A-Röntgen", "27": "MT_ET_Anmerkungen", "28": "MT_HT_ÖNORM-H6020", "29": "MT_HT_Abluft-DigestorWerkbank", "30": "MT_HT_Abluft-Sicherheitsschrank", "31": "MT_HT_Abluft-SicherheitsschrankUnterbau", "32": "MT_HT_Punktabsaugung", "33": "MT_HT_AbwärmeMT", "34": "MT_HT_VE-Wasser", "35": "MT_HT_Notdusche", "36": "MT_HT_Max-Raumtemperatur", "37": "MT_HT_Min-Raumtemperatur", "38": "MT_HT_Anmerkungen", "39": "MT_GAS_1-Kreis-O2", "40": "MT_GAS_2-Kreise-O2", "41": "MT_GAS_1-Kreis-Va", "42": "MT_GAS_2-Kreise-Va", "43": "MT_GAS_1-Kreis-DL5", "44": "MT_GAS_2-Kreise-DL5", "45": "MT_GAS_NGA", "46": "MT_GAS_DLtech", "47": "MT_GAS_N2O", "48": "MT_GAS_CO2", "49": "MT_GAS_DL10"}}
 JSON_RES, true);
-
+// Header-Spalten verschieben + "Großgerät" einsetzen
+foreach ($RES_H as $hr => $cells) {
+    $RES_H[$hr] = shift_cols($cells, $COL_GROSSGERAET);
+}
+$RES_H['2'][$COL_GROSSGERAET] = 'MT_ALLG_Großgerät';
+$RES_H['3'][$COL_GROSSGERAET] = 'Ja/Nein';
+$RES_H['5'][$COL_GROSSGERAET] = 'Großgerät';
+$RES_H['6'][$COL_GROSSGERAET] = "0 = Nein;\n1 = Ja;";
+$RES_H['7'][$COL_GROSSGERAET] = 'MT_ALLG_Großgerät';
+foreach ($RES_H as $hr => $cells) {
+    ksort($RES_H[$hr]);
+}
 /* ======================================================================== *
  *  VORSCHAU-MODUS (HTML, Bootstrap + DataTables – kein eigenes CSS)         *
  * ======================================================================== */
@@ -360,8 +396,8 @@ if (!$DOWNLOAD) {
         <meta charset="utf-8">
         <title>GPMT-Export Vorschau</title>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-        <link rel="icon" href="Logo/iphone_favicon.png"/>
+        <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+        <link rel="icon" href="Logos/iphone_favicon.png"/>
 
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"
                 integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -412,7 +448,7 @@ if (!$DOWNLOAD) {
                        class="table table-sm table-bordered table-hover table-striped align-middle small w-100">
                     <thead class="table-light">
                     <tr>
-                        <?php for ($c = 1; $c <= 50; $c++): ?>
+                        <?php for ($c = 1; $c <= $COLS; $c++): ?>
                             <th class="text-nowrap">
                                 <?= htmlspecialchars($labelFor($c)) ?>
                                 <small class="d-block text-muted fw-normal"><?= htmlspecialchars($revitFor($c)) ?></small>
@@ -423,7 +459,7 @@ if (!$DOWNLOAD) {
                     <tbody>
                     <?php foreach ($dataRows as $dr): ?>
                         <tr>
-                            <?php for ($c = 1; $c <= 50; $c++):
+                            <?php for ($c = 1; $c <= $COLS; $c++):
                                 [$val, $isNum] = $dr[$c]; ?>
                                 <td class="<?= $isNum ? 'text-end font-monospace' : '' ?>">
                                     <?= $val === '' ? '<span class="text-black-50">–</span>' : nl2br(htmlspecialchars((string)$val)) ?>
@@ -588,7 +624,7 @@ $wbRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     . '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
     . '</Relationships>';
 
-$sheet1 = sheet_xml($resRows, 7, 50, 7, 7);
+$sheet1 = sheet_xml($resRows, 7, $COLS, 7, 7);
 
 $tmp = tempnam(sys_get_temp_dir(), 'xlsx');
 $zip = new ZipArchive();

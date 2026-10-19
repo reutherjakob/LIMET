@@ -20,7 +20,7 @@
         <tbody>
         <?php
         // 25 FX
-        require_once 'utils/_utils.php';
+        require_once '_utils/_utils.php';
         check_login();
         $mysqli = utils_connect_sql();
         $filterValue = getPostInt('filterValue', 0);
@@ -100,8 +100,7 @@
             info: true,
             order: [[4, 'desc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                search: ''
+                url: "/_utils/de-DE.json"
             },
             rowCallback: function (row, data, index) {
                 if (data[5] === 'Bearbeitung') {
@@ -153,7 +152,7 @@
                 data: {"vermerkID": vermerkID, "vermerkStatus": vermerkStatus},
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $.ajax({
                         url: "getProjectVermerke.php",
                         type: "POST",

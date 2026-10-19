@@ -1,5 +1,5 @@
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 ?>
 
@@ -12,7 +12,15 @@ check_login();
 
 <?php
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_bestandsdaten.Inventarnummer, tabelle_bestandsdaten.Seriennummer, tabelle_bestandsdaten.Anschaffungsjahr, tabelle_bestandsdaten.`Aktueller Ort`, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_räume_has_tabelle_elemente.Anzahl
+$sql = "SELECT tabelle_räume.Raumnr, 
+       tabelle_räume.Raumbezeichnung, 
+       tabelle_bestandsdaten.Inventarnummer, 
+       tabelle_bestandsdaten.Seriennummer, 
+       tabelle_bestandsdaten.Anschaffungsjahr,
+       tabelle_bestandsdaten.`Aktueller Ort`,
+       tabelle_hersteller.Hersteller, 
+       tabelle_geraete.Typ, 
+       tabelle_räume_has_tabelle_elemente.Anzahl
                 FROM tabelle_hersteller RIGHT JOIN (tabelle_geraete RIGHT JOIN (tabelle_bestandsdaten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) ON tabelle_bestandsdaten.tabelle_räume_has_tabelle_elemente_id = tabelle_räume_has_tabelle_elemente.id) ON tabelle_geraete.idTABELLE_Geraete = tabelle_bestandsdaten.tabelle_geraete_idTABELLE_Geraete) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller
                 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume.`Raumbereich Nutzer`)='" . filter_input(INPUT_POST, 'raumbereich') . "') AND ((tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)=" . filter_input(INPUT_POST, 'elementID') . "))
                 ORDER BY tabelle_räume.Raumnr;";
@@ -51,7 +59,7 @@ if ($result->num_rows > 0) {
 $mysqli->close();
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     var table;
     $(document).ready(function () {
@@ -70,7 +78,7 @@ $mysqli->close();
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },

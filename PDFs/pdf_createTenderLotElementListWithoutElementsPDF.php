@@ -1,11 +1,11 @@
 <?php
 #2025done
-require_once '../utils/_utils.php';
+require_once '../_utils/_utils.php';
 check_login();
 require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
 include "_pdf_createBericht_utils.php";
-include "../utils/_format.php";
+include "../_utils/_format_money.php";
 
 $_SESSION["PDFTITEL"] = "Medizintechnische Loseinteilung";
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);

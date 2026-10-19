@@ -1,7 +1,9 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides();
+require_once '_utils/_csrf.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -9,8 +11,10 @@ init_page_serversides();
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
     <title>Bauangaben check</title>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
 
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -129,7 +133,7 @@ init_page_serversides();
 <?php require_once "modal_bauangaben_check_help.php"; ?>
 
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     function show_modal(modal_id) {
         $('#' + modal_id).modal('show');

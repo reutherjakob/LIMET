@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 ?>
 
@@ -35,7 +35,7 @@ check_login();
 
 <?php
 $mysqli = utils_connect_sql();
-$sql = "SELECT `Anmerkung FunktionBO`, `Anmerkung Geräte`, `Anmerkung BauStatik`, `Anmerkung Elektro`, `Anmerkung MedGas`, `Anmerkung HKLS` 
+$sql = "SELECT `Anmerkung FunktionBO`, `Anmerkung Geräte`, `Anmerkung BauStatik`, `Anmerkung Elektro`, `Anmerkung MedGas`, `Anmerkung HKLS`, `Anmerkung allgemein`
                 FROM tabelle_räume 
                 WHERE idTABELLE_Räume =? ";
 $stmt = $mysqli->prepare($sql);
@@ -52,7 +52,8 @@ $anmerkungen = [
     "BauStatik" => "Bau/ Statik/ Schwingungsklasse",
     "Elektro" => "Elektro",
     "HKLS" => "HKLS",
-    "MedGas" => "MedGas"
+    "MedGas" => "MedGas",
+    "allgemein" => "Allgemein"
 ];
 
 echo "<form class='form-horizontal'>";
@@ -61,7 +62,7 @@ foreach ($anmerkungen as $key => $label) {
                     <label class='control-label col-xxl-12' for='$key'></label>
                     <div class='col-xxl-12 hr-sect'><b> $label </b></div>
                     <div class='col-xxl-12'>
-                        <textarea class='form-control form-control-sm' rows='5' id='$key'>" . br2nl($row["Anmerkung " . ucfirst($key)]) . "</textarea>
+                            <textarea class='form-control form-control-sm' rows='5' id='$key'>" . br2nl($row["Anmerkung " . $key]) . "</textarea>
                     </div>
                 </div>";
 }
@@ -118,7 +119,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                 alert("Kein Raum ausgewählt!");
             } else {
                 $.ajax({
-                    url: "copyRoomSpecifications_all.php",
+                    url: "save_copyRoomSpecifications_all.php",
                     type: "POST",
                     data: {
                         rooms: JSON.stringify(roomIDs),
@@ -126,7 +127,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                     },
                     success: function (data) {
                         // console.log(data);
-                        alert(data);
+                         makeToaster(data, true);
                         location.reload(true); // if(confirm("Raum erfolgreich Aktualisiert! :) \nUm Änderungen anzuzeigen, muss Seite Neu laden. Jetzt neu laden? \n",data)) { location.reload(true);}
                     }
                 });
@@ -142,6 +143,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
         let medgas = $("#MedGas").val();
         let baustatik = $("#BauStatik").val();
         let hkls = $("#HKLS").val();
+        let allg = $("#Allgemein").val();
         $.ajax({
             url: "updateRoomSpecificationAnnotationTexts.php",
             data: {
@@ -150,14 +152,15 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                 "geraete": geraete,
                 "medgas": medgas,
                 "baustatik": baustatik,
-                "hkls": hkls
+                "hkls": hkls,
+                "allg":allg
             },
             type: "POST",
             success: function (data) {
                 try {
                     makeToaster(data, data.substring(0, 4) === "Raum")
                 } catch (err) {
-                    alert(data);
+                     makeToaster(data, true);
                 }
 
             }
@@ -197,11 +200,11 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
             alert("Kein Raum ausgewählt!");
         } else {
             $.ajax({
-                url: "copyAnnotationTexts.php",
+                url: "save_copyAnnotationTexts.php",
                 type: "POST",
                 data: { rooms: JSON.stringify(roomIDs) },
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $('#AnmerkungModal').modal('hide');
                 }
             });

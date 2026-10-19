@@ -1,11 +1,23 @@
+<?php
+// 25 FX
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
+init_page_serversides();
+require_once '_utils/_csrf.php';
+$excelfilename = buildExcelFilename('Lose_im_Projekt"');
+?>
+
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Losverwaltung</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -30,13 +42,6 @@
 
 </head>
 <body id="bodyTenderLots">
-<?php
-// 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
-init_page_serversides();
-
-?>
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
@@ -298,8 +303,14 @@ init_page_serversides();
     <div class="row">
         <div class="col-xxl-8">
             <div class="mt-4 card">
-                <div class="card-header d-inline-flex justify-content-between align-items-center"
-                     id="elementsInLotCardHeader">Elemente im Los
+                <div class="card-header ">
+                    <div class="row">
+                        <div class="col-4">
+                            Elemente im Los
+                        </div>
+                        <div class="col-8 d-inline-flex text-nowrap justify-content-end align-items-center"
+                             id="elementsInLotCardHeader"></div>
+                    </div>
                 </div>
                 <div class="card-body" id="elementsInLot"></div>
             </div>
@@ -458,185 +469,180 @@ include "modal_showLotWorkflow.php";
 require "modal_los_aenderungen.php";
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <!--suppress ES6ConvertVarToLetConst -->
 <script charset="utf-8">
-    let excelFilename;
+    const excelFilename = <?= json_encode($excelfilename) ?>;
     var lotID;
     var lotVerfahren;
     var tableTenderLots;
 
     $(document).ready(function () {
 
+        tableTenderLots = new DataTable('#tableTenderLots', {
+            columnDefs: [
+                {
+                    targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
+                    visible: false,
+                    searchable: false
+                },
+                {
+                    targets: [1, 20, 21],
+                    sortable: false
+                }
+            ],
 
-        getExcelFilename("Lose-im_Projekt")
-            .then(filename => {
-                // console.log('Generated filename:', filename);
-                excelFilename = filename;
-                tableTenderLots = new DataTable('#tableTenderLots', {
-                    columnDefs: [
-                        {
-                            targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
-                            visible: false,
-                            searchable: false
-                        },
-                        {
-                            targets: [1, 20, 21],
-                            sortable: false
+            select: true,
+            search: {search: ''},
+            paging: true,
+            searching: true,
+            info: true,
+            order: [[2, 'asc']],
+            pagingType: 'simple',
+            lengthChange: true,
+            pageLength: 10,
+            language: {
+                url: "/_utils/de-DE.json",
+                decimal: ',',
+                thousands: '.',
+                searchPlaceholder: 'Suche..',
+                search: ""
+            },
+            buttons: [
+                {
+                    extend: 'excel',
+                    className: "btn btn-outline-secondary bg-light fas fa-file-excel me-2 ms-2 ",
+                    title: excelFilename,
+                    filename: excelFilename,
+                    exportOptions: {
+                        columns: function (idx) {
+                            return idx !== 0 &&
+                                idx !== 1 &&
+                                idx !== 9 &&
+                                idx !== 10 &&
+                                idx !== 11 &&
+                                idx !== 12 &&
+                                idx !== 13 &&
+                                idx !== 20 &&
+                                idx !== 22 &&
+                                idx !== 23 &&
+                                idx !== 24;
                         }
-                    ],
-
-                    select: true,
-                    search: {search: ''},
-                    paging: true,
-                    searching: true,
-                    info: true,
-                    order: [[2, 'asc']],
-                    pagingType: 'simple',
-                    lengthChange: true,
-                    pageLength: 10,
-                    language: {
-                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                        decimal: ',',
-                        thousands: '.',
-                        searchPlaceholder: 'Suche..',
-                        search: ""
-                    },
-                    buttons: [
-                        {
-                            extend: 'excel',
-                            className: "btn btn-outline-secondary bg-light fas fa-file-excel me-2 ms-2 ",
-                            title: excelFilename,
-                            exportOptions: {
-                                columns: function (idx) {
-                                    return idx !== 0 &&
-                                        idx !== 1 &&
-                                        idx !== 9 &&
-                                        idx !== 10 &&
-                                        idx !== 11 &&
-                                        idx !== 12 &&
-                                        idx !== 13 &&
-                                        idx !== 20 &&
-                                        idx !== 22 &&
-                                        idx !== 23 &&
-                                        idx !== 24;
-                                }
-                            }
-                        }
-                    ],
-                    layout: {
-                        topStart: null,
-                        topEnd: null,
-                        bottomStart: 'info',
-                        bottomEnd: ['pageLength', 'paging', 'search', 'buttons']
-                    },
-                    initComplete: function () {
-                        let sourceElements = document.getElementsByClassName("dt-buttons");
-                        let targetElement = document.getElementById("LoseCardHeaderSub");
-                        Array.from(sourceElements).forEach(function (element) {
-                            targetElement.appendChild(element);
-                        });
-                        const button = document.querySelector(".dt-buttons");
-                        if (button) {
-                            button.classList.remove("dt-buttons");
-                        }
-                        $('.dt-search label').remove();
-                        $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-secondary").appendTo('#LoseCardHeaderSub');
                     }
+                }
+            ],
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: 'info',
+                bottomEnd: ['pageLength', 'paging', 'search', 'buttons']
+            },
+            initComplete: function () {
+                let sourceElements = document.getElementsByClassName("dt-buttons");
+                let targetElement = document.getElementById("LoseCardHeaderSub");
+                Array.from(sourceElements).forEach(function (element) {
+                    targetElement.appendChild(element);
                 });
+                const button = document.querySelector(".dt-buttons");
+                if (button) {
+                    button.classList.remove("dt-buttons");
+                }
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-secondary").appendTo('#LoseCardHeaderSub');
+            }
+        });
 
 
-                $('#tableTenderLots tbody').on('click', 'tr', function () {
-                    if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
-                    }
-                    lotID = tableTenderLots.row($(this)).data()[0];
+        $('#tableTenderLots tbody').on('click', 'tr', function () {
+            if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
+            }
+            lotID = tableTenderLots.row($(this)).data()[0];
 
-                    let verfahrenCell = tableTenderLots.row($(this)).data()[6];
-                    let tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = verfahrenCell || '';
-                    let rawVerfahren = tempDiv.textContent.trim();
-
-
-                    if (rawVerfahren === "MKF") {
-                        $('#lotMKF').bootstrapToggle('enable');
-                        $('#lotMKF').bootstrapToggle('on');
-                        $('#lotMKF').bootstrapToggle('disable');
-                        $("#lotMKFOf").prop('disabled', true);
-                    } else {
-                        $('#lotMKF').bootstrapToggle('enable');
-                        $('#lotMKF').bootstrapToggle('off');
-                        $('#lotMKF').bootstrapToggle('disable');
-                    }
-
-                    document.getElementById("lotVerfahren").value = rawVerfahren;
-
-                    document.getElementById("lotNr").value = tableTenderLots.row($(this)).data()[2];
-                    document.getElementById("lotName").value = tableTenderLots.row($(this)).data()[3];
-                    document.getElementById("lotLVSend").value = tableTenderLots.row($(this)).data()[4];
-                    document.getElementById("lotStart").value = tableTenderLots.row($(this)).data()[5];
-                    document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
-                    document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
-                    document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
-                    document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
-                    //TODO Auftragnehmeer in modal
-                    const htmlString = tableTenderLots.row($(this)).data()[8];
-                    const textContent = htmlString.replace(/<[^>]*>/g, '');
-
-                    let selectedValue;
-                    switch (textContent) {
-                        case 'Offen':
-                            selectedValue = 0;
-                            break;
-                        case 'Fertig':
-                            selectedValue = 1;
-                            break;
-                        case 'Wartend':
-                            selectedValue = 2;
-                            break;
-                        default:
-                            selectedValue = 0; // Default to 'Offen' if not recognized
-                    }
-
-                    document.getElementById("lotVergabe").value = selectedValue;
-                    const selectElement = document.getElementById("lotVergabe");
-                    for (let i = 0; i < selectElement.options.length; i++) {
-                        if (selectElement.options[i].value === selectedValue) {
-                            selectElement.options[i].selected = true;
-                            break;
-                        }
-                    }
-                    // console.log(tableTenderLots.row($(this)).data());
-                    document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[22];
-                    document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24];
+            let verfahrenCell = tableTenderLots.row($(this)).data()[6];
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = verfahrenCell || '';
+            let rawVerfahren = tempDiv.textContent.trim();
 
 
-                    const notizCell = tableTenderLots.row($(this)).data()[21];
-                    const tempDivNotiz = document.createElement('div');
-                    tempDivNotiz.innerHTML = notizCell || '';
-                    const notizBtn = tempDivNotiz.querySelector('button');
-                    document.getElementById("lotNotice").value = notizBtn ? (notizBtn.dataset.description || '') : '';
+            if (rawVerfahren === "MKF") {
+                $('#lotMKF').bootstrapToggle('enable');
+                $('#lotMKF').bootstrapToggle('on');
+                $('#lotMKF').bootstrapToggle('disable');
+                $("#lotMKFOf").prop('disabled', true);
+            } else {
+                $('#lotMKF').bootstrapToggle('enable');
+                $('#lotMKF').bootstrapToggle('off');
+                $('#lotMKF').bootstrapToggle('disable');
+            }
+
+            document.getElementById("lotVerfahren").value = rawVerfahren;
+
+            document.getElementById("lotNr").value = tableTenderLots.row($(this)).data()[2];
+            document.getElementById("lotName").value = tableTenderLots.row($(this)).data()[3];
+            document.getElementById("lotLVSend").value = tableTenderLots.row($(this)).data()[4];
+            document.getElementById("lotStart").value = tableTenderLots.row($(this)).data()[5];
+            document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
+            document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
+            document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
+            document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
+            //TODO Auftragnehmeer in modal
+            const htmlString = tableTenderLots.row($(this)).data()[8];
+            const textContent = htmlString.replace(/<[^>]*>/g, '');
+
+            let selectedValue;
+            switch (textContent) {
+                case 'Offen':
+                    selectedValue = 0;
+                    break;
+                case 'Fertig':
+                    selectedValue = 1;
+                    break;
+                case 'Wartend':
+                    selectedValue = 2;
+                    break;
+                default:
+                    selectedValue = 0; // Default to 'Offen' if not recognized
+            }
+
+            document.getElementById("lotVergabe").value = selectedValue;
+            const selectElement = document.getElementById("lotVergabe");
+            for (let i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === selectedValue) {
+                    selectElement.options[i].selected = true;
+                    break;
+                }
+            }
+            // console.log(tableTenderLots.row($(this)).data());
+            document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[22];
+            document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24];
 
 
+            const notizCell = tableTenderLots.row($(this)).data()[21];
+            const tempDivNotiz = document.createElement('div');
+            tempDivNotiz.innerHTML = notizCell || '';
+            const notizBtn = tempDivNotiz.querySelector('button');
+            document.getElementById("lotNotice").value = notizBtn ? (notizBtn.dataset.description || '') : '';
+
+
+            $.ajax({
+                url: "getLotVermerke.php",
+                data: {"lotID": lotID},
+                type: "POST",
+                success: function (data) {
+                    $("#lotVermerke").html(data);
                     $.ajax({
-                        url: "getLotVermerke.php",
+                        url: "getTenderLotElements.php",
                         data: {"lotID": lotID},
                         type: "POST",
                         success: function (data) {
-                            $("#lotVermerke").html(data);
-                            $.ajax({
-                                url: "getTenderLotElements.php",
-                                data: {"lotID": lotID},
-                                type: "POST",
-                                success: function (data) {
-                                    $("#elementsInLot").html(data);
-                                    $("#elementBestand").hide();
-                                    $("#elementsvariantenParameterInLot").hide();
-                                }
-                            });
+                            $("#elementsInLot").html(data);
+                            $("#elementBestand").hide();
+                            $("#elementsvariantenParameterInLot").hide();
                         }
                     });
-                });
+                }
             });
+        });
 
 
         $('#lotLVSend').datepicker({
@@ -789,7 +795,7 @@ require "modal_los_aenderungen.php";
         if ($("#lotMKF").prop('checked') === false) {
             $('#addTenderLotModal').modal('hide');
             $.ajax({
-                url: "setTenderLot.php",
+                url: "updateTenderLot.php",
                 data: {
                     "lotID": lotID,
                     "losNr": losNr,
@@ -808,14 +814,14 @@ require "modal_los_aenderungen.php";
                 },
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     window.location.replace("roombook_tenderLots.php");
                 }
             });
         } else {
             $('#addTenderLotModal').modal('hide');
             $.ajax({
-                url: "setTenderLot.php",
+                url: "updateTenderLot.php",
                 data: {
                     "lotID": lotID,
                     "losNr": losNr,
@@ -834,7 +840,7 @@ require "modal_los_aenderungen.php";
                 },
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     window.location.replace("roombook_tenderLots.php");
                 }
             });

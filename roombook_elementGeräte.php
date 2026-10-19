@@ -1,12 +1,20 @@
+<?php
+// 26 FX
+require_once "_utils/_utils.php";
+init_page_serversides("x");
+require_once '_utils/_csrf.php';
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
     <title>Geräteliste</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -34,9 +42,6 @@
         </div>
         <div id="CB1" class="card-body table-responsive">
             <?php
-            // 25 FX
-            require_once "utils/_utils.php";
-            init_page_serversides("x");
             $mysqli = utils_connect_sql();
             $sql = "SELECT   
                 tabelle_elemente.Bezeichnung as Elementbezeichnung,
@@ -63,20 +68,23 @@
             $firstRow = $result->fetch_assoc();
             if ($firstRow) {
                 foreach ($firstRow as $column => $value) {
-                    echo "<th>" . ($column) . "</th>";
+                    echo "<th>" . h($column) . "</th>";
                 }
                 echo "</tr></thead><tbody>";
                 echo "<tr>";
                 foreach ($firstRow as $value) {
-                    echo "<td>" . $value . "</td>";
+                    echo "<td>" . h($value) . "</td>";
                 }
                 echo "</tr>";
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
                     foreach ($row as $value) {
-                        echo "<td>" . ($value) . "</td>";
+                        echo "<td>" . h($value) . "</td>";
                     }
-                    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-sm' value='changeDevice' data-bs-toggle='modal' data-bs-target='#changeDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
+                    echo "<td><button type='button' id='" . h($row["idTABELLE_Geraete"]) . "' 
+                            class='btn btn-outline-dark btn-sm' value='changeDevice'
+                             data-bs-toggle='modal' data-bs-target='#changeDeviceModal'>
+                             <i class='fas fa-pencil-alt'></i></button></td>";
                     echo "</tr>";
                 }
             }
@@ -107,7 +115,7 @@
                                             ORDER BY `tabelle_hersteller`.`Hersteller`;";
                                 $result = $mysqli->query($sql);
                                 while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='" . $row["idtabelle_hersteller"] . "'>" . $row["Hersteller"] . "</option>";
+                                    echo "<option value='" . h($row["idtabelle_hersteller"]) . "'>" . h($row["Hersteller"]) . "</option>";
                                 }
                                 ?>
                             </select>
@@ -130,7 +138,6 @@
                 </form>
             </div>
             <div class='modal-footer'>
-                <input type='button' id='addDevice' class='btn btn-success btn-sm' value='Hinzufügen'>
                 <input type='button' id='saveDevice' class='btn btn-warning btn-sm' value='Speichern'>
                 <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
@@ -160,7 +167,7 @@
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     let table;
     var deviceID; //used in multiple subscripts, maybe set Session var?
@@ -180,7 +187,7 @@
             ordering: true,
             info: true,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: "/_utils/de-DE.json",
                 search: "_INPUT_",
                 searchPlaceholder: "Suche...",
                 lengthMenu: "Show _MENU_ entries"
@@ -193,7 +200,6 @@
     });
 
     $("button[value='changeDevice']").click(function () {
-        $('#addDevice').hide();
         let rowData = table.row($(this).closest('tr')).data();
         let manufacturerID = rowData[3];
         deviceID = rowData[6];  // idTABELLE_Geraete setzen (Index 6 laut columnDefs und SQL)
@@ -202,34 +208,6 @@
         $('#hersteller').val(manufacturerID).trigger('change');
         $('#type').val(rowData[4]);
         $('#kurzbeschreibung').val(rowData[5]);
-    });
-
-
-
-    $("#addDevice").click(function () {
-        let hersteller = $("#hersteller").val();
-        let type = $("#type").val();
-        let kurzbeschreibung = $("#kurzbeschreibung").val();
-        if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
-            $('#changeDeviceModal').modal('hide');
-            $.ajax({
-                url: "addDevice.php",
-                data: {"hersteller": hersteller, "type": type, "kurzbeschreibung": kurzbeschreibung},
-                type: "POST",
-                success: function (data) {
-                    alert(data);
-                    $.ajax({
-                        url: "getDevicesToElement.php",
-                        type: "POST",
-                        success: function (data) {
-                            $("#devicesInDB").html(data);
-                        }
-                    });
-                }
-            });
-        } else {
-            alert("Bitte alle Felder ausfüllen!");
-        }
     });
 
 
@@ -250,7 +228,7 @@
                 },
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $.ajax({
                         url: "getDevicesToElement.php",
                         type: "POST",
@@ -277,7 +255,7 @@
                 data: {"manufacturer": manufacturer},
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $.ajax({
                         url: "getDevicesToElement.php",
                         data: {"elementID": ""},
@@ -292,6 +270,6 @@
             alert("Bitte geben Sie einen Hersteller ein!");
         }
     });
-</script>
+</script>+
 </body>
 </html>

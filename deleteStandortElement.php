@@ -1,7 +1,10 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
-check_login(); // session/login check
+// 26 FX - unchecked#
+require_once '_utils/_utils.php';
+check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
 
 $standortID = getPostInt('standortID');
 if ($standortID === 0) { // assuming 0 indicates invalid or missing

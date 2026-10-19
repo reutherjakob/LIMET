@@ -4,7 +4,7 @@
 header("Content-Type: application/pdf");
 header('Content-Disposition: inline; filename="document.pdf"');
 
-require_once '../utils/_utils.php';
+require_once '../_utils/_utils.php';
 require_once 'pdf_createBericht_LOGO.php';
 require_once '../TCPDF-main/TCPDF-main/tcpdf.php';
 require_once '_pdf_createBericht_utils.php';
@@ -188,20 +188,29 @@ class MYPDF extends TCPDF
             if (!empty($row['LosNr_Extern'])) {
                 $betreffText .= 'Betrifft Los: ' . $row['LosNr_Extern'] . ' ' . $row['LosBezeichnung_Extern'] . "\n";
             }
-
             // ── Wer/Bis + Typ ───────────────────────────────────────────
-            if ($row['Vermerkart'] === 'Bearbeitung') {
-                $textNameFälligkeit  = $row['Name'] . "\n" . $row['Faelligkeit'];
-                $textNameFälligkeit .= ($row['Bearbeitungsstatus'] === 0) ? "\nOffen" : "\nErledigt";
-            } else {
-                $textNameFälligkeit = '';
-            }
+            $vermerkart     = trim((string)$row['Vermerkart']);
+            $istBearbeitung = strcasecmp($vermerkart, 'Bearbeitung') === 0;
 
-            $prettyText = '';
-            if ($row['Vermerkart'] === 'Bearbeitung')       $prettyText = 'B';
-            else if ($row['Vermerkart'] === 'Info')         $prettyText = 'I';
-            else if ($row['Vermerkart'] === 'Freigegeben')  $prettyText = 'F';
-            else if ($row['Vermerkart'] === 'Nutzerwunsch') $prettyText = 'N';
+            $werBisTeile = [];
+            if (!empty($row['Name'])) {
+                $werBisTeile[] = $row['Name'];
+            }
+            if (!empty($row['Faelligkeit']) && $row['Faelligkeit'] !== '0000-00-00') {
+                $werBisTeile[] = $row['Faelligkeit'];
+            }
+            if ($istBearbeitung) {
+                $werBisTeile[] = ($row['Bearbeitungsstatus'] === 0) ? 'Offen' : 'Erledigt';
+            }
+            $werBis = implode("\n", $werBisTeile);
+
+            $typMap = [
+                'bearbeitung'  => 'B',
+                'info'         => 'I',
+                'freigegeben'  => 'F',
+                'nutzerwunsch' => 'N',
+            ];
+            $prettyText = $typMap[strtolower($vermerkart)] ?? '';
 
             $ugTitel = $row['Untergruppennummer'] . ') ' . $row['Untergruppenname'];
 
@@ -319,8 +328,7 @@ class MYPDF extends TCPDF
                 $this->MultiCell($w[0], $hB, $betreffOut, 'LTR', 'L', $fill, 0, '', '');
                 $this->SetFont('', '', '8');
                 $this->MultiCell($w[1], $blockH, $prettyText, 1, 'C', $fill, 0, '', '', true, 0, false, true, $blockH, 'T');
-                $werBis = ($row['Vermerkart'] === 'Bearbeitung') ? $textNameFälligkeit : '';
-                $this->MultiCell($w[2], $blockH, $werBis, 1, 'L', $fill, 0, '', '', true, 0, false, true, $blockH, 'T');
+                 $this->MultiCell($w[2], $blockH, $werBis, 1, 'L', $fill, 0, '', '', true, 0, false, true, $blockH, 'T');
 
                 // Vermerktext
                 $this->Ln($hB);

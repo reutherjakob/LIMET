@@ -1,7 +1,11 @@
 <?php
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 init_page_serversides();
+
+require_once '_utils/_csrf.php';
+
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -9,8 +13,10 @@ init_page_serversides();
     <title>KOR_Austattungskatalog</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -89,9 +95,9 @@ init_page_serversides();
                 </div>
 
                 <div class="col-auto ms-auto d-flex align-items-center" id="dt-header-controls">
-                    <button type="button" class="btn btn-sm btn-info text-nowrap"
+                    <button type="button" class="btn btn-sm btn-primary text-nowrap me-2"
                             onclick="show_modal('InfoModal')">
-                        <i class="fas fa-question-circle"></i>
+                        <i class="fas fa-info-circle"> </i>
                     </button>
                 </div>
 
@@ -100,8 +106,6 @@ init_page_serversides();
         </div>
         <div class="card-body p-1">
             <?php
-
-
             $columnDefs = [
                 // --- Identity ---
                 ['header' => 'ID', 'source' => 'elem', 'key' => 'idTABELLE_Elemente', 'hidden' => true],
@@ -112,10 +116,9 @@ init_page_serversides();
                 ['header' => 'Bauteilelement ID Planer', 'source' => 'elemCode', 'key' => null],
                 ['header' => 'Ortsveränderlich', 'source' => 'ortsv', 'key' => null],
                 ['header' => 'Versorgungseinheit', 'source' => 've', 'key' => null, 'center' => true],
-
                 ['header' => 'Bemerkung', 'source' => 'anm', 'key' => 'Bemerkung_Allgemein'],
-
                 ['header' => 'VEXAT Anforderung', 'source' => 'display', 'key' => "Explosionsschutzzone", 'center' => true, 'group' => 'Elektro',],
+
                 // --- Elektro: Leistung ---
                 ['header' => 'Leistung [W]', 'source' => 'display', 'key' => 'Nennleistung', 'suppress_unit' => true, 'group' => 'Elektro',],
                 ['header' => 'Netzart', 'source' => 'display', 'key' => 'Netzart', 'group' => 'Elektro', 'hidden' => true, 'suppress_unit' => true],
@@ -167,16 +170,18 @@ init_page_serversides();
                 ['header' => 'VA', 'source' => 'display', 'key' => 'VAC Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Flussrate [l/min] VA', 'source' => 'static', 'key' => '', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'NGA', 'source' => 'display', 'key' => 'NGA Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
+
                 // --- Tech. Druckluft ---
                 ['header' => 'Tech. DL 3 bar', 'source' => 'calc_ac', 'key' => 'dl_3bar', 'center' => true, 'group' => 'Druckluft'],
-                ['header' => 'Flussrate [l/min] Tech. DL 3 bar', 'source' => 'display', 'key' => 'DL_3_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'Flussrate [l/min] Tech. DL 3 bar', 'source' => 'calc_ac', 'key' => 'dl_3bar_strom', 'group' => 'Druckluft'],
                 ['header' => 'Tech. DL 6 bar', 'source' => 'calc_ac', 'key' => 'dl_6bar', 'center' => true, 'group' => 'Druckluft'],
-                ['header' => 'Flussrate [l/min] Tech. DL 6 bar', 'source' => 'display', 'key' => 'DL_6_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'Flussrate [l/min] Tech. DL 6 bar', 'source' => 'calc_ac', 'key' => 'dl_6bar_strom', 'group' => 'Druckluft'],
                 ['header' => 'Tech. DL 9 bar', 'source' => 'calc_ac', 'key' => 'dl_9bar', 'center' => true, 'group' => 'Druckluft'],
-                ['header' => 'Flussrate [l/min]Tech. DL 9 bar', 'source' => 'display', 'key' => 'DL-9_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'Flussrate [l/min] Tech. DL 9 bar', 'source' => 'calc_ac', 'key' => 'dl_9bar_strom', 'group' => 'Druckluft'],
                 ['header' => 'Tech. DL 12 bar', 'source' => 'calc_ac', 'key' => 'dl_12bar', 'center' => true, 'group' => 'Druckluft'],
-                ['header' => 'Flussrate [l/min] Tech. DL 12 bar', 'source' => 'display', 'key' => 'DL-12_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'Flussrate [l/min] Tech. DL 12 bar', 'source' => 'calc_ac', 'key' => 'dl_12bar_strom', 'group' => 'Druckluft'],
                 ['header' => 'Bemerkung MG', 'source' => 'anm', 'key' => 'Bemerkung_MG'],
+
                 // --- Kaltwasser ---
                 ['header' => 'KW Stadtwasser', 'source' => 'calc_wc', 'key' => 'kw_stadt_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
                 ['header' => 'KW Stadtwasser [l/min]', 'source' => 'calc_wc', 'key' => 'kw_stadt_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
@@ -282,19 +287,19 @@ init_page_serversides();
 
             function calc_anschluss_cols(array $params, bool $isVE = false): array
             {
-                $netzart    = $params['Netzart'] ?? '';
-                $spannung   = $params['Spannung'] ?? '';
+                $netzart = $params['Netzart'] ?? '';
+                $spannung = $params['Spannung'] ?? '';
                 $steckdosen = (int)($params['Steckdosen_Anzahl'] ?? 0);
 
                 // Parameter-Bezeichnungen für die Kreise je Netzart (mit Leerzeichen!)
                 $kreisParam = [
-                    'AV'  => 'Kreise AV',
-                    'SV'  => 'Kreise SV',
+                    'AV' => 'Kreise AV',
+                    'SV' => 'Kreise SV',
                     'ZSV' => 'Kreise ZSV',
                     'USV' => 'Kreise USV',  // existiert (noch) nicht → bleibt leer, bis angelegt
                 ];
 
-                $netze  = ['AV', 'SV', 'ZSV', 'USV'];
+                $netze = ['AV', 'SV', 'ZSV', 'USV'];
                 $result = [];
                 $direkt = strtolower($params['Direktanschluss'] ?? '');
                 $isDirekt = in_array($direkt, ['ja', 'yes', '1', 'true', '2', '3', '4']);
@@ -323,13 +328,21 @@ init_page_serversides();
 
                 $druckluft_anschluss = $params['Druckluftanschluss'] ?? '';
                 $druckluft_druck = trim($params['Druckluft_Druck'] ?? '');
+                $druckluft_strom = trim($params['Druckluft_Strom'] ?? '');
                 $hasDruckluft = ($druckluft_anschluss !== '' && $druckluft_anschluss !== '0');
-                $result['dl_3bar']  = ($hasDruckluft && $druckluft_druck === '3')  ? 1 : '';
-                $result['dl_6bar']  = ($hasDruckluft && $druckluft_druck === '6')  ? 1 : '';
-                $result['dl_9bar']  = ($hasDruckluft && $druckluft_druck === '9')  ? 1 : '';
-                $result['dl_12bar'] = ($hasDruckluft && $druckluft_druck === '12') ? 1 : '';
 
-                $pa = strtolower(trim($params['PA'] ?? ''));
+                // Druck robust vergleichen ("6", "6,0", "6.0" → 6)
+                $druckNum = is_numeric(str_replace(',', '.', $druckluft_druck))
+                    ? (float)str_replace(',', '.', $druckluft_druck)
+                    : null;
+
+                foreach ([3, 6, 9, 12] as $bar) {
+                    $match = $hasDruckluft && $druckNum !== null && abs($druckNum - $bar) < 0.001;
+                    $result["dl_{$bar}bar"] = $match ? 1 : '';
+                    $result["dl_{$bar}bar_strom"] = $match ? $druckluft_strom : '';
+                }
+
+                $pa = strtolower(trim($params['Potentialausgleich'] ?? ''));
                 $result['pa'] = (stripos($pa, 'ja') !== false) ? '1' : ($pa !== '' && $pa !== '0' ? $pa : '');
 
                 return $result;
@@ -503,7 +516,7 @@ init_page_serversides();
                 $direkt_abluft = strtolower(trim($params['Abluft_Direktanschluss'] ?? ''));
                 $r['direkt_abluft'] = in_array($direkt_abluft, ['ja', '1', 'yes', 'true']) ? 'Ja' : '';
 
-                $glt = strtolower(trim($params['GLT'] ?? ''));
+                $glt = strtolower(trim($params['Gebäudeleittechnik'] ?? ''));
 
                 $r['glt_datenpunkt'] = ($glt === 'ja') ? '1' : $glt;
 
@@ -764,7 +777,7 @@ init_page_serversides();
 
     <?php include "modal_Kor_ausstattungkatalog_info.php" ?>
 
-    <script src="utils/_utils.js"></script>
+    <script src="_utils/_utils.js"></script>
     <script>
         function show_modal(modal_id) {
             $('#' + modal_id).modal('show');
@@ -823,7 +836,7 @@ init_page_serversides();
                 pageLength: 25,
                 lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Alle']],
                 language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                    url: "/_utils/de-DE.json",
                     search: '',
                     searchPlaceholder: 'Suche...'
                 },
@@ -859,9 +872,8 @@ init_page_serversides();
                     },
                     {
                         extend: 'searchBuilder',
-                        text: '<i class="fas fa-filter"></i>',
                         titleAttr: 'Erweiterter Filter',
-                        className: 'btn btn-sm btn-outline-dark bg-white'
+                        className: 'btn btn-sm btn-outline-dark bg-white fas fa-filter'
                     }
                 ],
                 layout: {

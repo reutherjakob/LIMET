@@ -1,13 +1,14 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX - unchecked
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
 
 $mysqli = utils_connect_sql();
-
 // Sanitize and get idRechnung safely from POST
 $idRechnung = getPostInt("idRechnung");
-
 // Destination path of the file on the server
 $file_path = "/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Rechnungen/Rechnung_" . $idRechnung . ".pdf";
 

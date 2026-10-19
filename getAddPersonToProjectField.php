@@ -1,7 +1,8 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
+
 $mysqli = utils_connect_sql();
 $personID = getPostInt('personID', 0);
 $stmt = $mysqli->prepare("SELECT `Name`,`Vorname`,`Tel`,`Adresse`,`PLZ`,`Ort`,`Land`,`Mail` 
@@ -43,7 +44,7 @@ echo "<div class='form-group row'>
 						<option value=0 selected>Bitte auswählen</option>";
 
 while ($row = $result->fetch_assoc()) {
-    echo "<option value=" . $row["idTABELLE_Projektzuständigkeiten"] . ">" . $row["Zuständigkeit"] . "</option>";
+    echo "<option value=" . h($row["idTABELLE_Projektzuständigkeiten"]) . ">" . h($row["Zuständigkeit"]) . "</option>";
 }
 echo "</select>	
 		</div>
@@ -65,7 +66,7 @@ echo "<div class='form-group row'>
 					<select class='form-control form-control-sm' id='organisation' name='organisation'>
 						<option value=0 selected>Bitte auswählen</option>";
 while ($row = $result->fetch_assoc()) {
-    echo "<option value=" . $row["idtabelle_organisation"] . ">" . $row["Organisation"] . "</option>";
+    echo "<option value=" . h($row["idtabelle_organisation"]) . ">" . h($row["Organisation"]) . "</option>";
 }
 echo "</select> 
         </div>
@@ -88,7 +89,7 @@ $mysqli->close();
 include "modal_addOrganisationAndZustaendigkeit.php";
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script src="addNewOrganisationAndZusändigkeit.js"></script>
 <script>
     $("input[value='Person zu Projekt hinzufügen']").click(function () {
@@ -106,7 +107,7 @@ include "modal_addOrganisationAndZustaendigkeit.php";
                     data: {"personID": id, "zustaendigkeit": zustaendigkeit, "organisation": organisation},
                     type: "POST",
                     success: function (data) {
-                        alert(data);
+                         makeToaster(data, true);
                         $.ajax({
                             url: "getPersonsOfProject.php",
                             type: "POST",

@@ -1,20 +1,24 @@
 <!-- 13.2.25: Reworked -->
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
+require_once '_utils/_csrf.php';
 init_page_serversides();
 include 'roombookSpecifications_addRoomModal.php';
 include 'roombookSpecifications_HelpModal.php';
 include('roombookSpecifications_copyRoomModal.php');
+$excelfilename = buildExcelFilename('Raumbuch_Bauangaben');
 ?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de"></html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Bauangaben</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
 
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -30,7 +34,7 @@ include('roombookSpecifications_copyRoomModal.php');
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
 
     <style>
         .btn_vis, .btn_invis {
@@ -145,8 +149,9 @@ include('roombookSpecifications_copyRoomModal.php');
             <header class="card-header fix_size"><b>Bauangaben Texte</b></header>
             <div class="card-body" id="bauangaben"></div>
         </div>
-        <div class="mt-4 card">
 
+
+        <div class="mt-4 card">
             <div class="card-header" id="CardHeaderElementsInRoom">
                 <div class="row" id="">
                     <div class="col-2" id="">
@@ -158,7 +163,6 @@ include('roombookSpecifications_copyRoomModal.php');
                     <div class="col-10 d-inline-flex justify-content-end " id="CardHeaderElementsInRoom2"></div>
                 </div>
             </div>
-
             <div class="card-body" id="additionalInfo">
                 <p id="roomElements"></p>
                 <p id="elementParameters"></p>
@@ -212,6 +216,12 @@ include('roombookSpecifications_copyRoomModal.php');
     </div>
 </div>
 </body>
+<script>
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
+    const $projectID = <?= json_encode((int)($_SESSION['projectID'] ?? 0)) ?>;
+    const $projectName = <?= json_encode($_SESSION['projectName'] ?? '') ?>;
+</script>
 <script src="roombookSpecifications_constDeclarations.js"></script>
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script src="roombookSpecifications_New.js" charset=utf-8></script>
+</html>

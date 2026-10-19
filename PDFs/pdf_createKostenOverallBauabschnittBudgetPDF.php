@@ -1,319 +1,235 @@
 <?php
 #2025done
-require_once '../utils/_utils.php';
-include "../utils/_format.php";
+require_once '../_utils/_utils.php';
+include "../_utils/_format_money.php";
 include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
 require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "_pdf_createBericht_utils.php";
-
-if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
-    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenschätzung";
-} else {
-    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenberechnung";
-}
-$marginTop = 17;
-$marginBTM = 10;
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4_queer", "Gesamtkosten-BA&Budget");
+include_once "_pdf_kosten_utils.php";
 check_login();
+
+$_SESSION["PDFTITEL"] = ($_SESSION["projectPlanungsphase"] == "Vorentwurf")
+    ? "Medizintechnische Kostenschätzung"
+    : "Medizintechnische Kostenberechnung";
+
+$projectID = (int)$_SESSION["projectID"];
+$inkl = kb_inkl_nicht_freigegeben();
+$budgetWhere = kb_budget_where($inkl);
+
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+init_pdf_attributes($pdf, PDF_MARGIN_LEFT, 20, 10, "A4_queer", "Gesamtkosten-BA&Budget");
 $mysqli = utils_connect_sql();
 
-// TITELZEILE MIT PROJEKTINFOS--------------------------------------------------
-$sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Preisbasis,  tabelle_planungsphasen.Bezeichnung
-    FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen
-    WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
-$result = $mysqli->query($sql);
+/**
+ * Liste in n Spalten über die volle Seitenbreite.
+ * Die Zeilenhöhe richtet sich nach dem längsten Eintrag der Zeile -> keine Überlappungen.
+ */
+function schreibeSpaltenListe($pdf, string $titel, array $eintraege, int $spalten = 3, string $fussnote = ''): void
+{
+    $m = $pdf->getMargins();
+    $breite = $pdf->getPageWidth() - $m['left'] - $m['right'];
+    $wSpalte = $breite / $spalten;
 
-$row = $result->fetch_assoc();
-
-//TITEL einfügen
-$pdf->SetFont('helvetica', 'B', 10);
-
-$pdf->MultiCell(100, 6, "Projekt: " . $row['Projektname'], '', 'L', 0, 0);
-$xPosition = $pdf->getX();
-$yPosition = $pdf->getY();
-$pdf->Ln();
-$pdf->MultiCell(100, 6, "Projektphase: " . $row['Bezeichnung'], '', 'L', 0, 0);
-$pdf->Ln();
-$pdf->MultiCell(100, 6, "Preisbasis: " . $row['Preisbasis'], '', 'L', 0, 0);
-$pdf->Ln();
-
-$sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_gewerke.Bezeichnung
-FROM tabelle_auftraggeber_gewerke INNER JOIN (tabelle_projekte INNER JOIN tabelle_auftraggeber_codes ON tabelle_projekte.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_codes.idTABELLE_Auftraggeber_Codes) ON tabelle_auftraggeber_gewerke.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_codes.idTABELLE_Auftraggeber_Codes
-WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-ORDER BY tabelle_auftraggeber_gewerke.Gewerke_Nr;";
-
-$pdf->SetFont('helvetica', 'B', 7);
-$pdf->setXY($xPosition, $yPosition);
-$pdf->MultiCell(50, '', "Gewerke: ", '', 'L', 0, 0);
-$pdf->Ln();
-$pdf->SetFont('helvetica', 'I', 7);
-$result = $mysqli->query($sql);
-while ($row = $result->fetch_assoc()) {
-    $pdf->MultiCell(100, '', "", '', 'L', 0, 0);
-    $pdf->MultiCell(50, '', $row['Gewerke_Nr'] . "-" . $row['Bezeichnung'], '', 'L', 0, 0);
-    $pdf->Ln();
-}
-$yPosition1 = $pdf->getY();
-
-// data loading for header ----------------------------------
-$sql = "SELECT tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke
-        FROM tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_auftraggeber_gewerke RIGHT JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_element_gewerk ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke) ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG) ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
-        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-        GROUP BY tabelle_auftraggeber_gewerke.Gewerke_Nr
-        ORDER BY tabelle_auftraggeber_gewerke.Gewerke_Nr;";
-
-$result = $mysqli->query($sql);
-$gewerkeInProject = array();
-while ($row = $result->fetch_assoc()) {
-    $gewerkeInProject[$row['idTABELLE_Auftraggeber_Gewerke']]['idTABELLE_Auftraggeber_Gewerke'] = $row['idTABELLE_Auftraggeber_Gewerke'];
-    $gewerkeInProject[$row['idTABELLE_Auftraggeber_Gewerke']]['Gewerke_Nr'] = $row['Gewerke_Nr'];
-    $gewerkeInProject[$row['idTABELLE_Auftraggeber_Gewerke']]['GewerkeSummeGesamt'] = 0;
-    $gewerkeInProject[$row['idTABELLE_Auftraggeber_Gewerke']]['GewerkeSummeGesamtNeu'] = 0;
-    $gewerkeInProject[$row['idTABELLE_Auftraggeber_Gewerke']]['GewerkeSummeGesamtBestand'] = 0;
-}
-//--------------------------------------------------------------
-
-$pdf->SetFont('helvetica', 'B', 7);
-$pdf->setXY($xPosition, $yPosition);
-$pdf->MultiCell(50, '', "", '', 'L', 0, 0);
-$pdf->MultiCell(50, '', "Budgets", '', 'L', 0, 0);
-
-$pdf->SetFont('helvetica', 'I', 7);
-// Projektbudgets laden ----------------------------------
-$sql = "SELECT tabelle_projektbudgets.tabelle_projekte_idTABELLE_Projekte, tabelle_projektbudgets.Budgetnummer, tabelle_projektbudgets.Budgetname, tabelle_projektbudgets.idtabelle_projektbudgets
-        FROM tabelle_projektbudgets
-        WHERE (((tabelle_projektbudgets.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-        ORDER BY tabelle_projektbudgets.Budgetnummer;";
-
-$result = $mysqli->query($sql);
-
-$budgetsInProject = array();
-$pdf->Ln();
-//$pdf->setXY($xPosition, $yPosition);
-$i = false;
-
-while ($row = $result->fetch_assoc()) {
-    $budgetsInProject[$row['idtabelle_projektbudgets']]['idtabelle_projektbudgets'] = $row['idtabelle_projektbudgets'];
-    $budgetsInProject[$row['idtabelle_projektbudgets']]['Budgetnummer'] = $row['Budgetnummer'];
-    $budgetsInProject[$row['idtabelle_projektbudgets']]['Budgetname'] = $row['Budgetname'];
-    $einzug = 150;
-    if ($i) {
-        $einzug = 200;
-    }
-
-    if (!$i) {
-
-        $pdf->MultiCell($einzug, '', "", '', 'L', 0, 0);
-    }
-    $pdf->MultiCell(50, '', $row['Budgetnummer'] . "-" . $row['Budgetname'], '', 'L', 0, 0);
-    if ($i) {
-        $pdf->Ln();
-    }
-    $i = !$i;
-
-}
-$pdf->Ln();
-$yPosition2 = $pdf->getY();
-//------------------------------------------------------------
-
-if ($yPosition2 > $yPosition1) {
-    $pdf->setY($yPosition2);
-} else {
-    $pdf->setY($yPosition1);
-}
-
-$pdf->Ln();
-$pdf->SetFont('helvetica', 'B', 10);
-$pdf->MultiCell(50, 6, "Bauabschnitt", 'B', 'L', 0, 0);
-$pdf->MultiCell(20, 6, "Budget", 'B', 'C', 0, 0);
-$pdf->MultiCell(20, 6, "", 'B', 'C', 0, 0);
-
-foreach ($gewerkeInProject as $key => $rowData) {
-    $gewerkeInProject[$key]['Position'] = $pdf->getX();
-    //$rowData['Position'] = $pdf->getX();
-    $pdf->MultiCell(25, 6, $rowData['Gewerke_Nr'], 'B', 'R', 0, 0);
-}
-$pdf->MultiCell(25, 6, "Gesamt", 'B', 'R', 0, 0);
-$pdf->Ln();
-// ---------------------------------------------------------
-
-// data loading Raumbereiche ----------------------------------
-$pdf->SetFont('helvetica', '', 8);
-$pdf->SetFillColor(244, 244, 244);
-
-$sql = "SELECT tabelle_räume.Bauabschnitt
-FROM tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_auftraggeber_gewerke RIGHT JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_element_gewerk ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke) ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG) ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
-WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-GROUP BY tabelle_räume.Bauabschnitt
-ORDER BY tabelle_räume.Bauabschnitt;";
-
-$result = $mysqli->query($sql);
-$raumbereicheInProject = array();
-$i = 1;
-while ($row = $result->fetch_assoc()) {
-    $raumbereicheInProject[$i]['Bauabschnitt'] = $row['Bauabschnitt'];
-    $i++;
-}
-$totalRows = $result->num_rows;
-$currentRow = 0; // Initialize a counter for rows
-foreach ($raumbereicheInProject as $rowData) {
-    $currentRow++;
-    $pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
-    $pdf->SetFont('helvetica', 'B', 8);
-    $pdf->MultiCell(50, 4, $rowData['Bauabschnitt'], 'T', 'L', 1, 0);
-    $pdf->MultiCell(215, 4, "", 'T', 'L', 1, 0);
-    $pdf->Ln();
-    $pdf->SetFont('helvetica', '', 6);
-    // ------------------------------------Budgets-----------------------------
-    $sql1 = "SELECT tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets, tabelle_projektbudgets.Budgetnummer, tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke, Sum(`Kosten`*`Anzahl`) AS PP, Sum(If(`Neu/Bestand`=1,`Kosten`*`Anzahl`,0)) AS PPNeu, Sum(If(`Neu/Bestand`=0,`Kosten`*`Anzahl`,0)) AS PPBestand
-            FROM tabelle_projektbudgets RIGHT JOIN (tabelle_projekt_varianten_kosten INNER JOIN ((tabelle_projekt_element_gewerk INNER JOIN (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)) INNER JOIN tabelle_auftraggeber_gewerke ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke = tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke) ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)) ON tabelle_projektbudgets.idtabelle_projektbudgets = tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets
-            WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume.Bauabschnitt)='" . $rowData['Bauabschnitt'] . "') AND ((tabelle_räume_has_tabelle_elemente.Standort)=1))
-            GROUP BY tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets, tabelle_projektbudgets.Budgetnummer, tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke
-            ORDER BY tabelle_projektbudgets.Budgetnummer;";
-
-    $result1 = $mysqli->query($sql1);
-
-    $oldBudget = -1; // Start
-    $oldY = -1;
-    $oldY1 = -1;
-    $oldY2 = -1;
-
-    foreach ($gewerkeInProject as $key => $value) {
-        $gewerkeInProject[$key]['GewerkeSummeGesamt'] = 0;
-        $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] = 0;
-        $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] = 0;
-    }
-
-    while ($row1 = $result1->fetch_assoc()) {
-
-        if (null != ($row1["tabelle_projektbudgets_idtabelle_projektbudgets"])) {
-            $budget = $row1["tabelle_projektbudgets_idtabelle_projektbudgets"];
-        } else {
-            $budget = 0;
-        }
-
-        $xPosition = $gewerkeInProject[$row1['idTABELLE_Auftraggeber_Gewerke']]['Position'];
-
-        if ($oldBudget !== $budget) {
-            if ($row1["tabelle_projektbudgets_idtabelle_projektbudgets"] != 0) {
-                $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, $budgetsInProject[$row1['tabelle_projektbudgets_idtabelle_projektbudgets']]['Budgetnummer'], 0, 'C', 0, 0);
-                $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, format_money_report($row1["PP"]), 0, 'R', 0, 0);
-                $oldY = $pdf->getY();
-                $pdf->Ln();
-                $pdf->SetFont('helvetica', 'I', 6);
-                $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "davon Neu", 0, 'L', 0, 0);
-                $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, format_money_report($row1["PPNeu"]), 0, 'R', 0, 0);
-                $oldY1 = $pdf->getY();
-                $pdf->Ln();
-                $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "davon Bestand", 0, 'L', 0, 0);
-                $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, format_money_report($row1["PPBestand"]), 0, 'R', 0, 0);
-                $oldY2 = $pdf->getY();
-                $pdf->Ln();
-            } else {
-                $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "NZ", 0, 'C', 0, 0);
-                $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, format_money_report($row1["PP"]), 0, 'R', 0, 0);
-                $oldY = $pdf->getY();
-                $pdf->Ln();
-                $pdf->SetFont('helvetica', 'I', 6);
-                $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "davon Neu", 0, 'L', 0, 0);
-                $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, format_money_report($row1["PPNeu"]), 0, 'R', 0, 0);
-                $oldY1 = $pdf->getY();
-                $pdf->Ln();
-                $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "", 0, 'L', 0, 0);
-                $pdf->MultiCell(20, 4, "davon Bestand", 0, 'L', 0, 0);
-                $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, format_money_report($row1["PPBestand"]), 0, 'R', 0, 0);
-                $oldY2 = $pdf->getY();
-                $pdf->Ln();
-            }
-        } else {
-            $pdf->setXY($xPosition, $oldY);
-            $pdf->MultiCell(25, 4, format_money_report($row1["PP"]), 0, 'R', 0, 0);
-            $pdf->setXY($xPosition, $oldY1);
-            $pdf->MultiCell(25, 4, format_money_report($row1["PPNeu"]), 0, 'R', 0, 0);
-            $pdf->setXY($xPosition, $oldY2);
-            $pdf->MultiCell(25, 4, format_money_report($row1["PPBestand"]), 0, 'R', 0, 0);
-            $pdf->Ln();
-        }
-
-        $oldBudget = $budget;
-        // Accumulate sums inside the loop
-        $gewerkeInProject[$row1['idTABELLE_Auftraggeber_Gewerke']]['GewerkeSummeGesamt'] += $row1['PP'];
-        $gewerkeInProject[$row1['idTABELLE_Auftraggeber_Gewerke']]['GewerkeSummeGesamtNeu'] += $row1['PPNeu'];
-        $gewerkeInProject[$row1['idTABELLE_Auftraggeber_Gewerke']]['GewerkeSummeGesamtBestand'] += $row1['PPBestand'];
-
-    }
-    $pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 4, 'color' => array(255, 0, 0)));
-    $pdf->SetFont('helvetica', 'BI', 6);
-    $pdf->MultiCell(50, 4, 'Summe', 'T', 'R', 0, 0);
-    $pdf->MultiCell(20, 4, '', 'T', 'R', 0, 0);
-    $pdf->MultiCell(20, 4, '', 'T', 'R', 0, 0);
-    $sumGesamt = 0;
-    foreach ($gewerkeInProject as $rowDataGewerkeInProject) {
-        $pdf->MultiCell(25, 4, format_money_report($rowDataGewerkeInProject['GewerkeSummeGesamt']), 'T', 'R', 0, 0);
-        $sumGesamt = $sumGesamt + $rowDataGewerkeInProject['GewerkeSummeGesamt'];
-    }
-    $pdf->MultiCell(25, 4, format_money_report($sumGesamt), 'T', 'R', 0, 0);
-    // Neusumme----------------------------------------------------
-    $pdf->Ln();
-    $pdf->MultiCell(50, 4, '', 0, 'R', 0, 0);
-    $pdf->MultiCell(20, 4, '', 0, 'R', 0, 0);
-    $pdf->MultiCell(20, 4, 'davon Neu', 0, 'L', 0, 0);
-    $sumGesamtNeu = 0;
-    foreach ($gewerkeInProject as $rowDataGewerkeInProject) {
-        $pdf->MultiCell(25, 4, format_money_report($rowDataGewerkeInProject['GewerkeSummeGesamtNeu']), 0, 'R', 0, 0);
-        $sumGesamtNeu = $sumGesamtNeu + $rowDataGewerkeInProject['GewerkeSummeGesamtNeu'];
-    }
-    $pdf->MultiCell(25, 4, format_money_report($sumGesamtNeu), 0, 'R', 0, 0);
-    // Bestand von gesamtSumme-------------------------------------
-    $pdf->Ln();
-    $pdf->MultiCell(50, 4, '', 0, 'R', 0, 0);
-    $pdf->MultiCell(20, 4, '', 0, 'R', 0, 0);
-    $pdf->MultiCell(20, 4, 'davon Bestand', 0, 'L', 0, 0);
-    $sumGesamtBestand = 0;
-    foreach ($gewerkeInProject as $rowDataGewerkeInProject) {
-        $pdf->MultiCell(25, 4, format_money_report($rowDataGewerkeInProject['GewerkeSummeGesamtBestand']), 0, 'R', 0, 0);
-        $sumGesamtBestand = $sumGesamtBestand + $rowDataGewerkeInProject['GewerkeSummeGesamtBestand'];
-    }
-    $pdf->MultiCell(25, 4, format_money_report($sumGesamtBestand), 0, 'R', 0, 0);
-
-    $pdf->Ln();
-    $x = $pdf->GetX();
-    $y = $pdf->GetY();
-    if ((($y + 4) >= 100) && ($currentRow < $totalRows)) {
+    if (kb_seitenumbruch_noetig($pdf, 12)) {
         $pdf->AddPage();
+    }
+    $pdf->SetFont('helvetica', 'B', 9);
+    $pdf->MultiCell($breite, 5, $titel, 'B', 'L', 0, 1);
+    $pdf->Ln(1);
 
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->MultiCell(50, 6, "Bauabschnitt", 'B', 'L', 0, 0);
-        $pdf->MultiCell(20, 6, "Budget", 'B', 'C', 0, 0);
-        $pdf->MultiCell(20, 6, "", 'B', 'C', 0, 0);
-
-        foreach ($gewerkeInProject as $key => $rowData) {
-            $gewerkeInProject[$key]['Position'] = $pdf->getX();
-            //$rowData['Position'] = $pdf->getX();
-            $pdf->MultiCell(25, 6, $rowData['Gewerke_Nr'], 'B', 'R', 0, 0);
+    $pdf->SetFont('helvetica', '', 8);
+    foreach (array_chunk($eintraege, $spalten) as $zeile) {
+        $h = 0;
+        foreach ($zeile as $text) {
+            $h = max($h, $pdf->getStringHeight($wSpalte, $text, false, true, '', 0));
         }
-        $pdf->MultiCell(25, 6, "Gesamt", 'B', 'R', 0, 0);
-        $pdf->Ln();
+        if (kb_seitenumbruch_noetig($pdf, $h)) {
+            $pdf->AddPage();
+        }
+        foreach ($zeile as $text) {
+            $pdf->MultiCell($wSpalte, $h, $text, 0, 'L', 0, 0);
+        }
+        $pdf->Ln($h);
+    }
+
+    if ($fussnote !== '') {
+        $pdf->SetFont('helvetica', 'I', 7);
+        $pdf->MultiCell($breite, 4, $fussnote, 0, 'L', 0, 1);
+    }
+    $pdf->Ln(4);
+}
+
+// ==================== SEITE 1: PROJEKT, GEWERKE, BUDGETS ====================
+$m = $pdf->getMargins();
+$seitenBreite = $pdf->getPageWidth() - $m['left'] - $m['right'];
+
+kb_write_projektkopf($pdf, kb_projekt_info($mysqli, $projectID), $inkl, $seitenBreite);
+$pdf->Ln(4);
+
+$gewerkeEintraege = array_map(
+    static fn($g) => $g['Gewerke_Nr'] . " - " . $g['Bezeichnung'],
+    kb_gewerke_katalog($mysqli, $projectID)
+);
+schreibeSpaltenListe($pdf, "Gewerke", $gewerkeEintraege, 3);
+
+$budgets = kb_query($mysqli, "
+    SELECT idtabelle_projektbudgets, Budgetnummer, Budgetname, status
+    FROM tabelle_projektbudgets
+    WHERE tabelle_projekte_idTABELLE_Projekte = ?
+    ORDER BY Budgetnummer", 'i', [$projectID]);
+
+$budgetEintraege = [];
+$gibtOffene = false;
+foreach ($budgets as $b) {
+    $status = $b['status'] === null ? null : (int)$b['status'];
+    if ($status === KB_STATUS_ABGELEHNT) {
+        continue; // abgelehnte Budgets werden nie ausgegeben
+    }
+    $offen = ($status !== KB_STATUS_FREIGEGEBEN);
+    $gibtOffene = $gibtOffene || $offen;
+    $budgetEintraege[] = $b['Budgetnummer'] . " - " . $b['Budgetname'] . ($offen ? ' *' : '');
+}
+$budgetEintraege[] = "NZ - nicht zugeordnet";
+$fussnote = $gibtOffene
+    ? ($inkl ? '* noch nicht freigegeben (in den Kosten enthalten)' : '* noch nicht freigegeben (in den Kosten nicht enthalten)')
+    : '';
+schreibeSpaltenListe($pdf, "Budgets", $budgetEintraege, 3, $fussnote);
+
+// ==================== DATEN ====================
+$gewerkeNr = kb_gewerke_im_projekt($mysqli, $projectID, $inkl);
+
+$abschnitte = kb_query($mysqli, "
+    SELECT r.Bauabschnitt
+    " . KB_FROM_BASIS . "
+    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+    $budgetWhere
+    GROUP BY r.Bauabschnitt
+    ORDER BY r.Bauabschnitt", 'i', [$projectID]);
+
+$kostenRows = kb_query($mysqli, "
+    SELECT r.Bauabschnitt,
+           rhe.tabelle_projektbudgets_idtabelle_projektbudgets AS BudgetID,
+           MAX(pb.Budgetnummer) AS BudgetNr,
+           g.Gewerke_Nr,
+           " . KB_SELECT_KOSTEN . "
+    " . KB_FROM_BASIS . KB_JOIN_KOSTEN . "
+    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+      AND rhe.Standort = 1
+      AND g.Gewerke_Nr IS NOT NULL
+      $budgetWhere
+    GROUP BY r.Bauabschnitt, rhe.tabelle_projektbudgets_idtabelle_projektbudgets, g.Gewerke_Nr
+    ORDER BY r.Bauabschnitt, BudgetNr", 'i', [$projectID]);
+$mysqli->close();
+
+// [Bauabschnitt][BudgetID] => ['label' => .., 'kosten' => [Gewerke_Nr => PP/PPNeu/PPBestand]]
+$daten = [];
+foreach ($kostenRows as $row) {
+    $baKey = kb_key($row['Bauabschnitt']);
+    $budgetKey = (string)((int)($row['BudgetID'] ?? 0));
+    if (!isset($daten[$baKey][$budgetKey])) {
+        $daten[$baKey][$budgetKey] = [
+            'label' => ($budgetKey === '0') ? 'NZ' : (string)($row['BudgetNr'] ?? '?'),
+            'kosten' => [],
+        ];
+    }
+    $nr = (string)$row['Gewerke_Nr'];
+    foreach (KB_KOSTENARTEN as $art) {
+        $daten[$baKey][$budgetKey]['kosten'][$nr][$art] =
+            ($daten[$baKey][$budgetKey]['kosten'][$nr][$art] ?? 0) + (float)$row[$art];
     }
 }
 
-$mysqli->close();
-ob_end_clean();
-$pdf->Output(getFileName("Gesamtkosten_BA&Budget"), 'I');
+// ==================== TABELLE (ab Seite 2) ====================
+$w1 = 50;
+$w2 = 20;
+$w3 = 20;
+// Gewerkespalten max. 25 mm, bei vielen Gewerken schmaler, damit die Tabelle auf die Seite passt
+$wCol = min(25, ($seitenBreite - $w1 - $w2 - $w3) / (count($gewerkeNr) + 1));
+$hBlock = 10;   // 3 Zeilen à 4 mm (Budget bzw. Summe)
+$hBA = 4;       // Bauabschnitt-Zeile
+$tabellenBreite = $w1 + $w2 + $w3 + $wCol * (count($gewerkeNr) + 1);
+$linieNormal = ['width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => [0, 0, 0]];
+$linieSumme = ['width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 4, 'color' => [255, 0, 0]];
 
+$schreibeKopf = static function () use ($pdf, $w1, $w2, $w3, $wCol, $gewerkeNr, $linieNormal) {
+    $pdf->SetLineStyle($linieNormal);
+    $pdf->SetFont('helvetica', 'B', 10);
+    $pdf->MultiCell($w1, 6, "Bauabschnitt", 'B', 'L', 0, 0);
+    $pdf->MultiCell($w2, 6, "Budget", 'B', 'C', 0, 0);
+    $pdf->MultiCell($w3, 6, "", 'B', 'C', 0, 0);
+    foreach ($gewerkeNr as $nr) {
+        $pdf->MultiCell($wCol, 6, $nr, 'B', 'R', 0, 0);
+    }
+    $pdf->MultiCell($wCol, 6, "Gesamt", 'B', 'R', 0, 0);
+    $pdf->Ln();
+};
+
+$schreibeBAZeile = static function (string $label) use ($pdf, $w1, $hBA, $tabellenBreite, $linieNormal) {
+    $pdf->SetLineStyle($linieNormal);
+    $pdf->SetFont('helvetica', 'B', 8);
+    $pdf->MultiCell($w1, $hBA, $label, 'T', 'L', 1, 0);
+    $pdf->MultiCell($tabellenBreite - $w1, $hBA, "", 'T', 'L', 1, 0);
+    $pdf->Ln();
+};
+
+$neueTabellenSeite = static function () use ($pdf, $schreibeKopf) {
+    $pdf->AddPage();
+    $schreibeKopf();
+};
+
+$pdf->SetFillColor(244, 244, 244);
+$neueTabellenSeite();
+
+// verfügbare Höhe einer ganzen Tabellenseite (unter dem Kopf)
+$hSeite = ($pdf->getPageHeight() - $pdf->getBreakMargin()) - $pdf->GetY();
+$aufSeiteLeer = true;
+
+foreach ($abschnitte as $a) {
+    $baLabel = (string)$a['Bauabschnitt'];
+    $budgetsBA = $daten[kb_key($a['Bauabschnitt'])] ?? [];
+    $hGesamt = $hBA + $hBlock * count($budgetsBA) + $hBlock + 2;
+
+    // Passt der ganze Bauabschnitt auf eine leere Seite, aber nicht mehr auf diese -> neue Seite.
+    // Ist er länger als eine Seite, beginnt er hier, sobald zumindest BA-Zeile + erster Block passen.
+    if (!$aufSeiteLeer) {
+        $passtGanz = !kb_seitenumbruch_noetig($pdf, $hGesamt);
+        $passtAnfang = !kb_seitenumbruch_noetig($pdf, $hBA + $hBlock);
+        if ((!$passtGanz && $hGesamt <= $hSeite) || !$passtAnfang) {
+            $neueTabellenSeite();
+        }
+    }
+
+    $schreibeBAZeile($baLabel);
+    $aufSeiteLeer = false;
+
+    // Budgets
+    $summenBA = [];
+    foreach ($budgetsBA as $budget) {
+        if (kb_seitenumbruch_noetig($pdf, $hBlock)) {
+            $neueTabellenSeite();
+            $schreibeBAZeile($baLabel . " (Fortsetzung)");
+        }
+        kb_write_kosten_zeilen($pdf, [
+            [[$w1, '', 'L'], [$w2, $budget['label'], 'C'], [$w3, '', 'L']],
+            [[$w1, '', 'L'], [$w2, '', 'L'], [$w3, 'davon Neu', 'L']],
+            [[$w1, '', 'L'], [$w2, '', 'L'], [$w3, 'davon Bestand', 'L']],
+        ], $gewerkeNr, $budget['kosten'], $summenBA, false, ['', 'I', 'I'], [6, 6, 6], [0, 0, 0], $wCol);
+    }
+
+    // Summe Bauabschnitt
+    if (kb_seitenumbruch_noetig($pdf, $hBlock)) {
+        $neueTabellenSeite();
+        $schreibeBAZeile($baLabel . " (Fortsetzung)");
+    }
+    $pdf->SetLineStyle($linieSumme);
+    $keine = null;
+    kb_write_kosten_zeilen($pdf, [
+        [[$w1, 'Summe', 'R'], [$w2, '', 'R'], [$w3, '', 'R']],
+        [[$w1, '', 'R'], [$w2, '', 'R'], [$w3, 'davon Neu', 'L']],
+        [[$w1, '', 'R'], [$w2, '', 'R'], [$w3, 'davon Bestand', 'L']],
+    ], $gewerkeNr, $summenBA, $keine, false, ['BI', 'BI', 'BI'], [6, 6, 6], ['T', 0, 0], $wCol);
+    $pdf->SetLineStyle($linieNormal);
+    $pdf->Ln(2);
+}
+
+kb_pdf_ausgeben($pdf, "Gesamtkosten_BA&Budget");

@@ -1,11 +1,20 @@
+<?php
+// 25 FX
+require_once '_utils/_utils.php'; // CHECKS SESSION
+init_page_serversides(); // checks Nutzerlogin
+require_once '_utils/_csrf.php';
+?>
+
 <!DOCTYPE html>
 <html data-bs-theme="" xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Raumvergleich</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -20,12 +29,6 @@
           rel="stylesheet"/>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
 </head>
-
-<?php
-// 25 FX 
-require_once 'utils/_utils.php'; // CHECKS SESSION
-init_page_serversides(); // checks Nutzerlogin
-?>
 
 <body style="height:100%">
 <div class="container-fluid bg-light">
@@ -193,8 +196,15 @@ init_page_serversides(); // checks Nutzerlogin
 </div>
 
 <script src="roombookSpecifications_constDeclarations.js"></script>
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
+    function move_item(item2move_id, where2move_id) {
+        let item = document.getElementById(item2move_id);
+        if (item) {
+            item.parentNode.removeChild(item);
+            document.getElementById(where2move_id).appendChild(item);
+        }
+    }
 
     function show_modal(modal_id) {
         $('#' + modal_id).modal('show');
@@ -237,11 +247,11 @@ init_page_serversides(); // checks Nutzerlogin
         {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}
     ];
     const columnsRooms = columnsBase;
-    const   columnsVgl = [
-            ...columnsBase.slice(0, 3),
-            {data: 'Projektname', title: 'Projekt', visible: true, searchable: true},
-            ...columnsBase.slice(3)
-        ];
+    const columnsVgl = [
+        ...columnsBase.slice(0, 3),
+        {data: 'Projektname', title: 'Projekt', visible: true, searchable: true},
+        ...columnsBase.slice(3)
+    ];
 
     // FIX Bug 3: Event-Delegation nur einmal pro Tabelle registrieren
     function register_room_click() {
@@ -420,7 +430,7 @@ init_page_serversides(); // checks Nutzerlogin
                 bottomEnd: {paging: {buttons: 3}}
             },
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: "/_utils/de-DE.json",
                 search: '',
                 info: '_TOTAL_ Zeilen'
             },
@@ -471,7 +481,7 @@ init_page_serversides(); // checks Nutzerlogin
                 bottomEnd: {paging: {buttons: 3}}
             },
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: "/_utils/de-DE.json",
                 search: '',
                 info: '_TOTAL_ Zeilen'
             },

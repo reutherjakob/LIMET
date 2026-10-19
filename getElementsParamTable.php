@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $K2Return = $_POST['K2Return'];
 $K2Ret = json_decode($K2Return, true); ?>

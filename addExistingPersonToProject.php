@@ -1,7 +1,11 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
+
 $mysqli = utils_connect_sql();
 $projectID = (int)$_SESSION["projectID"];
 $personID = getPostInt('personID');
@@ -13,7 +17,10 @@ if (!$personID || !$zustaendigkeit || !$organisation) {
 }
 
 $stmt = $mysqli->prepare("INSERT INTO tabelle_projekte_has_tabelle_ansprechpersonen 
-    (TABELLE_Projekte_idTABELLE_Projekte, TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen, TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten, tabelle_organisation_idtabelle_organisation) 
+    (TABELLE_Projekte_idTABELLE_Projekte, 
+     TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen,
+     TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten,
+     tabelle_organisation_idtabelle_organisation) 
     VALUES (?, ?, ?, ?)");
 $stmt->bind_param("iiii", $projectID, $personID, $zustaendigkeit, $organisation);
 

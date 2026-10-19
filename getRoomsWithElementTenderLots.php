@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -27,10 +27,10 @@ while ($row = $result->fetch_assoc()) {
 
 <div class="row" id="batchSelectWrapper">
     <div class="form-group form-check-inline d-flex align-items-center border border-light rounded bg-light">
-        <div class="col-xxl-6 d-flex justify-content-start" id="Whatever">
+        <div class="col-xxl-2 d-flex justify-content-start" id="Whatever">
 
         </div>
-        <div class="col-xxl-6 d-flex align-items-center justify-content-end">
+        <div class="col-xxl-10 d-flex align-items-center justify-content-end">
 
             <select class="form-control form-control-sm mr-2 me-2" id="globalLosExtern" style="width: auto;">
                 <option value="0" selected> Wähle ein Los für den Elemente Batch</option>
@@ -48,8 +48,14 @@ while ($row = $result->fetch_assoc()) {
                     data-bs-placement="top"
                     title="Löst Elemente aus der Auswahl. Setzt keine Los Zuordnung.">
                 <i class="fa fa-times"></i>
-                    Batch entfernen
+                Batch entfernen
             </button>
+
+            <input class="btn-check" type="checkbox" id="hideZeroRows_batch" autocomplete="off">
+            <label class="btn btn-sm btn-outline-dark ms-2" for="hideZeroRows_batch">
+                <i class="fas fa-eye-slash"></i> 0 ausblenden
+            </label>
+
         </div>
     </div>
 </div>
@@ -275,163 +281,51 @@ $mysqli->close();
 
 
 <!--suppress ES6ConvertVarToLetConst -->
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script charset="utf-8">
     var tableRoomsWithElementTenderLots;
     var selectedRows = [];
 
-    $(document).ready(function () {
-        $('.batch-select').prop('checked', true)
-        $('.batch-select').each(function () {
-            let id = $(this).attr('id').replace('batchSelect', '');
-            selectedRows.push(id);
-        });        // console.log(selectedRows);
-        $("#saveSelected").click(function () {
-            selectedRows.forEach(function (ID) {
-                saveElement(ID);
-            });
+    // Cookie-Helfer (eindeutige Namen, um Kollisionen mit _utils.js zu vermeiden)
+    function rbSetCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let d = new Date();
+            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + d.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+    }
+
+    function rbGetCookie(name) {
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i].trim();
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
+        }
+        return null;
+    }
+
+    function rbParseAmount(val) {
+        if (val === null || val === undefined) return 0;
+        let n = parseFloat(('' + val).trim().replace(',', '.'));
+        return isNaN(n) ? 0 : n;
+    }
+
+    // Custom-Filter NUR EINMAL global registrieren (Fragment wird per AJAX neu geladen!)
+    if (!window._hideZeroRowsFilterAdded) {
+        window._hideZeroRowsFilterAdded = true;
+        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+            if (settings.nTable.id !== 'tableRoomsWithElementTenderLots') return true;
+            if (!$('#hideZeroRows_batch').is(':checked')) return true;
+
+            // Zeilen-Node holen und den Anzahl-Input auslesen
+            let tr = settings.aoData[dataIndex].nTr;
+            let amount = rbParseAmount($(tr).find('input[id^="amount"]').val());
+            return amount > 0;
         });
-        $('#globalLosExtern').select2({
-            width: 'resolve' // or 'style' if you want it to match your existing CSS
-        });
-
-
-        $(document).on('change', '.batch-select', function () {
-            var id = $(this).attr('id').replace('batchSelect', '');
-            if ($(this).is(':checked')) {
-                if (!selectedRows.includes(id)) selectedRows.push(id);
-            } else {
-                selectedRows = selectedRows.filter(function (value) {
-                    return value !== id;
-                });
-            } // console.log(selectedRows);
-        });
-
-        $('#tableRoomsWithElementTenderLots').on('draw.dt', function () {
-            var table = $(this);
-            table.find('.batch-select').each(function () {
-                var id = $(this).attr('id').replace('batchSelect', '');
-                $(this).prop('checked', selectedRows.includes(id));
-                var losExtern = $('#losExtern' + id);
-                if (typeof losExtern.attr('data-select2-id') !== 'undefined') {
-                    losExtern.trigger('change.select2');
-                }
-            });
-        });
-
-        $('#RemoveAllElementzFromBatch').click(function () {
-            selectedRows = [];
-            $('.batch-select').prop('checked', false);
-            $('.form-control[id^="losExtern"]').val(0);
-        });
-
-        $("#globalLosExtern").change(function () {
-            var selectedLot = $(this).val();
-            selectedRows.forEach(function (id) {
-                $("#losExtern" + id).val(selectedLot);
-            });
-        });
-
-
-        $('#roomsWithElementCardHeader .xxx').remove();
-        tableRoomsWithElementTenderLots = new DataTable('#tableRoomsWithElementTenderLots', {
-            columnDefs: [
-                {
-                    targets: [0],
-                    visible: false,
-                    searchable: false
-                },
-                {
-                    className: 'control',
-                    orderable: false,
-                    targets: 1
-                },
-                {
-                    targets: [2, 6, 7, 8, 9, 11],
-                    visible: true,
-                    searchable: false,
-                    orderable: false
-                }
-            ],
-            responsive: {
-                details: {
-                    type: 'column',
-                    target: 1
-                }
-            },
-            searching: true,
-            info: true,
-            order: [[3, "asc"]],
-            paging: false,
-            // pagingType: "simple",
-            lengthChange: false,
-            // pageLength: 100,
-            language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                search: "",
-                searchPlaceholder: "Suche..."
-            },
-            layout: {
-                topEnd: 'search',
-                topStart: null,  //"buttons",
-                bottomStart: ['paging', "pageLength"],
-                bottomEnd: 'info'
-            },
-            initComplete: function () {
-                $('.dt-btn-group').attr('id', 'myDtBtnGroup');
-                $('#roomsWithElementCardHeader .xxx').remove();
-                $('#roomsWithElement .dt-search label').remove();
-                $('#roomsWithElement .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark float-right xxx").appendTo('#roomsWithElementCardHeader');
-            }
-        });
-
-
-        $('#tableRoomsWithElementTenderLots tbody').on('click', 'tr', function () {
-            let id = tableRoomsWithElementTenderLots.row($(this)).data()[0];
-            let stk = $("#amount" + id).val();
-            $.ajax({
-                url: "getElementBestand.php",
-                data: {"id": id, "stk": stk},
-                type: "POST",
-                success: function (data) {
-                    $("#elementBestand").html(data);
-                    $("#elementBestand").show();
-                }
-            });
-        });
-
-        $("button[value='saveElement']").click(function () {
-            saveElement(this.id);
-        });
-
-
-        $("button[value='openComment']").click(function () {        //Kommentar anzeigen
-            let ID = this.id;
-            $.ajax({
-                url: "getComment.php",
-                type: "POST",
-                data: {"commentID": ID},
-                success: function (data) {
-                    $("#modalKurzbeschreibung").html(data);
-                    $('#commentModal').modal('show');
-                }
-            });
-        });
-
-        $("button[value='saveComment']").click(function () {
-            let comment = $("#modalKurzbeschreibung").val();
-            alert(comment);
-            $.ajax({
-                url: "saveRoombookComment.php",
-                type: "POST",
-                data: {"comment": comment},
-                success: function (data) {
-                    alert(data);
-                    $('#commentModal').modal('hide');
-                }
-            });
-        });
-    });
+    }
 
 
     function saveElement(ID) {
@@ -470,4 +364,137 @@ $mysqli->close();
             }
         });
     }
+
+    $(document).ready(function () {
+
+        // 0) Falls das Fragment erneut per AJAX geladen wurde: alte Instanz entfernen
+        if ($.fn.dataTable.isDataTable('#tableRoomsWithElementTenderLots')) {
+            $('#tableRoomsWithElementTenderLots').DataTable().destroy();
+        }
+
+        // 1) Checkbox-Status aus Cookie setzen – VOR der Initialisierung,
+        //    damit der Custom-Filter beim ersten (async) Draw schon greift
+        let hideZeroSaved = rbGetCookie('hideZeroRows_batch') === '1';
+        $('#hideZeroRows_batch').prop('checked', hideZeroSaved);
+
+        // 2) DataTable initialisieren
+        $('#roomsWithElementCardHeader .xxx').remove();
+        tableRoomsWithElementTenderLots = new DataTable('#tableRoomsWithElementTenderLots', {
+            columnDefs: [
+                { targets: [0], visible: false, searchable: false },
+                { className: 'control', orderable: false, targets: 1 },
+                { targets: [2, 6, 7, 8, 9, 11], visible: true, searchable: false, orderable: false }
+            ],
+            responsive: {
+                details: { type: 'column', target: 1 }
+            },
+            searching: true,
+            info: true,
+            order: [[3, "asc"]],
+            paging: false,
+            lengthChange: false,
+            language: {
+                url: "/_utils/de-DE.json",
+                search: "",
+                searchPlaceholder: "Suche..."
+            },
+            layout: {
+                topEnd: 'search',
+                topStart: null,
+                bottomStart: ['paging', "pageLength"],
+                bottomEnd: 'info'
+            },
+            initComplete: function () {
+                $('.dt-btn-group').attr('id', 'myDtBtnGroup');
+                $('#roomsWithElementCardHeader .xxx').remove();
+                $('#roomsWithElement .dt-search label').remove();
+                $('#roomsWithElement .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark float-right xxx").appendTo('#roomsWithElementCardHeader');
+
+                // Tabelle ist jetzt WIRKLICH fertig (Sprachdatei geladen) -> Filter anwenden
+                this.api().draw();
+            }
+        });
+
+        // 3) Handler für "0 ausblenden" (laufen erst bei User-Interaktion -> unkritisch)
+        $('#hideZeroRows_batch').on('change', function () {
+            rbSetCookie('hideZeroRows_batch', this.checked ? '1' : '0', 365);
+            tableRoomsWithElementTenderLots.draw();
+        });
+
+        $('#tableRoomsWithElementTenderLots').on('input', 'input[id^="amount"]', function () {
+            if ($('#hideZeroRows_batch').is(':checked')) {
+                tableRoomsWithElementTenderLots.draw();
+            }
+        });
+
+        // 3) Batch-Logik
+        $('.batch-select').prop('checked', true);
+        $('.batch-select').each(function () {
+            let id = $(this).attr('id').replace('batchSelect', '');
+            selectedRows.push(id);
+        });
+
+        $("#saveSelected").click(function () {
+            selectedRows.forEach(function (ID) {
+                saveElement(ID);
+            });
+        });
+
+        $('#globalLosExtern').select2({ width: 'resolve' });
+
+        $(document).on('change', '.batch-select', function () {
+            var id = $(this).attr('id').replace('batchSelect', '');
+            if ($(this).is(':checked')) {
+                if (!selectedRows.includes(id)) selectedRows.push(id);
+            } else {
+                selectedRows = selectedRows.filter(function (value) {
+                    return value !== id;
+                });
+            }
+        });
+
+        $('#tableRoomsWithElementTenderLots').on('draw.dt', function () {
+            var table = $(this);
+            table.find('.batch-select').each(function () {
+                var id = $(this).attr('id').replace('batchSelect', '');
+                $(this).prop('checked', selectedRows.includes(id));
+                var losExtern = $('#losExtern' + id);
+                if (typeof losExtern.attr('data-select2-id') !== 'undefined') {
+                    losExtern.trigger('change.select2');
+                }
+            });
+        });
+
+        $('#RemoveAllElementzFromBatch').click(function () {
+            selectedRows = [];
+            $('.batch-select').prop('checked', false);
+            $('.form-control[id^="losExtern"]').val(0);
+        });
+
+        $("#globalLosExtern").change(function () {
+            var selectedLot = $(this).val();
+            selectedRows.forEach(function (id) {
+                $("#losExtern" + id).val(selectedLot);
+            });
+        });
+
+        $('#tableRoomsWithElementTenderLots tbody').on('click', 'tr', function () {
+            let id = tableRoomsWithElementTenderLots.row($(this)).data()[0];
+            let stk = $("#amount" + id).val();
+            $.ajax({
+                url: "getElementBestand.php",
+                data: {"id": id, "stk": stk},
+                type: "POST",
+                success: function (data) {
+                    $("#elementBestand").html(data);
+                    $("#elementBestand").show();
+                }
+            });
+        });
+
+        $("button[value='saveElement']").click(function () {
+            saveElement(this.id);
+        });
+
+    });
 </script>

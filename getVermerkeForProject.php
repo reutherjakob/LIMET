@@ -2,7 +2,7 @@
 // getVermerkeForProject.php
 // Gibt alle Vermerke des Projekts zurück, gruppiert nach Vermerkgruppe und Untergruppe.
 // Wird im Vermerk-Zuordnungs-Modal als Picker verwendet.
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 header('Content-Type: application/json');

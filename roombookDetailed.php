@@ -1,37 +1,37 @@
+<?php
+// 26FX
+require_once '_utils/_utils.php';
+init_page_serversides();
+require_once '_utils/_csrf.php';
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Detail</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <!--- Boostrap Selct2 css -->
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
           rel="stylesheet">
 
 </head>
-<?php
-// 25 FX
-require_once 'utils/_utils.php';
-init_page_serversides();
-?>
 
 <body style="height:100%">
 <div class="container-fluid bg-light">
@@ -272,7 +272,6 @@ init_page_serversides();
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='boModalBody'>
-
             </div>
             <div class='modal-footer'>
                 <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>OK</button>
@@ -281,8 +280,8 @@ init_page_serversides();
     </div>
 </div>
 
+<script src="_utils/_utils.js"></script>
 <script>
-
     var tableRooms, tableElementsInDB;
     var currentSort = {column: 0, dir: 'asc'};
     var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
@@ -339,7 +338,7 @@ init_page_serversides();
 
 
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: "/_utils/de-DE.json",
                 search: '',
                 searchPlaceholder: 'Suche... ',
                 info: "_TOTAL_ Zeilen",
@@ -468,8 +467,7 @@ init_page_serversides();
             });
         });
         init_table_elementsinDB();
-    })    ;
-
+    });
 
 
     $("#showDBElementData").click(function () {
@@ -506,7 +504,7 @@ init_page_serversides();
             info: false,
             order: [[1, "asc"]],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: "",
+                url: "/_utils/de-DE.json", search: "",
                 searchPlaceholder: "Suche..."
             },
             initComplete: function () {

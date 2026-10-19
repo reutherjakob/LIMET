@@ -1,0 +1,619 @@
+<?php
+/**
+ * api_sync_elements.php
+ * ══════════════════════════════════════════════════════════════════
+ * Übernimmt Änderungen aus dem Excel-Abgleich in die DB.
+ * Alle Aktionen laufen in einer Transaktion → entweder alles oder nichts.
+ *
+ * POST-Body (JSON):
+ *   actions      array  – [{type: 'add'|'update'|'remove', ...}]
+ *   import_meta  object – optional {dateiname: string}
+ *
+ * Response (JSON):
+ *   ok       bool
+ *   run_id   int     – ID in tabelle_import_runs (0 wenn Protokoll-Tabellen fehlen)
+ *   total    int
+ *   success  int
+ *   errors   int
+ *   results  array  – Detail-Ergebnis je Aktion
+ * ══════════════════════════════════════════════════════════════════
+ */
+
+ob_start();
+if (!function_exists('utils_connect_sql')) {
+    include "../_utils/_utils.php";
+}
+check_login();
+ob_clean();
+header('Content-Type: application/json; charset=utf-8');
+
+require_once __DIR__ . '/import_2_db_config.php';
+
+// ──────────────────────────────────────────────────────────────────
+// Helpers
+// ──────────────────────────────────────────────────────────────────
+
+function json_error(string $msg, int $code = 400): never
+{
+    http_response_code($code);
+    echo json_encode(['error' => $msg], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+
+function build_kommentar(mysqli $db, int $rhe_id, string $neu): string
+{// Liest den bestehenden Kommentar und stellt den neuen Eintrag oben voran (Historie bleibt erhalten, neueste Zeile zuerst).
+
+    $alt = '';
+    if ($rhe_id > 0) {
+        $s = $db->prepare("SELECT Kurzbeschreibung FROM tabelle_räume_has_tabelle_elemente WHERE id = ?");
+        $s->bind_param('i', $rhe_id);
+        $s->execute();
+        $alt = (string)($s->get_result()->fetch_row()[0] ?? '');
+        $s->close();
+    }
+    $alt = trim($alt);
+    return $alt === '' ? $neu : $neu . "\n" . $alt;
+}
+
+
+function neu_bestand_fuer_element(mysqli $db, int $element_id): int
+{// Liefert 0 (Bestand) für Element-Codes aus BESTAND_ELEMENT_CODES (z.B. RDGs),
+    // sonst 1 (Neu). ElementID-Code wird per interner Element-ID nachgeschlagen (Cache).
+
+    if ($element_id <= 0 || !defined('BESTAND_ELEMENT_CODES') || !BESTAND_ELEMENT_CODES) {
+        return 1;
+    }
+    static $cache = [];
+    if (!array_key_exists($element_id, $cache)) {
+        $s = $db->prepare("SELECT ElementID FROM tabelle_elemente WHERE idTABELLE_Elemente = ?");
+        $s->bind_param('i', $element_id);
+        $s->execute();
+        $cache[$element_id] = (string)($s->get_result()->fetch_row()[0] ?? '');
+        $s->close();
+    }
+    return in_array($cache[$element_id], BESTAND_ELEMENT_CODES, true) ? 0 : 1;
+}
+
+
+function read_rhe(mysqli $db, int $rhe_id): array
+{// Aktueller Stand eines rhe-Eintrags (für alt/neu im Protokoll).
+    $s = $db->prepare("
+        SELECT Anzahl, TABELLE_Elemente_idTABELLE_Elemente AS element_id,
+               tabelle_Varianten_idtabelle_Varianten AS variante_id,
+               TABELLE_Räume_idTABELLE_Räume AS raum_id
+        FROM tabelle_räume_has_tabelle_elemente WHERE id = ?
+    ");
+    $s->bind_param('i', $rhe_id);
+    $s->execute();
+    $row = $s->get_result()->fetch_assoc() ?: [];
+    $s->close();
+    return [
+        'anzahl'      => (int)($row['Anzahl'] ?? 0),
+        'element_id'  => (int)($row['element_id'] ?? 0),
+        'variante_id' => (int)($row['variante_id'] ?? 0),
+        'raum_id'     => (int)($row['raum_id'] ?? 0),
+    ];
+}
+
+/**
+ * Variante A (idtabelle_Varianten = 1)  ist IMMER der parameterlose Slot.
+ *
+ * Regeln:
+ *  • parameterlos  → immer Var A (id=1) verwenden.
+ *                    Falls Var A für dieses Element fälschlicherweise Parameter hat,
+ *                    werden diese gelöscht (Selbstkorrektur).
+ *  • mit Params    → niemals Var A. Fingerprint-Suche unter allen Varianten id > 1.
+ *                    Match = alle übergebenen PIDs stimmen überein (ignore-params egal).
+ *                    Kein Match → erste „freie" Variante (id > 1) nehmen:
+ *                    frei = im gesamten Projekt hat dieses Element auf dieser Variante
+ *                    nur Einträge mit Anzahl = 0 (oder gar keine).
+ *                    Dann dort die Parameter eintragen.
+ *  • Warnung wenn neue Variante id >= 30 (= Y) → als 'var_warning' zurückgeben.
+ *
+ * Rückgabe: ['vid' => int, 'warning' => string|null, 'neu_angelegt' => bool]
+ */
+function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase, int $element_id, array $params): array
+{
+    $load_params_for_vid = function (int $vid) use ($db, $projekt_id, $element_id): array {
+        $s = $db->prepare("
+            SELECT tabelle_parameter_idTABELLE_Parameter AS pid, Wert
+            FROM tabelle_projekt_elementparameter
+            WHERE tabelle_projekte_idTABELLE_Projekte = ?
+              AND tabelle_elemente_idTABELLE_Elemente = ?
+              AND tabelle_Varianten_idtabelle_Varianten = ?
+        ");
+        $s->bind_param('iii', $projekt_id, $element_id, $vid);
+        $s->execute();
+        $rows = $s->get_result()->fetch_all(MYSQLI_ASSOC);
+        $s->close();
+        return array_column($rows, 'Wert', 'pid');
+    };
+
+    $is_free_variant = function (int $vid) use ($db, $projekt_id, $element_id): bool {
+        $s = $db->prepare("
+            SELECT COUNT(*) AS cnt
+            FROM tabelle_räume_has_tabelle_elemente rhe
+            JOIN tabelle_räume r ON r.idTABELLE_Räume = rhe.TABELLE_Räume_idTABELLE_Räume 
+            WHERE r.tabelle_projekte_idTABELLE_Projekte = ?  
+              AND rhe.TABELLE_Elemente_idTABELLE_Elemente = ?
+              AND rhe.tabelle_Varianten_idtabelle_Varianten = ?
+              AND rhe.Anzahl > 0
+        ");
+        $s->bind_param('iii', $projekt_id, $element_id, $vid);
+        $s->execute();
+        $cnt = (int)$s->get_result()->fetch_row()[0];
+        $s->close();
+        return $cnt === 0;
+    };
+
+    $write_params = function (int $vid) use ($db, $projekt_id, $planungsphase, $element_id, $params): void {
+        foreach ($params as $pid => $info) {
+            $stmt = $db->prepare("
+                INSERT INTO tabelle_projekt_elementparameter
+                    (tabelle_projekte_idTABELLE_Projekte, tabelle_elemente_idTABELLE_Elemente,
+                     tabelle_parameter_idTABELLE_Parameter, tabelle_Varianten_idtabelle_Varianten,
+                     Wert, Einheit, tabelle_planungsphasen_idTABELLE_Planungsphasen)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE Wert = VALUES(Wert), Einheit = VALUES(Einheit)
+            ");
+            $wert = (string)$info['wert'];
+            $einheit = (string)($info['einheit'] ?? '');
+            $ipid = (int)$pid;
+            $stmt->bind_param('iiiissi', $projekt_id, $element_id, $ipid, $vid, $wert, $einheit, $planungsphase);
+            $stmt->execute();
+            $stmt->close();
+        }
+    };
+
+    // CASE A: Parameterlos → immer Var A (id = 1)
+    if (empty($params)) {
+        $var_a_id = 1;
+        $existing = $load_params_for_vid($var_a_id);
+        if (!empty($existing)) {
+            $del = $db->prepare("
+                DELETE FROM tabelle_projekt_elementparameter
+                WHERE tabelle_projekte_idTABELLE_Projekte = ?
+                  AND tabelle_elemente_idTABELLE_Elemente = ?
+                  AND tabelle_Varianten_idtabelle_Varianten = ?
+            ");
+            $del->bind_param('iii', $projekt_id, $element_id, $var_a_id);
+            $del->execute();
+            $del->close();
+        }
+        return ['vid' => $var_a_id, 'warning' => null, 'neu_angelegt' => false];
+    }
+
+    // CASE B: Mit Params → Fingerprint-Suche, niemals Var A (id=1)
+    $stmt = $db->prepare("
+        SELECT DISTINCT tabelle_Varianten_idtabelle_Varianten AS vid
+        FROM tabelle_projekt_elementparameter
+        WHERE tabelle_projekte_idTABELLE_Projekte = ?
+          AND tabelle_elemente_idTABELLE_Elemente = ?
+          AND tabelle_Varianten_idtabelle_Varianten <> 1
+        ORDER BY vid
+    ");
+    $stmt->bind_param('ii', $projekt_id, $element_id);
+    $stmt->execute();
+    $existing_vids = array_column($stmt->get_result()->fetch_all(MYSQLI_ASSOC), 'vid');
+    $stmt->close();
+
+    foreach ($existing_vids as $vid) {
+        $db_params = $load_params_for_vid($vid);
+        $match = true;
+        foreach ($params as $pid => $info) {
+            if ((string)($db_params[(int)$pid] ?? null) !== (string)$info['wert']) {
+                $match = false;
+                break;
+            }
+        }
+        if ($match) {
+            return ['vid' => (int)$vid, 'warning' => null, 'neu_angelegt' => false];
+        }
+    }
+
+    $used_flip = array_flip($existing_vids);
+    $all_variants = $db->query("
+        SELECT idtabelle_Varianten AS id, Variante AS letter
+        FROM tabelle_varianten
+        WHERE idtabelle_Varianten <> 1
+        ORDER BY idtabelle_Varianten
+    ");
+
+    $new_vid = null;
+    $new_letter = null;
+    foreach ($all_variants->fetch_all(MYSQLI_ASSOC) as $row) {
+        $rid = (int)$row['id'];
+        if (!isset($used_flip[$rid]) && $is_free_variant($rid)) {
+            $new_vid = $rid;
+            $new_letter = $row['letter'];
+            break;
+        }
+    }
+
+    if (!$new_vid) {
+        throw new \RuntimeException("Keine freie Variante für Element $element_id in Projekt $projekt_id.");
+    }
+
+    $write_params($new_vid);
+
+    $warning = ($new_vid >= 30)
+        ? "Variante $new_letter (ID $new_vid) wurde angelegt — Variantenraum fast erschöpft (≥ Y)!"
+        : null;
+
+    return ['vid' => $new_vid, 'warning' => $warning, 'neu_angelegt' => true];
+}
+
+
+// ──────────────────────────────────────────────────────────────────
+// Import-Protokoll (tabelle_import_runs / tabelle_import_log)
+// Fehlen die Tabellen, wird still ohne Protokoll weitergearbeitet.
+// ──────────────────────────────────────────────────────────────────
+
+function import_run_start(mysqli $db, int $projekt_id, int $user_id, string $user_name,
+                          string $dateiname, string $kommentar, int $planungsphase): int
+{
+    try {
+        $s = $db->prepare("
+            INSERT INTO tabelle_import_runs
+                (tabelle_projekte_id, user_id, user_name, dateiname, kommentar, planungsphase, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, NOW())
+        ");
+        if (!$s) return 0;
+        $s->bind_param('iisssi', $projekt_id, $user_id, $user_name, $dateiname, $kommentar, $planungsphase);
+        $s->execute();
+        $id = (int)$s->insert_id;
+        $s->close();
+        return $id;
+    } catch (Throwable) {
+        return 0;
+    }
+}
+
+function import_log(mysqli $db, int $run_id, string $action, int $raum_id, int $rhe_id, int $element_id,
+                    int $variante_id, ?int $alt, ?int $neu, array $details = []): void
+{
+    if ($run_id <= 0) return;
+    $s = $db->prepare("
+        INSERT INTO tabelle_import_log
+            (run_id, action, raum_id, rhe_id, element_id, variante_id, anzahl_alt, anzahl_neu, details)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $json = $details ? json_encode($details, JSON_UNESCAPED_UNICODE) : null;
+    $s->bind_param('isiiiiiis', $run_id, $action, $raum_id, $rhe_id, $element_id, $variante_id, $alt, $neu, $json);
+    $s->execute();
+    $s->close();
+}
+
+function import_run_finish(mysqli $db, int $run_id): void
+{
+    if ($run_id <= 0) return;
+    $s = $db->prepare("
+        UPDATE tabelle_import_runs r
+        JOIN (
+            SELECT run_id,
+                   SUM(action = 'add')    AS n_add,
+                   SUM(action = 'update') AS n_update,
+                   SUM(action = 'remove') AS n_remove,
+                   COUNT(DISTINCT raum_id) AS n_rooms
+            FROM tabelle_import_log WHERE run_id = ?
+            GROUP BY run_id
+        ) x ON x.run_id = r.id
+        SET r.n_add = x.n_add, r.n_update = x.n_update, r.n_remove = x.n_remove, r.n_rooms = x.n_rooms
+    ");
+    $s->bind_param('i', $run_id);
+    $s->execute();
+    $s->close();
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Request validieren
+// ──────────────────────────────────────────────────────────────────
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    json_error('Method not allowed', 405);
+}
+$body = json_decode(file_get_contents('php://input'), true);
+if (empty($body['actions']) || !is_array($body['actions'])) {
+    json_error('actions fehlt');
+}
+if (!isset($_SESSION['projectID'])) {
+    json_error('Kein Projekt in Session');
+}
+
+$projekt_id = (int)$_SESSION['projectID'];
+$pp = $_SESSION['projectPlanungsphase'] ?? '1';
+$planungsphase = is_numeric($pp) ? (int)$pp : match (trim($pp)) {
+    'Vorentwurf' => 1,
+    'Entwurf' => 2,
+    'Ausführungsplanung' => 3,
+    'Einreichung' => 4,
+    default => 0
+};
+if ($planungsphase <= 0) {
+    json_error('Planungsphase unbekannt oder nicht gesetzt: ' . htmlspecialchars($pp));
+}
+
+$user_id   = (int)($_SESSION['userID'] ?? 0);
+$user_name = (string)($_SESSION['username'] ?? '');
+$dateiname = mb_substr(trim((string)($body['import_meta']['dateiname'] ?? '')), 0, 255);
+$mysqli = utils_connect_sql();
+
+// ──────────────────────────────────────────────────────────────────
+// Sicherheitscheck: alle rhe_ids und raum_ids müssen zum Projekt gehören
+// ──────────────────────────────────────────────────────────────────
+$rhe_ids_to_check = [];
+$raum_ids_to_check = [];
+foreach ($body['actions'] as $action) {
+    if (isset($action['rhe_id'])) $rhe_ids_to_check[] = (int)$action['rhe_id'];
+    if (isset($action['raum_id'])) $raum_ids_to_check[] = (int)$action['raum_id'];
+}
+if (!empty($rhe_ids_to_check)) {
+    $ph = implode(',', array_fill(0, count($rhe_ids_to_check), '?'));
+    $types = str_repeat('i', count($rhe_ids_to_check)) . 'i';
+    $vals = array_merge($rhe_ids_to_check, [$projekt_id]);
+    $refs = [&$types];
+    foreach ($vals as $k => $_) $refs[] = &$vals[$k];
+    $chk = $mysqli->prepare("
+        SELECT COUNT(*) AS cnt FROM tabelle_räume_has_tabelle_elemente rhe
+        JOIN tabelle_räume r ON r.idTABELLE_Räume = rhe.TABELLE_Räume_idTABELLE_Räume
+        WHERE rhe.id IN ($ph) AND r.tabelle_projekte_idTABELLE_Projekte = ?
+    ");
+    call_user_func_array([$chk, 'bind_param'], $refs);
+    $chk->execute();
+    $cnt = (int)$chk->get_result()->fetch_row()[0];
+    $chk->close();
+    if ($cnt !== count($rhe_ids_to_check)) {
+        json_error('Mindestens eine rhe_id gehört nicht zum aktuellen Projekt', 403);
+    }
+}
+if (!empty($raum_ids_to_check)) {
+    $ph = implode(',', array_fill(0, count($raum_ids_to_check), '?'));
+    $types = str_repeat('i', count($raum_ids_to_check)) . 'i';
+    $vals = array_merge($raum_ids_to_check, [$projekt_id]);
+    $refs = [&$types];
+    foreach ($vals as $k => $_) $refs[] = &$vals[$k];
+    $chk = $mysqli->prepare("
+        SELECT COUNT(*) AS cnt FROM tabelle_räume
+        WHERE idTABELLE_Räume IN ($ph) AND tabelle_projekte_idTABELLE_Projekte = ?
+    ");
+    call_user_func_array([$chk, 'bind_param'], $refs);
+    $chk->execute();
+    $cnt = (int)$chk->get_result()->fetch_row()[0];
+    $chk->close();
+    if ($cnt !== count(array_unique($raum_ids_to_check))) {
+        json_error('Mindestens eine raum_id gehört nicht zum aktuellen Projekt', 403);
+    }
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Transaktion starten — alle Aktionen als atomare Einheit
+// (das Protokoll ist Teil der Transaktion → bei Rollback verschwindet es mit)
+// ──────────────────────────────────────────────────────────────────
+$mysqli->begin_transaction();
+
+$results = [];
+$run_id = 0;
+
+try {
+    $remove_kommentar = '';
+    foreach ($body['actions'] as $a) {
+        if (($a['type'] ?? '') === 'remove' && !empty($a['kommentar'])) {
+            $remove_kommentar = mb_substr(trim($a['kommentar']), 0, 500);
+            break;
+        }
+    }
+    $run_id = import_run_start($mysqli, $projekt_id, $user_id, $user_name, $dateiname, $remove_kommentar, $planungsphase);
+
+    foreach ($body['actions'] as $action) {
+        $type = $action['type'] ?? '';
+
+        // ── REMOVE ────────────────────────────────────────────────
+        if ($type === 'remove') {
+            $rhe_id = (int)$action['rhe_id'];
+            $user_kommentar = trim($action['kommentar'] ?? 'Entfernt via Excel-Abgleich');
+            $ts = date('Y-m-d H:i:s');
+            $vorher = read_rhe($mysqli, $rhe_id);
+
+            $neu = date('d.m.Y') . ': ' . $user_kommentar;
+            $kommentar = build_kommentar($mysqli, $rhe_id, $neu);
+
+            $stmt = $mysqli->prepare("
+                UPDATE tabelle_räume_has_tabelle_elemente
+                SET Anzahl = 0, Kurzbeschreibung = ?, Timestamp = ?
+                WHERE id = ?
+            ");
+            $stmt->bind_param('ssi', $kommentar, $ts, $rhe_id);
+            $stmt->execute();
+            $ok = $stmt->affected_rows >= 0;
+            $stmt->close();
+
+            import_log($mysqli, $run_id, 'remove', $vorher['raum_id'], $rhe_id, $vorher['element_id'],
+                $vorher['variante_id'], $vorher['anzahl'], 0, ['kommentar' => $user_kommentar]);
+            $results[] = ['type' => 'remove', 'rhe_id' => $rhe_id, 'ok' => $ok];
+
+            // ── UPDATE ANZAHL ──────────────────────────────────────────
+        } elseif ($type === 'update') {
+            $rhe_id = (int)$action['rhe_id'];
+            $anzahl = max(0, (int)$action['anzahl']);
+            $ts = date('Y-m-d H:i:s');
+
+            $vorher = read_rhe($mysqli, $rhe_id);
+            $alt_anzahl = $vorher['anzahl'];
+            $neu_bestand = neu_bestand_fuer_element($mysqli, $vorher['element_id']);
+
+            $neu = sprintf('%s: Anzahl von %d auf %d geändert via Excel-Import', date('d.m.Y'), $alt_anzahl, $anzahl);
+            $kommentar = build_kommentar($mysqli, $rhe_id, $neu);
+
+            if ($neu_bestand === 0) {
+                $stmt = $mysqli->prepare("
+                    UPDATE tabelle_räume_has_tabelle_elemente
+                    SET Anzahl = ?, `Neu/Bestand` = 0, Kurzbeschreibung = ?, Timestamp = ?
+                    WHERE id = ?
+                ");
+            } else {
+                $stmt = $mysqli->prepare("
+                    UPDATE tabelle_räume_has_tabelle_elemente
+                    SET Anzahl = ?, Kurzbeschreibung = ?, Timestamp = ?
+                    WHERE id = ?
+                ");
+            }
+            $stmt->bind_param('issi', $anzahl, $kommentar, $ts, $rhe_id);
+            $stmt->execute();
+            $ok = $stmt->affected_rows >= 0;
+            $stmt->close();
+
+            import_log($mysqli, $run_id, 'update', $vorher['raum_id'], $rhe_id, $vorher['element_id'],
+                $vorher['variante_id'], $alt_anzahl, $anzahl);
+            $results[] = ['type' => 'update', 'rhe_id' => $rhe_id, 'anzahl' => $anzahl, 'ok' => $ok];
+
+            // ── ADD (mit Variante + Parameter) ─────────────────────────
+        } elseif ($type === 'add') {
+            $raum_id = (int)$action['raum_id'];
+            $anzahl = max(1, (int)($action['anzahl'] ?? 1));
+            $params = $action['params'] ?? [];
+
+            $element_id = (int)($action['element_id'] ?? 0);
+            if (!$element_id && !empty($action['element_code'])) {
+                $ec = $mysqli->real_escape_string(trim($action['element_code']));
+                $r = $mysqli->query("SELECT idTABELLE_Elemente FROM tabelle_elemente WHERE ElementID='$ec' LIMIT 1");
+                if ($r && $row = $r->fetch_assoc()) $element_id = (int)$row['idTABELLE_Elemente'];
+            }
+            if (!$element_id) {
+                throw new RuntimeException('Element nicht gefunden: ' . ($action['element_code'] ?? '?'));
+            }
+
+            $neu_bestand = neu_bestand_fuer_element($mysqli, $element_id);
+
+            $variante_id = (int)($action['variante_id'] ?? 0);
+            $var_warning = null;
+            $var_neu = false;
+            if (!$variante_id) {
+                $params_typed = [];
+                foreach ($params as $pid => $info) {
+                    $params_typed[(int)$pid] = is_array($info)
+                        ? $info
+                        : ['wert' => (string)$info, 'einheit' => ''];
+                }
+                $var_result = get_or_create_variante($mysqli, $projekt_id, $planungsphase, $element_id, $params_typed);
+                $variante_id = $var_result['vid'];
+                $var_warning = $var_result['warning'];
+                $var_neu = $var_result['neu_angelegt'];
+            }
+
+            $ts            = date('Y-m-d H:i:s');
+            $neu_kommentar = date('d.m.Y') . ': Hinzugefügt via Excel-Import';
+
+            $chk_rhe = $mysqli->prepare("
+                SELECT id, Anzahl FROM tabelle_räume_has_tabelle_elemente
+                WHERE TABELLE_Räume_idTABELLE_Räume = ?
+                  AND TABELLE_Elemente_idTABELLE_Elemente = ?
+                  AND tabelle_Varianten_idtabelle_Varianten = ?
+                LIMIT 1
+            ");
+            $chk_rhe->bind_param('iii', $raum_id, $element_id, $variante_id);
+            $chk_rhe->execute();
+            $existing_rhe = $chk_rhe->get_result()->fetch_assoc();
+            $chk_rhe->close();
+
+            $alt_anzahl = $existing_rhe ? (int)$existing_rhe['Anzahl'] : 0;
+
+            if ($existing_rhe) {
+                $rhe_upd_id = (int)$existing_rhe['id'];
+                $kommentar  = build_kommentar($mysqli, $rhe_upd_id, $neu_kommentar);
+                if ($neu_bestand === 0) {
+                    $stmt = $mysqli->prepare("
+                        UPDATE tabelle_räume_has_tabelle_elemente
+                        SET Anzahl = ?, `Neu/Bestand` = 0, Kurzbeschreibung = ?, Timestamp = ?
+                        WHERE id = ?
+                    ");
+                } else {
+                    $stmt = $mysqli->prepare("
+                        UPDATE tabelle_räume_has_tabelle_elemente
+                        SET Anzahl = ?, Kurzbeschreibung = ?, Timestamp = ?
+                        WHERE id = ?
+                    ");
+                }
+                $stmt->bind_param('issi', $anzahl, $kommentar, $ts, $rhe_upd_id);
+                $stmt->execute();
+                $ok = $stmt->affected_rows >= 0;
+                $new_id = $rhe_upd_id;
+                $stmt->close();
+            } else {
+                $stmt = $mysqli->prepare("
+                    INSERT INTO tabelle_räume_has_tabelle_elemente
+                        (`TABELLE_Räume_idTABELLE_Räume`, `TABELLE_Elemente_idTABELLE_Elemente`,
+                         `Neu/Bestand`, Anzahl, tabelle_Varianten_idtabelle_Varianten,
+                         Kurzbeschreibung, Timestamp, Standort, Verwendung)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 1, 1)
+                ");
+                $stmt->bind_param('iiiiiss', $raum_id, $element_id, $neu_bestand, $anzahl, $variante_id, $neu_kommentar, $ts);
+                $stmt->execute();
+                $new_id = (int)$stmt->insert_id;
+                $ok = $new_id > 0;
+                $stmt->close();
+            }
+
+            // Kosten-Eintrag anlegen falls noch nicht vorhanden (Kosten = 0)
+            $stmt_cost = $mysqli->prepare("
+                SELECT 1 FROM tabelle_projekt_varianten_kosten
+                WHERE tabelle_projekte_idTABELLE_Projekte = ?
+                  AND tabelle_elemente_idTABELLE_Elemente = ?
+                  AND tabelle_Varianten_idtabelle_Varianten = ?
+                LIMIT 1
+            ");
+            $stmt_cost->bind_param('iii', $projekt_id, $element_id, $variante_id);
+            $stmt_cost->execute();
+            $cost_exists = (bool)$stmt_cost->get_result()->fetch_row();
+            $stmt_cost->close();
+
+            if (!$cost_exists) {
+                $stmt_cost_ins = $mysqli->prepare("
+                    INSERT INTO tabelle_projekt_varianten_kosten
+                        (tabelle_projekte_idTABELLE_Projekte, tabelle_elemente_idTABELLE_Elemente,
+                         tabelle_Varianten_idtabelle_Varianten, Kosten)
+                    VALUES (?, ?, ?, 0)
+                ");
+                $stmt_cost_ins->bind_param('iii', $projekt_id, $element_id, $variante_id);
+                $stmt_cost_ins->execute();
+                $stmt_cost_ins->close();
+            }
+
+            $log_details = [];
+            if ($params)      $log_details['params'] = $params;
+            if ($var_neu)     $log_details['variante_neu_angelegt'] = true;
+            if ($var_warning) $log_details['warning'] = $var_warning;
+            import_log($mysqli, $run_id, 'add', $raum_id, $new_id, $element_id, $variante_id,
+                $alt_anzahl, $anzahl, $log_details);
+
+            $result_entry = ['type' => 'add', 'raum_id' => $raum_id, 'element_id' => $element_id,
+                'variante_id' => $variante_id, 'new_id' => $new_id, 'ok' => $ok];
+            if ($var_warning) $result_entry['warning'] = $var_warning;
+            $results[] = $result_entry;
+
+        } else {
+            throw new RuntimeException('Unbekannter action-type: ' . $type);
+        }
+    }
+
+    import_run_finish($mysqli, $run_id);
+    $mysqli->commit();
+
+} catch (Throwable $e) {
+    $mysqli->rollback();
+    json_error('Datenbankfehler: ' . $e->getMessage(), 500);
+}
+
+$ok_count = count(array_filter($results, fn($r) => $r['ok']));
+$err_count = count($results) - $ok_count;
+$warnings = array_values(array_filter(array_column($results, 'warning')));
+
+echo json_encode([
+    'ok' => $err_count === 0,
+    'run_id' => $run_id,
+    'total' => count($results),
+    'success' => $ok_count,
+    'errors' => $err_count,
+    'warnings' => $warnings,
+    'results' => $results,
+], JSON_UNESCAPED_UNICODE);

@@ -1,43 +1,41 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <title>Get Devices 2 Element</title>
-    <style>
-        .select2-container {
-            z-index: 1060 !important;
-        }
+<style>
+    .select2-container {
+        z-index: 1060 !important;
+    }
 
-        .select2-dropdown {
-            z-index: 1061 !important;
-        }
+    .select2-dropdown {
+        z-index: 1061 !important;
+    }
 
-        .modal .select2-container {
-            z-index: 1070 !important;
-        }
+    .modal .select2-container {
+        z-index: 1070 !important;
+    }
 
-        .modal .select2-dropdown {
-            z-index: 1071 !important;
-        }
-    </style>
-</head>
+    .modal .select2-dropdown {
+        z-index: 1071 !important;
+    }
+</style>
+
 <body>
 
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
+
 $mysqli = utils_connect_sql();
 $elementID = getPostInt('elementID', $_SESSION["elementID"] ?? 0);
 
-$sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_hersteller.idtabelle_hersteller
+$sql = "SELECT 
+           tabelle_geraete.idTABELLE_Geraete, 
+           tabelle_geraete.GeraeteID, 
+           tabelle_hersteller.Hersteller, 
+           tabelle_geraete.Typ,
+           tabelle_geraete.Kurzbeschreibung, 
+           tabelle_hersteller.idtabelle_hersteller
         FROM tabelle_geraete
-        INNER JOIN tabelle_hersteller ON tabelle_geraete.tabelle_hersteller_idtabelle_hersteller = tabelle_hersteller.idtabelle_hersteller
+        INNER JOIN tabelle_hersteller 
+            ON tabelle_geraete.tabelle_hersteller_idtabelle_hersteller = tabelle_hersteller.idtabelle_hersteller
         WHERE tabelle_geraete.TABELLE_Elemente_idTABELLE_Elemente = ?
         ORDER BY tabelle_geraete.GeraeteID DESC";
 
@@ -61,13 +59,16 @@ echo "<table class='table table-striped table-bordered table-sm table-hover bord
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td>" . $row["idTABELLE_Geraete"] . "</td>";
-    echo "<td>" . $row["GeraeteID"] . "</td>";
-    echo "<td>" . $row["Hersteller"] . "</td>";
-    echo "<td>" . $row["Typ"] . "</td>";
-    echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-    echo "<td>" . $row["idtabelle_hersteller"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-sm' value='changeDevice' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
+    echo "<td>" . h($row["idTABELLE_Geraete"]) . "</td>";
+    echo "<td>" . h($row["GeraeteID"]) . "</td>";
+    echo "<td>" . h($row["Hersteller"]) . "</td>";
+    echo "<td>" . h($row["Typ"]) . "</td>";
+    echo "<td>" . h($row["Kurzbeschreibung"]) . "</td>";
+    echo "<td>" . h($row["idtabelle_hersteller"]) . "</td>";
+    echo "<td><button type='button' id='" . h($row["idTABELLE_Geraete"]) .
+        "' class='btn btn-outline-dark btn-sm' value='changeDevice'
+        data-bs-toggle='modal' data-bs-target='#addDeviceModal'>
+        <i class='fas fa-pencil-alt'></i></button></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -111,11 +112,13 @@ echo "
                     echo "<div class='form-group'>
                         <label for='hersteller'>Hersteller:</label>
                         <label class='float-right'>
-                            <button type='button' id='openAddManufacturer' class='btn btn-sm btn-outline-dark ' value='openAddManufacturer' data-bs-toggle='modal' data-bs-target='#addManufacturerModal'><i class='far fa-plus-square'></i></button>
+                            <button type='button' id='openAddManufacturer' class='btn btn-sm btn-outline-dark ' 
+                            value='openAddManufacturer' data-bs-toggle='modal' data-bs-target='#addManufacturerModal'>
+                            <i class='far fa-plus-square'></i></button>
                         </label>
                             <select class='form-control form-control-sm' id='hersteller' name='hersteller'>";
                     while ($row = $result->fetch_assoc()) {
-                        echo "<option value=" . $row["idtabelle_hersteller"] . ">" . $row["Hersteller"] . "</option>";
+                        echo "<option value=" . h($row["idtabelle_hersteller"]) . ">" . h($row["Hersteller"]) . "</option>";
                     }
                     echo "</select></div>";
                     $mysqli->close();
@@ -180,10 +183,12 @@ echo "
     </div>
 </div>
 
+<script src="_utils/_utils.js"></script>
 <!--suppress ES6ConvertVarToLetConst -->
 <script charset="utf-8" type="text/javascript">
     var deviceID;
     var tableDevicesToElement;
+
     $(document).ready(function () {
         tableDevicesToElement = new DataTable('#tableDevicesToElement', {
             columnDefs: [
@@ -207,9 +212,8 @@ echo "
             info: false,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                search: "", //'<i class="fa fa-filter" aria-hidden="true"></i>', // Custom search icon
-                searchPlaceholder: 'Suche...' // Custom placeholder
+                url: "/_utils/de-DE.json",
+
             },
             layout: {
                 topStart: null,
@@ -223,7 +227,6 @@ echo "
             $('#GerätepreiseCardHeader').html('');
             $('#WartungspreiseCardHeader').html('');
             $('#LieferantenCardHeader').html('');
-
             $("#deviceParametersInDB").show();
             $("#devicePrices").show();
             $("#deviceLieferanten").show();
@@ -279,7 +282,7 @@ echo "
                 data: {"hersteller": hersteller, "type": type, "kurzbeschreibung": kurzbeschreibung},
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     $.ajax({
                         url: "getDevicesToElement.php",
                         type: "POST",
@@ -291,7 +294,7 @@ echo "
                 }
             });
         } else {
-            alert("Bitte alle Felder ausfüllen!");
+            makeToaster("Bitte alle Felder ausfüllen!", false);
         }
     });
 
@@ -312,7 +315,7 @@ echo "
                 },
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     $.ajax({
                         url: "getDevicesToElement.php",
                         type: "POST",
@@ -363,7 +366,7 @@ echo "
                 data: {"manufacturer": manufacturer},
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     $.ajax({
                         url: "getDevicesToElement.php",
                         data: {"elementID": ""},

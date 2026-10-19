@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $projectID = (int)$_SESSION["projectID"] ?? null;
@@ -159,7 +159,8 @@ $mysqli->close();
             searching: true,
             info: true,
             order: [[4, 'desc']],
-            language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
+            language: {url: '/_utils/de-DE.json' 
+},
             rowCallback: function (row, data) {
                let vermerkTyp = data[6];
                let status = data[10];

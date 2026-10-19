@@ -9,7 +9,7 @@
 <body>
 <?php
 // 25 FX
-require_once "utils/_utils.php";
+require_once "_utils/_utils.php";
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -97,7 +97,7 @@ $mysqli->close();
             order: [[2, "asc"]],
             orderMulti: false,
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+                 url: "/_utils/de-DE.json",
             },
             mark: true
         });

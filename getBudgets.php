@@ -1,5 +1,5 @@
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 header('Content-Type: application/json; charset=utf-8');
 $mysqli = utils_connect_sql();
 $projectID = (int)$_SESSION["projectID"];

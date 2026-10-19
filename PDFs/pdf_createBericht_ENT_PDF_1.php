@@ -3,7 +3,7 @@
 
 include 'pdf_createBericht_MYPDFclass_A4_Raumbuch.php';
 include '_pdf_createBericht_utils.php';
-if (!function_exists('utils_connect_sql')) {  include "../utils/_utils.php"; } //this one contains br2nl nowadays...
+if (!function_exists('utils_connect_sql')) {  include "../_utils/_utils.php"; } //this one contains br2nl nowadays...
 
 
 $hackerl_Zellgröße=15;

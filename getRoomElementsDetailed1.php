@@ -1,28 +1,35 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 check_login();
 
 $mysqli = utils_connect_sql();
 $sql_room_elements = "SELECT 
-    tabelle_räume_has_tabelle_elemente.id, 
-       tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
-       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
-       tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
-       tabelle_räume_has_tabelle_elemente.Anzahl, 
-       tabelle_elemente.ElementID, 
-       tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, 
-       tabelle_varianten.Variante, 
-       tabelle_elemente.Bezeichnung, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, 
-       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort,  
-       tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
-       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
-       tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
-FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente
-    LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=?))
-ORDER BY  tabelle_elemente.ElementID DESC;";
+                           tabelle_räume_has_tabelle_elemente.id, 
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+                           tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
+                           tabelle_räume_has_tabelle_elemente.Anzahl, 
+                           tabelle_elemente.ElementID, 
+                           tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, 
+                           tabelle_varianten.Variante, 
+                           tabelle_elemente.Bezeichnung,
+                           tabelle_geraete.GeraeteID, 
+                           tabelle_hersteller.Hersteller,
+                           tabelle_geraete.Typ, 
+                           tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+                           tabelle_räume_has_tabelle_elemente.Standort,  
+                           tabelle_räume_has_tabelle_elemente.Verwendung,
+                           tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
+                           tabelle_räume_has_tabelle_elemente.Anzahl, 
+                           tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets AS BudgetID
+                    FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente
+                        LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+                    WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=?))
+                    ORDER BY  tabelle_elemente.ElementID DESC;";
 
 $stmt_room_elements = $mysqli->prepare($sql_room_elements);
 $stmt_room_elements->bind_param("i", $_SESSION["roomID"]);
@@ -36,6 +43,25 @@ $stmt_var = $mysqli->prepare("
 $stmt_var->execute();
 $varianten_options = $stmt_var->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt_var->close();
+
+// Budget-Spalte nur für bestimmte Projekte
+$projectID            = (int)($_SESSION["projectID"] ?? 0);
+$budgetColumnProjects = [75, 86];
+$showBudgetColumn     = in_array($projectID, $budgetColumnProjects, true);
+
+$budget_options = [];
+if ($showBudgetColumn) {
+    $stmt_budgets = $mysqli->prepare("
+        SELECT idtabelle_projektbudgets, Budgetnummer, Budgetname
+        FROM tabelle_projektbudgets
+        WHERE tabelle_projekte_idTABELLE_Projekte = ?
+        ORDER BY Budgetnummer
+    ");
+    $stmt_budgets->bind_param("i", $projectID);
+    $stmt_budgets->execute();
+    $budget_options = $stmt_budgets->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt_budgets->close();
+}
 
 $mysqli->close();
 ?>
@@ -93,6 +119,9 @@ $mysqli->close();
         <th>Verw</th>
         <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i
                     class='far fa-comment'></i></th>
+        <?php if ($showBudgetColumn): ?>
+            <th>Budget</th>
+        <?php endif; ?>
         <th>Verlauf</th>
         <th></th>
     </tr>
@@ -154,6 +183,22 @@ $mysqli->close();
                         id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
                 </button>
             </td>
+            <?php if ($showBudgetColumn): ?>
+                <td data-order="<?php echo (int)$row['BudgetID']; ?>">
+                    <label for="budget<?php echo $row['id']; ?>" style="display:none;"></label>
+                    <select class="form-control form-control-sm budget-select"
+                            id="budget<?php echo $row['id']; ?>"
+                            data-roombook-id="<?php echo $row['id']; ?>">
+                        <option value="0"<?php echo empty($row['BudgetID']) ? ' selected' : ''; ?>>0-Budget wählen</option>
+                        <?php foreach ($budget_options as $b) {
+                            $sel = ((int)$row['BudgetID'] === (int)$b['idtabelle_projektbudgets']) ? ' selected' : '';
+                            echo "<option value='{$b['idtabelle_projektbudgets']}'$sel>"
+                                . htmlspecialchars($b['Budgetnummer'] . '-' . $b['Budgetname'], ENT_QUOTES, 'UTF-8')
+                                . "</option>";
+                        } ?>
+                    </select>
+                </td>
+            <?php endif; ?>
             <td data-order="history">
                 <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-sm btn-outline-dark"
                         value="history"><i class="fas fa-history"></i></button>
@@ -172,9 +217,9 @@ include "modal_copyRoomElements.php";
 include "modal_elementHistory.html";
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script charset="utf-8" type="module">
-    import CustomPopover from './utils/_popover.js';
+    import CustomPopover from './_utils/_popover.js';
 
     let rememberSorting = localStorage.getItem('rememberSorting') === 'true';
     let savedSort = null;
@@ -196,8 +241,8 @@ include "modal_elementHistory.html";
             trigger.dataset.description = newText;
             const id = trigger.id;
             $.ajax({
-                url: 'saveRoomElementComment.php',
-                data: {comment: newText, id:id},
+                url: 'saveRoombookComment.php',
+                data: {comment: newText, id: id},
                 type: 'POST',
                 success(data) {
                     makeToaster(data.trim(), true);
@@ -216,6 +261,7 @@ include "modal_elementHistory.html";
         attachButtonListeners();
         addRememberSortingControl();
         initPopoverTips();
+        attachBudgetListener();
     });
 
     function initPopoverTips() {
@@ -246,9 +292,6 @@ include "modal_elementHistory.html";
         }
         return true;
     }
-
-
-    // Replace the $('#hideZeroRows').off(...).on(...) block inside initHideZero() with this:
 
     function initHideZero() {
         // Remove any previously pushed filter to avoid duplicates
@@ -312,7 +355,7 @@ include "modal_elementHistory.html";
                 },
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: '',
                 searchPlaceholder: 'Suche...',
             },
@@ -405,20 +448,37 @@ include "modal_elementHistory.html";
         });
     }
 
+    function attachBudgetListener() {
+        $('#tableRoomElements').on('change', 'tbody select.budget-select', function () {
+            const roombookID = $(this).data('roombook-id');
+            const budgetID   = this.value;
+            $.post('saveRoombookBudget.php', {roombookID, budgetID})
+                .done(data => makeToaster((data || '').toString().trim(), true))
+                .fail(() => makeToaster('Fehler beim Speichern des Budgets'));
+        });
+    }
+
     function attachButtonListeners() {
-        $('#kostenInfoBtn').click(function () {
+        // Nur die gerade per AJAX eingefügten Buttons ansprechen. Der alte
+        // Button-Block des vorherigen Raums hängt zu diesem Zeitpunkt noch mit
+        // gleicher ID im Card-Header (#room_action_btns) und wird erst ~150 ms
+        // später geleert. Ein globaler ID-Selektor ($('#kostenInfoBtn')) würde
+        // sonst diesen alten, gleich gelöschten Button treffen.
+        const $scope = $('#roomElements');
+
+        $scope.find('#kostenInfoBtn').on('click', function () {
             $('#kostenInfoPanel').collapse('toggle');
         });
 
-        $("button[value='createRoombookPDF']").click(function () {
+        $scope.find("button[value='createRoombookPDF']").on('click', function () {
             window.open('PDFs/pdf_createRoombookPDF.php?roomID=' + this.id);
         });
 
-        $("button[value='createRoombookPDFCosts']").click(function () {
+        $scope.find("button[value='createRoombookPDFCosts']").on('click', function () {
             window.open('PDFs/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);
         });
 
-        $("button[value='Rauminhalt kopieren']").click(function () {
+        $scope.find("button[value='Rauminhalt kopieren']").on('click', function () {
             $('#copyRoomElementsModal').modal('show');
             if (typeof dt_search_counter !== 'undefined' && dt_search_counter !== null) {
                 dt_search_counter++;
@@ -434,7 +494,7 @@ include "modal_elementHistory.html";
             });
         });
 
-        $("button[value='history']").click(function () {
+        $scope.find("button[value='history']").on('click', function () {
             const roombookID = this.id;
             const elementName = $(`#ElementName${roombookID}`).text();
             $.ajax({
@@ -449,9 +509,45 @@ include "modal_elementHistory.html";
             });
         });
 
-        $("button[value='saveElement']").click(function () {
+        function getOpenPopoverComment() {
+            const ta = document.querySelector('.custom-popover textarea.popover-textarea');
+            return (ta && ta.offsetParent !== null) ? ta.value : null; // nur wenn sichtbar
+        }
+
+        // Nur einmal am document registrieren – attachButtonListeners() laeuft
+        // bei jedem Raumklick erneut, sonst wuerde sich der Listener stapeln.
+        if (!window.__roomElementsMousedownBound) {
+            window.__roomElementsMousedownBound = true;
+            document.addEventListener('mousedown', (e) => {
+                if (e.target.closest("button[value='saveElement']")) {
+                    window.__pendingPopoverComment = getOpenPopoverComment();
+                }
+            }, true);
+        }
+
+        $scope.find("button[value='saveElement']").on('click', function () {
             const id = this.id;
-            const comment = $(`.comment-btn[id='${id}']`).attr('data-description');
+            const $commentBtn = $(`.comment-btn[id='${id}']`);
+
+            // beim mousedown gesicherten Popover-Text nehmen (falls Popover offen war)
+            const openComment = window.__pendingPopoverComment ?? null;
+            window.__pendingPopoverComment = null;
+
+            let comment;
+            if (openComment !== null) {
+                comment = openComment;
+                $commentBtn.attr('data-description', comment).data('description', comment);
+                const empty = comment.trim() === '';
+                $commentBtn
+                    .toggleClass('btn-outline-secondary', empty)
+                    .toggleClass('btn-outline-dark', !empty)
+                    .find('i')
+                    .toggleClass('fa-comment-slash', empty)
+                    .toggleClass('fa-comment', !empty);
+            } else {
+                comment = $commentBtn.attr('data-description');
+            }
+
             const amount = $(`#amount${id}`).val();
             const variantenID = $(`#variante${id}`).val();
             const bestand = $(`#bestand${id}`).val();
@@ -471,6 +567,7 @@ include "modal_elementHistory.html";
                 },
             });
         });
+
     }
 
     function addRememberSortingControl() {

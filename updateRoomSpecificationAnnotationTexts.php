@@ -1,13 +1,18 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+
+// 26 FX - unchecked#
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
 $mysqli = utils_connect_sql();
 
 $stmt = $mysqli->prepare("UPDATE tabelle_räume SET 
     `Anmerkung FunktionBO` = ?, `Anmerkung Geräte` = ?, 
     `Anmerkung BauStatik` = ?, `Anmerkung Elektro` = ?, 
-    `Anmerkung MedGas` = ?, `Anmerkung HKLS` = ? 
+    `Anmerkung MedGas` = ?, `Anmerkung HKLS` = ? ,
+    `Anmerkung allgemein` =?
     WHERE idTABELLE_Räume = ?");
 
 $getPostString = getPostString("funktionBO");
@@ -16,13 +21,15 @@ $getPostString2 = getPostString("baustatik");
 $getPostString3 = getPostString("Elektro");
 $getPostString4 = getPostString("medgas");
 $getPostString5 = getPostString("hkls");
-$stmt->bind_param("ssssssi",
+$getPostString6 = getPostString("allg");
+$stmt->bind_param("sssssssi",
     $getPostString,
     $getPostString1,
     $getPostString2,
     $getPostString3,
     $getPostString4,
     $getPostString5,
+    $getPostString6,
     $_SESSION["roomID"]);
 
 if ($stmt->execute()) {

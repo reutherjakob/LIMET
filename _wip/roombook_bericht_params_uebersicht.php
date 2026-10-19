@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Berichte &amp; Parameter – Phasen-Übersicht</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+</head>
+<body class="bg-light">
+<div class="container-fluid py-3">
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+        <div>
+            <h4 class="mb-0">Berichte &amp; Parameter – Phasen-Übersicht</h4>
+            <div class="text-muted small">29 Berichte &middot; 234 Parameter &middot; <strong>Phase je
+                    Parameter</strong> (ab wann relevant) &middot; vorbelegt aus <code>isnotVorentwurf</code>, frei
+                editierbar
+            </div>
+        </div>
+        <div class="btn-group btn-group-sm" role="group">
+            <button class="btn btn-outline-secondary" id="btnReset">Phasen zurücksetzen</button>
+            <button class="btn btn-outline-primary" id="btnExport">Phasen exportieren (JSON)</button>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs" id="tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-param" type="button">Parameter
+                &amp; Phase
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-phasen" type="button">Phasen-Übersicht
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-gruppen" type="button">Gruppen-Matrix
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-katalog" type="button">Berichtskatalog
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 bg-white p-3">
+
+        <div class="tab-pane fade show active" id="tab-param">
+            <div class="row g-2 mb-2">
+                <div class="col-auto"><select id="fltGroup" class="form-select form-select-sm">
+                        <option value="">— alle Gruppen —</option>
+                    </select></div>
+                <div class="col-auto"><select id="fltReport" class="form-select form-select-sm">
+                        <option value="">— alle Berichte —</option>
+                    </select></div>
+                <div class="col-auto"><select id="fltPhase" class="form-select form-select-sm">
+                        <option value="">— alle Phasen —</option>
+                    </select></div>
+                <div class="col-auto align-self-center text-muted small">Setze je Parameter die Phase,
+                    <strong>ab</strong> der er relevant ist. ✓ = Bericht gibt den Parameter aus.
+                </div>
+            </div>
+            <table id="tblParam" class="table table-sm table-striped table-bordered display nowrap w-100"></table>
+        </div>
+
+        <div class="tab-pane fade" id="tab-phasen">
+            <p class="text-muted small mb-2">Live aus den gesetzten Phasen: <strong>welche Angaben werden ab welcher
+                    Phase relevant</strong> (nach Fachgruppe). „(ohne Phase)" = noch nicht zugeordnet.</p>
+            <div id="phaseBoard" class="row g-3"></div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-gruppen">
+            <p class="text-muted small mb-2">Anzahl ausgegebener Parameter je Fachgruppe und Bericht.</p>
+            <table id="tblGruppen" class="table table-sm table-striped table-bordered w-100"></table>
+        </div>
+
+        <div class="tab-pane fade" id="tab-katalog">
+            <p class="text-muted small mb-2">Alle Berichte der Reports-Seite. „#Felder" = Anzahl ausgegebener
+                Parameter/Felder.</p>
+            <table id="tblKatalog" class="table table-sm table-striped table-bordered w-100"></table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const DATA = {
+        "categories": [{"id": "bauangaben_neu", "label": "Bauangaben Neu"}, {
+            "id": "bauangaben",
+            "label": "Bauangaben"
+        }, {"id": "einreichung", "label": "Einreichung"}, {
+            "id": "elementReports",
+            "label": "Element-/Raum Berichte"
+        }, {"id": "einbringwege", "label": "Einbringwege"}, {"id": "oldReports", "label": "Historische Berichte"}],
+        "reports": [{
+            "category": "bauangaben_neu",
+            "text": "BAU A3",
+            "url": "pdf_createBauangabenBericht_A3Qeer",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung HKLS", "Anmerkung MedGas", "Anwendungsgruppe", "Bauabschnitt", "Bauetappe", "CO2", "DL-10", "DL-tech", "EL_Laser 16A CEE Stk", "EL_Roentgen 16A CEE Stk", "ET_Anschlussleistung_AV_W", "ET_Anschlussleistung_SV_W", "ET_Anschlussleistung_USV_W", "ET_Anschlussleistung_W", "ET_Anschlussleistung_ZSV_W", "ET_RJ45-Ports", "Fussboden OENORM B5220", "Geschoss", "H6020", "HT_Abluft_Digestorium_Stk", "HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "HT_Notdusche", "HT_Punktabsaugung_Stk", "HT_Raumtemp Sommer °C", "HT_Raumtemp Winter °C", "HT_Waermeabgabe_W", "IT Anbindung", "Laseranwendung", "N2O", "NGA", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "Strahlenanwendung", "Timestamp", "USV", "VE_Wasser", "ZSV"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 6,
+                "Med-Gas/Labor-Gas": 11,
+                "Elektro": 14,
+                "Haustechnik/HKLS": 10,
+                "Anmerkungen": 5,
+                "Raum – sonstige": 2
+            },
+            "n": 54,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben_neu",
+            "text": "ohne Änderungsmarkierungen",
+            "url": "pdf_createBauangabenBericht_A3Qeer_1",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung HKLS", "Anmerkung MedGas", "Anwendungsgruppe", "Bauabschnitt", "Bauetappe", "CO2", "DL-10", "DL-tech", "EL_Laser 16A CEE Stk", "EL_Roentgen 16A CEE Stk", "ET_Anschlussleistung_AV_W", "ET_Anschlussleistung_SV_W", "ET_Anschlussleistung_USV_W", "ET_Anschlussleistung_W", "ET_Anschlussleistung_ZSV_W", "ET_RJ45-Ports", "Fussboden OENORM B5220", "Geschoss", "H6020", "HT_Abluft_Digestorium_Stk", "HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "HT_Notdusche", "HT_Punktabsaugung_Stk", "HT_Raumtemp Sommer °C", "HT_Raumtemp Winter °C", "HT_Waermeabgabe_W", "IT Anbindung", "Laseranwendung", "N2O", "NGA", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "Strahlenanwendung", "USV", "VE_Wasser", "ZSV"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 6,
+                "Med-Gas/Labor-Gas": 11,
+                "Elektro": 14,
+                "Haustechnik/HKLS": 10,
+                "Anmerkungen": 5,
+                "Raum – sonstige": 1
+            },
+            "n": 53,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben_neu",
+            "text": "ohne Lab",
+            "url": "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung HKLS", "Anmerkung MedGas", "Anwendungsgruppe", "Bauabschnitt", "Bauetappe", "Bezeichnung", "CO2", "DL-10", "DL-tech", "EL_AV Steckdosen Stk", "EL_Laser 16A CEE Stk", "EL_Roentgen 16A CEE Stk", "EL_SV Steckdosen Stk", "EL_USV Steckdosen Stk", "EL_ZSV Steckdosen Stk", "ET_16A_3Phasig_Einzelanschluss", "ET_Anschlussleistung_AV_W", "ET_Anschlussleistung_SV_W", "ET_Anschlussleistung_USV_W", "ET_Anschlussleistung_W", "ET_Anschlussleistung_ZSV_W", "ET_RJ45-Ports", "Fussboden OENORM B5220", "Geschoss", "H6020", "HT_Abluft_Digestorium_Stk", "HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "HT_Notdusche", "HT_Punktabsaugung_Stk", "HT_Raumtemp Sommer °C", "HT_Raumtemp Winter °C", "HT_Waermeabgabe_W", "IT Anbindung", "Laseranwendung", "N2O", "NGA", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "Strahlenanwendung", "USV", "VE_Wasser", "ZSV"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 6,
+                "Med-Gas/Labor-Gas": 11,
+                "Elektro": 19,
+                "Haustechnik/HKLS": 10,
+                "Anmerkungen": 5,
+                "Raum – sonstige": 2
+            },
+            "n": 59,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben_neu",
+            "text": "VE",
+            "url": "pdf_createBauangabenBericht_A3Qeer_VE",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung HKLS", "Anmerkung MedGas", "Anwendungsgruppe", "Bauabschnitt", "Bauetappe", "CO2", "DL-10", "DL-tech", "EL_Roentgen 16A CEE Stk", "ET_Anschlussleistung_AV_W", "ET_Anschlussleistung_SV_W", "ET_Anschlussleistung_USV_W", "ET_Anschlussleistung_W", "ET_Anschlussleistung_ZSV_W", "Fussboden OENORM B5220", "Geschoss", "H6020", "HT_Abluft_Digestorium_Stk", "HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "HT_Notdusche", "HT_Punktabsaugung_Stk", "HT_Raumtemp Sommer °C", "HT_Waermeabgabe_W", "IT Anbindung", "Laseranwendung", "N2O", "NGA", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "Strahlenanwendung", "USV", "VE_Wasser", "ZSV"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 6,
+                "Med-Gas/Labor-Gas": 11,
+                "Elektro": 12,
+                "Haustechnik/HKLS": 9,
+                "Anmerkungen": 5,
+                "Raum – sonstige": 1
+            },
+            "n": 50,
+            "phase": "Vorentwurf",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben_neu",
+            "text": "CINO",
+            "url": "pdf_createBauangabenBericht_A3Qeer_CINO",
+            "fields": ["0", "1 Kreis O2", "2 Kreis O2", "AV", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung HKLS", "Anmerkung MedGas", "Bauetappe", "CO2", "DL-10", "EL_AV Steckdosen Stk", "EL_SV Steckdosen Stk", "ET_Anschlussleistung_W", "ET_RJ45-Ports", "Geschoss", "H6020", "HT_Abluft_Digestorium_Stk", "HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "HT_Abluft_Vakuumpumpe", "HT_Punktabsaugung_Stk", "HT_Waermeabgabe_W", "IT Anbindung", "N2", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "VE_Wasser"],
+            "groups": {
+                "Raumkopf/ID": 5,
+                "Elektro": 7,
+                "Haustechnik/HKLS": 8,
+                "Anmerkungen": 4,
+                "Med-Gas/Labor-Gas": 5,
+                "Allgemein": 1,
+                "Raum – sonstige": 1
+            },
+            "n": 31,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben",
+            "text": "PDF V1",
+            "url": "pdf_createBauangabenPDF",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung Geräte", "Anmerkung HKLS", "Anmerkung MedGas", "Anschaffungsjahr", "Anwendungsgruppe", "Anzahl", "Bauabschnitt", "Bauetappe", "Bezeichnung", "CO2", "DL-10", "DL-tech", "Einheit", "ElementID", "Fussboden OENORM B5220", "GHG", "Geschoss", "Gewerke_Nr", "H6020", "Hersteller", "IT Anbindung", "Inventarnummer", "Kategorie", "Kurzbeschreibung", "Laseranwendung", "N2O", "NGA", "Neu/Bestand", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "Seriennummer", "Standort", "Strahlenanwendung", "TABELLE_Elemente_idTABELLE_Elemente", "Typ", "USV", "Variante", "Verwendung", "Wert", "ZSV", "id"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 6,
+                "Elemente/Raumbuch/Sonstiges": 19,
+                "Med-Gas/Labor-Gas": 11,
+                "Haustechnik/HKLS": 1,
+                "Elektro": 6,
+                "Anmerkungen": 6,
+                "Raum – sonstige": 2
+            },
+            "n": 57,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben",
+            "text": "PDF V2",
+            "url": "pdf_createBauangabenV2PDF",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung Geräte", "Anmerkung HKLS", "Anmerkung MedGas", "Anschaffungsjahr", "Anwendungsgruppe", "Anzahl", "Bauabschnitt", "Bauetappe", "Bezeichnung", "CO2", "DL-10", "DL-tech", "Einheit", "ElementID", "Fussboden OENORM B5220", "GHG", "Geschoss", "Gewerke_Nr", "H6020", "Hersteller", "IT Anbindung", "Inventarnummer", "Kategorie", "Kurzbeschreibung", "Laseranwendung", "N2O", "NGA", "Neu/Bestand", "Nutzfläche", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "Seriennummer", "Standort", "Strahlenanwendung", "TABELLE_Elemente_idTABELLE_Elemente", "Typ", "USV", "Variante", "Verwendung", "Wert", "ZSV", "id"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 6,
+                "Elemente/Raumbuch/Sonstiges": 20,
+                "Med-Gas/Labor-Gas": 11,
+                "Haustechnik/HKLS": 1,
+                "Elektro": 6,
+                "Anmerkungen": 5,
+                "Raum – sonstige": 2
+            },
+            "n": 57,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben",
+            "text": "ohne Elemente-PDF",
+            "url": "pdf_createBauangabenWithoutElementsPDF",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung Geräte", "Anmerkung HKLS", "Anmerkung MedGas", "Anwendungsgruppe", "Bauabschnitt", "Bauetappe", "Bezeichnung", "CO2", "DL-10", "DL-tech", "Einheit", "Fussboden OENORM B5220", "Geschoss", "H6020", "IT Anbindung", "Kategorie", "Laseranwendung", "N2O", "NGA", "Nutzfläche", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "Strahlenanwendung", "USV", "Wert", "ZSV"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 6,
+                "Med-Gas/Labor-Gas": 11,
+                "Haustechnik/HKLS": 1,
+                "Elektro": 6,
+                "Anmerkungen": 6,
+                "Elemente/Raumbuch/Sonstiges": 4,
+                "Raum – sonstige": 2
+            },
+            "n": 42,
+            "phase": "Entwurf",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben",
+            "text": "Detail-PDF",
+            "url": "pdf_createBauangabenDetailPDF",
+            "fields": ["Abkuerzung", "Bauabschnitt", "Bauetappe", "Bezeichnung", "Einheit", "ElementID", "Geschoss", "Kategorie", "Neu/Bestand", "Nutzfläche", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SummevonAnzahl", "TABELLE_Elemente_idTABELLE_Elemente", "Variante", "Wert"],
+            "groups": {"Elemente/Raumbuch/Sonstiges": 10, "Raumkopf/ID": 6, "Allgemein": 1, "Raum – sonstige": 1},
+            "n": 18,
+            "phase": "",
+            "typ": "Raum-Detail"
+        }, {
+            "category": "bauangaben",
+            "text": "Lab-PDF",
+            "url": "pdf_createBauangabenLabPDF",
+            "fields": ["0", "AR_APs", "AR_Akustik", "AR_AnwesendePersonen", "AR_Belichtung-nat", "AR_Schwingungsklasse", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung Geräte", "Anmerkung HKLS", "Anmerkung MedGas", "Anwendungsgruppe", "Ar", "Bauetappe", "Bezeichnung", "CO2", "DL-10", "DL-5", "EL_Leistungsbedarf_W_pro_m2", "ET_EMV", "ET_EMV_ja-nein", "Einheit", "Funktionelle Raum Nr", "Fussboden OENORM B5220", "Gebaeude_Bestand", "Geschoss", "H2", "HT_Geraeteabluft m3/h", "HT_Kühlwasserleistung_W", "HT_Luftwechsel 1/h", "HT_Waermeabgabe", "He", "He-RF", "ISO", "IT Anbindung", "Kategorie", "Laseranwendung", "N2", "Nutzfläche", "Nutzfläche_Soll", "O2", "Projektname", "RaumNr_Bestand", "Raumbereich Nutzer", "Raumbezeichnung", "Raumhoehe", "Raumhoehe 2", "Raumhoehe_Soll", "Raumnr", "Raumtyp BH", "Strahlenanwendung", "USV", "VA", "Wert"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 9,
+                "Raum – sonstige": 7,
+                "Elektro": 7,
+                "Architektur/Statik": 5,
+                "Med-Gas/Labor-Gas": 10,
+                "Haustechnik/HKLS": 4,
+                "Anmerkungen": 6,
+                "Elemente/Raumbuch/Sonstiges": 4
+            },
+            "n": 58,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben",
+            "text": "Lab-Kurz-PDF",
+            "url": "pdf_createBauangabenLabKompaktPDF",
+            "fields": ["0", "AR_Belichtung-nat", "AR_Schwingungsklasse", "AV", "Abdunkelbarkeit", "Allgemeine Hygieneklasse", "Anschaffungsjahr", "Anspeisung ET Anzahl", "Anzahl", "Ar", "Ar Reinheit", "Ar l/min", "Bezeichnung", "CO2", "CO2 Reinheit", "CO2 l/min", "CO2_Melder", "DL ISO 8573", "DL l/min", "DL-tech", "EL_Leistungsbedarf_W_pro_m2", "ET_EMV_ja-nein", "Einheit", "ElementID", "Funktionelle Raum Nr", "Fussboden OENORM B5220", "GHG", "Ge Reinheit", "Geschoss", "Gewerke_Nr", "H2", "H2 Reinheit", "H2 l/min", "HT_Geraeteabluft m3/h", "HT_Kühlwasser", "HT_Kühlwasserleistung_W", "HT_Luftwechsel 1/h", "HT_Notdusche", "HT_Waermeabgabe", "He", "He l/min", "He-RF", "Hersteller", "IT Anbindung", "Inventarnummer", "Kategorie", "Kurzbeschreibung", "LN", "LN l/Tag", "Laseranwendung", "Laserklasse", "N2", "N2 Reinheit", "N2 l/min", "Neu/Bestand", "Nutzfläche", "Nutzfläche_Soll", "O2", "O2 Reinheit", "O2 l/min", "O2_Mangel", "Raumbereich Nutzer", "Raumbezeichnung", "Raumhoehe", "Raumhoehe 2", "Raumhoehe_Soll", "Raumnr", "Raumtyp BH", "SV", "Seriennummer", "Standort", "Strahlenanwendung", "TABELLE_Elemente_idTABELLE_Elemente", "Typ", "USV", "VA", "VA l/min", "Variante", "Verwendung", "Wasser Qual 1", "Wasser Qual 1 l/Tag", "Wasser Qual 2", "Wasser Qual 2 l/Tag", "Wasser Qual 3", "Wasser Qual 3 l/min", "Wert", "id"],
+            "groups": {
+                "Allgemein": 9,
+                "Haustechnik/HKLS": 6,
+                "Med-Gas/Labor-Gas": 22,
+                "Elektro": 6,
+                "Labor-Wasser": 3,
+                "Elemente/Raumbuch/Sonstiges": 21,
+                "Raum – sonstige": 13,
+                "Architektur/Statik": 2,
+                "Raumkopf/ID": 5
+            },
+            "n": 87,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "bauangaben",
+            "text": "Lab-ENT-PDF",
+            "url": "pdf_createBauangabenLabEntPDF",
+            "fields": ["0", "AR_Schwingungsklasse", "AV", "Abdunkelbarkeit", "Anzahl", "Ar", "Ar Reinheit", "Bauetappe", "Bezeichnung", "CO2", "CO2 Reinheit", "CO2_Melder", "DL ISO 8573", "DL-tech", "EL_Leistungsbedarf_W_pro_m2", "ET_16A_3Phasig_Einzelanschluss", "ET_32A_3Phasig_Einzelanschluss", "ET_5x10mm2_AV_Stk", "ET_5x10mm2_Digestorium_Stk", "ET_5x10mm2_USV_Stk", "ET_64A_3Phasig_Einzelanschluss", "ET_Digestorium_MSR_230V_SV_Stk", "ET_EMV", "ET_EMV_ja-nein", "ET_RJ45-Ports", "Einheit", "ElementID", "Funktionelle Raum Nr", "Fussboden OENORM B5220", "GHG", "Geschoss", "Gewerke_Nr", "H2", "HT_Abluft_Digestorium_Stk", "HT_Abluft_Esse_Stk", "HT_Abluft_Rauchgasabzug_Stk", "HT_Abluft_Schweissabsaugung_Stk", "HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "HT_Abluft_Vakuumpumpe", "HT_Kühlwasserleistung_W", "HT_Luftwechsel 1/h", "HT_Notdusche", "HT_Punktabsaugung_Stk", "HT_Spuele_Stk", "HT_Waermeabgabe", "He", "He Reinheit", "He-RF", "IT Anbindung", "Kategorie", "LN", "LN l/Tag", "Laseranwendung", "Laserklasse", "N2", "N2 Reinheit", "Neu/Bestand", "Nutzfläche", "O2", "O2 Reinheit", "O2_Mangel", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumhoehe", "Raumnr", "Raumtyp BH", "SV", "Strahlenanwendung", "USV", "VA", "Variante", "Wasser Qual 1", "Wasser Qual 1 l/Tag", "Wasser Qual 2", "Wasser Qual 2 l/Tag", "Wasser Qual 3", "Wasser Qual 3 l/min", "Wert", "id", "´H2 Reinheit"],
+            "groups": {
+                "Elektro": 15,
+                "Haustechnik/HKLS": 13,
+                "Med-Gas/Labor-Gas": 14,
+                "Labor-Wasser": 3,
+                "Elemente/Raumbuch/Sonstiges": 12,
+                "Raum – sonstige": 12,
+                "Allgemein": 6,
+                "Architektur/Statik": 1,
+                "Raumkopf/ID": 6
+            },
+            "n": 82,
+            "phase": "Entwurf",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "einreichung",
+            "text": "KH SAN EINR BBE",
+            "url": "pdf_createBereicht_SAN_EINR",
+            "fields": ["0", "Anwendungsgruppe", "Bauabschnitt", "Bauetappe", "Fussboden OENORM B5220", "Geschoss", "H6020", "HT_Spuele_Stk", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr"],
+            "groups": {"Allgemein": 2, "Raumkopf/ID": 6, "Haustechnik/HKLS": 2, "Raum – sonstige": 1, "Elektro": 1},
+            "n": 12,
+            "phase": "Einreichung",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "einreichung",
+            "text": "Lab-EIN-PDF",
+            "url": "pdf_createBauangabenLabEinrPDF_1",
+            "fields": ["0", "AP_Gefaehrdung", "AP_Geistige", "AR_APs", "AR_Schwingungsklasse", "AV", "Abdunkelbarkeit", "Anmerkung AR", "Anzahl", "Ar", "Belichtungsfläche", "Bezeichnung", "CO2", "CO2_Melder", "DL-tech", "Decke", "EL_Beleuchtungsstaerke", "EL_Not_Aus", "EL_Not_Aus_Funktion", "EL_Signaleinrichtung", "ET_16A_3Phasig_Einzelanschluss", "ET_32A_3Phasig_Einzelanschluss", "ET_64A_3Phasig_Einzelanschluss", "ET_EMV", "ET_EMV_ja-nein", "Einheit", "ElementID", "Fussboden", "Fussboden OENORM B5220", "Gaswarneinrichtung-Art", "Geschoss", "H2", "HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "HT_Belueftung", "HT_Entlueftung", "HT_Heizung", "HT_Kaelteabgabe_Typ", "HT_Kuehlung", "HT_Luftmenge m3/h", "HT_Luftwechsel 1/h", "HT_Notdusche", "HT_Raumtemp Sommer °C", "HT_Raumtemp Winter °C", "HT_Waermeabgabe_Typ", "He", "He-RF", "Kategorie", "LHe", "LN", "Laseranwendung", "Laserklasse", "N2", "Nutzfläche", "O2", "O2_Mangel", "PHY_Akustik_Schallgrad", "PHY_Akustik_T500", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumhoehe", "Raumnr", "Raumnummer_Nutzer", "SV", "Spezialgase", "Strahlenanwendung", "Taetigkeiten", "USV", "VA", "VEXAT_Zone", "Variante", "Volumen", "Wert", "id"],
+            "groups": {
+                "Raum – sonstige": 14,
+                "Raumkopf/ID": 5,
+                "Allgemein": 8,
+                "Elektro": 12,
+                "Architektur/Statik": 4,
+                "Med-Gas/Labor-Gas": 10,
+                "Haustechnik/HKLS": 13,
+                "Anmerkungen": 1,
+                "Elemente/Raumbuch/Sonstiges": 8
+            },
+            "n": 75,
+            "phase": "Einreichung",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "elementReports",
+            "text": "Elem./Raum (w/Bestand)",
+            "url": "pdf_createRoombookElWithoutBestand",
+            "fields": ["Anzahl", "Bauabschnitt", "Bezeichnung", "ElementID", "Geschoss", "Neu/Bestand", "Nutzfläche", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "Variante", "id"],
+            "groups": {"Elemente/Raumbuch/Sonstiges": 6, "Raumkopf/ID": 5, "Allgemein": 1, "Raum – sonstige": 1},
+            "n": 13,
+            "phase": "",
+            "typ": "Elemente/Raum"
+        }, {
+            "category": "elementReports",
+            "text": "inkl.Elem.Kommentar",
+            "url": "pdf_createRoombookElWithoutBestandWithComments",
+            "fields": ["Anzahl", "Bezeichnung", "Einheit", "ElementID", "GHG", "Gewerke_Nr", "Kategorie", "Kurzbeschreibung", "Neu/Bestand", "Variante", "Wert", "id"],
+            "groups": {"Elemente/Raumbuch/Sonstiges": 11, "Raum – sonstige": 1},
+            "n": 12,
+            "phase": "Entwurf",
+            "typ": "Elemente/Raum"
+        }, {
+            "category": "einbringwege",
+            "text": "Einbringwege Größgeräte",
+            "url": "pdf_createElementEinbringwegePDF",
+            "fields": ["Bezeichnung", "Raumbezeichnung", "Raumnr"],
+            "groups": {"Raumkopf/ID": 2, "Raum – sonstige": 1},
+            "n": 3,
+            "phase": "Entwurf",
+            "typ": "Einbringwege"
+        }, {
+            "category": "einbringwege",
+            "text": "Einbringwege Größgeräte (2)",
+            "url": "pdf_createElementEinbringwegePDF2",
+            "fields": ["Bezeichnung", "Einheit", "Raumbezeichnung", "Raumnr", "Wert", "el_Bez"],
+            "groups": {"Raumkopf/ID": 2, "Elemente/Raumbuch/Sonstiges": 3, "Raum – sonstige": 1},
+            "n": 6,
+            "phase": "Entwurf",
+            "typ": "Einbringwege"
+        }, {
+            "category": "oldReports",
+            "text": "RB PDF",
+            "url": "pdf_createRoombookPDF",
+            "fields": ["Anschaffungsjahr", "Anzahl", "Bezeichnung", "Einheit", "ElementID", "GHG", "Gewerke_Nr", "Hersteller", "Inventarnummer", "Kategorie", "Kurzbeschreibung", "Neu/Bestand", "Seriennummer", "Standort", "Typ", "Variante", "Verwendung", "Wert", "id"],
+            "groups": {"Elemente/Raumbuch/Sonstiges": 18, "Raum – sonstige": 1},
+            "n": 19,
+            "phase": "",
+            "typ": "Raumbuch"
+        }, {
+            "category": "oldReports",
+            "text": "0-PDF",
+            "url": "pdf_createRoombookWithout0PDF",
+            "fields": ["Anschaffungsjahr", "Anzahl", "Bezeichnung", "Einheit", "ElementID", "GHG", "Geschoss", "Gewerke_Nr", "Hersteller", "Inventarnummer", "Kategorie", "Kurzbeschreibung", "Neu/Bestand", "Seriennummer", "Standort", "TABELLE_Elemente_idTABELLE_Elemente", "Typ", "Variante", "Verwendung", "Wert", "id"],
+            "groups": {"Elemente/Raumbuch/Sonstiges": 19, "Raum – sonstige": 1, "Raumkopf/ID": 1},
+            "n": 21,
+            "phase": "",
+            "typ": "Raumbuch"
+        }, {
+            "category": "oldReports",
+            "text": "ohne Bestand-PDF",
+            "url": "pdf_createRoombookWithoutBestandPDF",
+            "fields": ["Anmerkung FunktionBO", "Anschaffungsjahr", "Anzahl", "Bauabschnitt", "Bauetappe", "Bezeichnung", "Einheit", "ElementID", "GHG", "Geschoss", "Gewerke_Nr", "Hersteller", "Inventarnummer", "Kategorie", "Kurzbeschreibung", "Neu/Bestand", "Nutzfläche", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "Seriennummer", "Standort", "TABELLE_Elemente_idTABELLE_Elemente", "Typ", "Variante", "Verwendung", "Wert", "id"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Elemente/Raumbuch/Sonstiges": 20,
+                "Raum – sonstige": 1,
+                "Allgemein": 1,
+                "Anmerkungen": 1
+            },
+            "n": 29,
+            "phase": "",
+            "typ": "Raumbuch"
+        }, {
+            "category": "oldReports",
+            "text": "0-ohne Bestand-PDF",
+            "url": "pdf_createRoombookWithout0WothoutBestandPDF",
+            "fields": ["Anschaffungsjahr", "Anzahl", "Bezeichnung", "Einheit", "ElementID", "GHG", "Geschoss", "Gewerke_Nr", "Hersteller", "Inventarnummer", "Kategorie", "Kurzbeschreibung", "Neu/Bestand", "Seriennummer", "Standort", "TABELLE_Elemente_idTABELLE_Elemente", "Typ", "Variante", "Verwendung", "Wert", "id"],
+            "groups": {"Elemente/Raumbuch/Sonstiges": 19, "Raum – sonstige": 1, "Raumkopf/ID": 1},
+            "n": 21,
+            "phase": "",
+            "typ": "Raumbuch"
+        }, {
+            "category": "oldReports",
+            "text": "Bauangaben-0-PDF",
+            "url": "pdf_createRoombookWithBauangabenWithout0PDF",
+            "fields": ["Anschaffungsjahr", "Anzahl", "Bezeichnung", "Einheit", "ElementID", "GHG", "Gewerke_Nr", "Hersteller", "Inventarnummer", "Kategorie", "Kurzbeschreibung", "Neu/Bestand", "Seriennummer", "Standort", "TABELLE_Elemente_idTABELLE_Elemente", "Typ", "Variante", "Verwendung", "Wert", "id"],
+            "groups": {"Elemente/Raumbuch/Sonstiges": 19, "Raum – sonstige": 1},
+            "n": 20,
+            "phase": "",
+            "typ": "Raumbuch"
+        }, {
+            "category": "oldReports",
+            "text": "Bauang. Großgeräte",
+            "url": "pdf_createVBM_Bericht",
+            "fields": ["0", "AR_Empf_Breite_cm", "AR_Empf_Hoehe_cm", "AR_Empf_Tiefe_cm", "AR_Flaechenlast_kgcm2", "AR_Statik_relevant", "AV", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung HKLS", "Anwendungsgruppe", "Bauabschnitt", "Bauetappe", "ET_Anschlussleistung_W", "Fussboden OENORM B5220", "Geschoss", "H6020", "HT_Kühlwasser", "HT_Raumtemp Sommer °C", "HT_Tempgradient_Ch", "HT_Waermeabgabe_W", "IT Anbindung", "Laseranwendung", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "SV", "Strahlenanwendung", "USV", "ZSV"],
+            "groups": {
+                "Haustechnik/HKLS": 5,
+                "Raumkopf/ID": 6,
+                "Allgemein": 3,
+                "Elektro": 7,
+                "Architektur/Statik": 5,
+                "Anmerkungen": 3,
+                "Raum – sonstige": 1
+            },
+            "n": 30,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "oldReports",
+            "text": "BO-PDF",
+            "url": "pdf_createBOPDF",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "Abdunkelbarkeit", "Anmerkung FunktionBO", "Anwendungsgruppe", "Bauabschnitt", "Bauetappe", "Bezeichnung", "DL-10", "DL-tech", "Geschoss", "H6020", "Laseranwendung", "Nutzfläche", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "Strahlenanwendung"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 4,
+                "Med-Gas/Labor-Gas": 8,
+                "Haustechnik/HKLS": 1,
+                "Elektro": 1,
+                "Raum – sonstige": 2,
+                "Anmerkungen": 1,
+                "Elemente/Raumbuch/Sonstiges": 1
+            },
+            "n": 24,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "oldReports",
+            "text": "VE-Gesamt-PDF",
+            "url": "pdf_createBericht_VE_PDF",
+            "fields": ["0", "1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AV", "Abdunkelbarkeit", "Anmerkung BauStatik", "Anmerkung Elektro", "Anmerkung FunktionBO", "Anmerkung HKLS", "Anmerkung MedGas", "Anschaffungsjahr", "Anwendungsgruppe", "Anzahl", "Bauabschnitt", "Bauetappe", "Belichtungsfläche", "Bezeichnung", "CO2", "DL-10", "DL-tech", "ElementID", "Fussboden", "Fussboden OENORM B5220", "GHG", "Geschoss", "Gewerke_Nr", "H6020", "Hersteller", "IT Anbindung", "Inventarnummer", "Kurzbeschreibung", "Laseranwendung", "N2O", "NGA", "Neu/Bestand", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumhoehe", "Raumhoehe 2", "Raumnr", "SV", "Seriennummer", "Standort", "Strahlenanwendung", "TABELLE_Elemente_idTABELLE_Elemente", "Typ", "USV", "Umfang", "Variante", "Verwendung", "ZSV", "id"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 8,
+                "Elemente/Raumbuch/Sonstiges": 16,
+                "Med-Gas/Labor-Gas": 11,
+                "Haustechnik/HKLS": 1,
+                "Elektro": 6,
+                "Anmerkungen": 5,
+                "Raum – sonstige": 3,
+                "Architektur/Statik": 1
+            },
+            "n": 57,
+            "phase": "Vorentwurf",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "oldReports",
+            "text": "ENT-Gesamt-PDF",
+            "url": "pdf_createBericht_ENT_PDF",
+            "fields": ["1 Kreis DL-5", "1 Kreis O2", "1 Kreis Va", "2 Kreis DL-5", "2 Kreis O2", "2 Kreis Va", "AR_Ausstattung", "AV", "Abdunkelbarkeit", "Anmerkung FunktionBO", "Anmerkung HKLS", "Anmerkung MedGas", "Anwendungsgruppe", "Aufenthaltsraum", "Bauabschnitt", "Bauetappe", "Belichtungsfläche", "CO2", "DL-10", "DL-tech", "EL_AV Steckdosen Stk", "EL_Beleuchtung 1 Stk", "EL_Beleuchtung 1 Typ", "EL_Beleuchtung 2 Stk", "EL_Beleuchtung 2 Typ", "EL_Beleuchtung 3 Stk", "EL_Beleuchtung 3 Typ", "EL_Beleuchtung 4 Stk", "EL_Beleuchtung 4 Typ", "EL_Beleuchtung 5 Stk", "EL_Beleuchtung 5 Typ", "EL_Beleuchtung dimmbar JA/NEIN", "EL_Bodendose Stk", "EL_Brandmelder Decke JA/NEIN", "EL_Brandmelder ZwDecke JA/NEIN", "EL_Doppeldatendose Stk", "EL_Einzel-Datendose Stk", "EL_Jalousie JA/NEIN", "EL_Kamera Stk", "EL_Lautsprecher Stk", "EL_Lichtfarbe K", "EL_Lichtruf - Steckmodul Stk", "EL_Lichtruf - Terminal Stk", "EL_Lichtschaltung BWM JA/NEIN", "EL_Notlicht RZL Stk", "EL_Notlicht SL Stk", "EL_SV Steckdosen Stk", "EL_USV Steckdosen Stk", "EL_Uhr - Decke Stk", "EL_Uhr - Wand Stk", "Fussboden", "Geschoss", "H6020", "HT_Fancoil W", "HT_Fussbodenkühlung W", "HT_Heizlast W", "HT_Kühldecke W", "HT_Kühllast W", "HT_Kühlung Lueftung W", "HT_Luftmenge m3/h", "HT_Luftwechsel", "HT_Raumtemp Sommer °C", "HT_Raumtemp Winter °C", "HT_Summe Kühlung W", "IT Anbindung", "Laseranwendung", "N20", "NGA", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumhoehe", "Raumhoehe 2", "Raumnr", "SV", "Strahlenanwendung", "USV", "Umfang", "Volumen", "ZSV"],
+            "groups": {
+                "Elektro": 36,
+                "Haustechnik/HKLS": 12,
+                "Med-Gas/Labor-Gas": 10,
+                "Raumkopf/ID": 6,
+                "Allgemein": 9,
+                "Architektur/Statik": 2,
+                "Anmerkungen": 3,
+                "Elemente/Raumbuch/Sonstiges": 1,
+                "Raum – sonstige": 1
+            },
+            "n": 80,
+            "phase": "Entwurf",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "oldReports",
+            "text": "Nutzer Formular",
+            "url": "pdf_createUserFormPDF",
+            "fields": ["0", "Abdunkelbarkeit", "Anmerkung FunktionBO", "Bauabschnitt", "Bauetappe", "Bezeichnung", "Geschoss", "Laseranwendung", "Nutzfläche", "Nutzfläche_Soll", "Projektname", "Raumbereich Nutzer", "Raumbezeichnung", "Raumnr", "Strahlenanwendung"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Allgemein": 5,
+                "Raum – sonstige": 2,
+                "Anmerkungen": 1,
+                "Elemente/Raumbuch/Sonstiges": 1
+            },
+            "n": 15,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }, {
+            "category": "oldReports",
+            "text": "KHI BT0",
+            "url": "pdf_createBerichtKHIMA40",
+            "fields": ["AR_AP_permanent", "AR_Boden_Rutschfestigkeit", "AR_Bodenaufbau", "AR_Nutzung_ON1800", "Anmerkung AR", "Anmerkung FunktionBO", "Anmerkung Kuechentechnik", "Anmerkung Rohrpost", "Anmerkung allgemein", "Bauabschnitt", "Bezeichnung", "Decke", "EL_Beleuchtungsstaerke", "Funktionelle Raum Nr", "Fussboden", "Fussboden OENORM B5220", "GMP", "Geschoss", "H6020", "HT_Luftmenge Abluft m3/h", "HT_Luftmenge m3/h", "HT_Luftwechsel 1/h", "HT_Raumtemp Sommer °C", "HT_Raumtemp Winter °C", "Nutzfläche", "Raumbereich Nutzer", "Raumbezeichnung", "Raumhoehe", "Raumhoehe 2", "Raumnummer_Nutzer", "Umfang"],
+            "groups": {
+                "Raumkopf/ID": 6,
+                "Haustechnik/HKLS": 6,
+                "Architektur/Statik": 6,
+                "Anmerkungen": 5,
+                "Allgemein": 5,
+                "Raum – sonstige": 2,
+                "Elektro": 1
+            },
+            "n": 31,
+            "phase": "",
+            "typ": "Raum-Parameter"
+        }],
+        "params": [{"key": "Bauabschnitt", "group": "Raumkopf/ID", "n": 17, "phaseSeed": ""}, {
+            "key": "Bauetappe",
+            "group": "Raumkopf/ID",
+            "n": 18,
+            "phaseSeed": ""
+        }, {"key": "Funktionelle Raum Nr", "group": "Raumkopf/ID", "n": 4, "phaseSeed": ""}, {
+            "key": "Geschoss",
+            "group": "Raumkopf/ID",
+            "n": 24,
+            "phaseSeed": ""
+        }, {"key": "Raumbereich Nutzer", "group": "Raumkopf/ID", "n": 22, "phaseSeed": ""}, {
+            "key": "Raumbezeichnung",
+            "group": "Raumkopf/ID",
+            "n": 24,
+            "phaseSeed": ""
+        }, {"key": "Raumnr", "group": "Raumkopf/ID", "n": 23, "phaseSeed": ""}, {
+            "key": "Raumnummer_Nutzer",
+            "group": "Raumkopf/ID",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "Abdunkelbarkeit",
+            "group": "Allgemein",
+            "n": 15,
+            "phaseSeed": ""
+        }, {
+            "key": "Allgemeine Hygieneklasse",
+            "group": "Allgemein",
+            "n": 9,
+            "phaseSeed": ""
+        }, {"key": "Aufenthaltsraum", "group": "Allgemein", "n": 1, "phaseSeed": ""}, {
+            "key": "Belichtungsfläche",
+            "group": "Allgemein",
+            "n": 3,
+            "phaseSeed": ""
+        }, {"key": "Fussboden OENORM B5220", "group": "Allgemein", "n": 15, "phaseSeed": ""}, {
+            "key": "GMP",
+            "group": "Allgemein",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "ISO", "group": "Allgemein", "n": 1, "phaseSeed": ""}, {
+            "key": "Laseranwendung",
+            "group": "Allgemein",
+            "n": 16,
+            "phaseSeed": ""
+        }, {"key": "Laserklasse", "group": "Allgemein", "n": 3, "phaseSeed": ""}, {
+            "key": "Nutzfläche",
+            "group": "Allgemein",
+            "n": 21,
+            "phaseSeed": ""
+        }, {"key": "Nutzfläche_Soll", "group": "Allgemein", "n": 3, "phaseSeed": ""}, {
+            "key": "Raumhoehe 2",
+            "group": "Allgemein",
+            "n": 5,
+            "phaseSeed": ""
+        }, {"key": "Strahlenanwendung", "group": "Allgemein", "n": 16, "phaseSeed": ""}, {
+            "key": "Umfang",
+            "group": "Allgemein",
+            "n": 3,
+            "phaseSeed": ""
+        }, {"key": "Volumen", "group": "Allgemein", "n": 2, "phaseSeed": ""}, {
+            "key": "AR_Akustik",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_AnwesendePersonen",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "AR_AP_permanent", "group": "Architektur/Statik", "n": 1, "phaseSeed": ""}, {
+            "key": "AR_APs",
+            "group": "Architektur/Statik",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Ausstattung",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Belichtung-nat",
+            "group": "Architektur/Statik",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Boden_Rutschfestigkeit",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Bodenaufbau",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Empf_Breite_cm",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Empf_Hoehe_cm",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Empf_Tiefe_cm",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Flaechenlast_kgcm2",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Nutzung_ON1800",
+            "group": "Architektur/Statik",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AR_Schwingungsklasse",
+            "group": "Architektur/Statik",
+            "n": 4,
+            "phaseSeed": ""
+        }, {"key": "AR_Statik_relevant", "group": "Architektur/Statik", "n": 1, "phaseSeed": ""}, {
+            "key": "Decke",
+            "group": "Architektur/Statik",
+            "n": 2,
+            "phaseSeed": ""
+        }, {"key": "Fussboden", "group": "Architektur/Statik", "n": 4, "phaseSeed": ""}, {
+            "key": "Anwendungsgruppe",
+            "group": "Elektro",
+            "n": 13,
+            "phaseSeed": "Vorentwurf"
+        }, {"key": "AV", "group": "Elektro", "n": 15, "phaseSeed": "Vorentwurf"}, {
+            "key": "EL_AV Steckdosen Stk",
+            "group": "Elektro",
+            "n": 3,
+            "phaseSeed": ""
+        }, {"key": "EL_Beleuchtung 1 Stk", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Beleuchtung 1 Typ",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "EL_Beleuchtung 2 Stk", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Beleuchtung 2 Typ",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "EL_Beleuchtung 3 Stk", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Beleuchtung 3 Typ",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "EL_Beleuchtung 4 Stk", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Beleuchtung 4 Typ",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "EL_Beleuchtung 5 Stk", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Beleuchtung 5 Typ",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Beleuchtung dimmbar JA/NEIN",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "EL_Beleuchtungsstaerke", "group": "Elektro", "n": 2, "phaseSeed": ""}, {
+            "key": "EL_Bodendose Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Brandmelder Decke JA/NEIN",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Brandmelder ZwDecke JA/NEIN",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Doppeldatendose Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Einzel-Datendose Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "EL_Jalousie JA/NEIN", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Kamera Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Laser 16A CEE Stk",
+            "group": "Elektro",
+            "n": 3,
+            "phaseSeed": "Entwurf"
+        }, {
+            "key": "EL_Lautsprecher Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Leistungsbedarf_W_pro_m2",
+            "group": "Elektro",
+            "n": 3,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Lichtfarbe K",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Lichtruf - Steckmodul Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Lichtruf - Terminal Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "EL_Lichtschaltung BWM JA/NEIN", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Not_Aus",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "EL_Not_Aus_Funktion", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Notlicht RZL Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Notlicht SL Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_Roentgen 16A CEE Stk",
+            "group": "Elektro",
+            "n": 4,
+            "phaseSeed": "Entwurf"
+        }, {"key": "EL_Signaleinrichtung", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_SV Steckdosen Stk",
+            "group": "Elektro",
+            "n": 3,
+            "phaseSeed": ""
+        }, {"key": "EL_Uhr - Decke Stk", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "EL_Uhr - Wand Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_USV Steckdosen Stk",
+            "group": "Elektro",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "EL_ZSV Steckdosen Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "ET_16A_3Phasig_Einzelanschluss",
+            "group": "Elektro",
+            "n": 3,
+            "phaseSeed": ""
+        }, {
+            "key": "ET_32A_3Phasig_Einzelanschluss",
+            "group": "Elektro",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "ET_5x10mm2_AV_Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "ET_5x10mm2_Digestorium_Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "ET_5x10mm2_USV_Stk",
+            "group": "Elektro",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "ET_64A_3Phasig_Einzelanschluss",
+            "group": "Elektro",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "ET_Anschlussleistung_AV_W",
+            "group": "Elektro",
+            "n": 4,
+            "phaseSeed": "Vorentwurf"
+        }, {
+            "key": "ET_Anschlussleistung_SV_W",
+            "group": "Elektro",
+            "n": 4,
+            "phaseSeed": "Vorentwurf"
+        }, {
+            "key": "ET_Anschlussleistung_USV_W",
+            "group": "Elektro",
+            "n": 4,
+            "phaseSeed": "Vorentwurf"
+        }, {
+            "key": "ET_Anschlussleistung_W",
+            "group": "Elektro",
+            "n": 6,
+            "phaseSeed": "Vorentwurf"
+        }, {
+            "key": "ET_Anschlussleistung_ZSV_W",
+            "group": "Elektro",
+            "n": 4,
+            "phaseSeed": "Vorentwurf"
+        }, {"key": "ET_Digestorium_MSR_230V_SV_Stk", "group": "Elektro", "n": 1, "phaseSeed": ""}, {
+            "key": "ET_EMV",
+            "group": "Elektro",
+            "n": 3,
+            "phaseSeed": ""
+        }, {"key": "ET_EMV_ja-nein", "group": "Elektro", "n": 4, "phaseSeed": ""}, {
+            "key": "ET_RJ45-Ports",
+            "group": "Elektro",
+            "n": 5,
+            "phaseSeed": "Entwurf"
+        }, {"key": "IT Anbindung", "group": "Elektro", "n": 14, "phaseSeed": "Vorentwurf"}, {
+            "key": "SV",
+            "group": "Elektro",
+            "n": 14,
+            "phaseSeed": "Vorentwurf"
+        }, {"key": "USV", "group": "Elektro", "n": 14, "phaseSeed": "Vorentwurf"}, {
+            "key": "ZSV",
+            "group": "Elektro",
+            "n": 10,
+            "phaseSeed": "Vorentwurf"
+        }, {"key": "H6020", "group": "Haustechnik/HKLS", "n": 14, "phaseSeed": ""}, {
+            "key": "HT_Abluft_Digestorium_Stk",
+            "group": "Haustechnik/HKLS",
+            "n": 6,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Abluft_Esse_Stk",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Abluft_Rauchgasabzug_Stk",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Abluft_Schweissabsaugung_Stk",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Abluft_Sicherheitsschrank_Stk",
+            "group": "Haustechnik/HKLS",
+            "n": 7,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Abluft_Sicherheitsschrank_Unterbau_Stk",
+            "group": "Haustechnik/HKLS",
+            "n": 7,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Abluft_Vakuumpumpe",
+            "group": "Haustechnik/HKLS",
+            "n": 2,
+            "phaseSeed": ""
+        }, {"key": "HT_Belueftung", "group": "Haustechnik/HKLS", "n": 1, "phaseSeed": ""}, {
+            "key": "HT_Entlueftung",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Fancoil W",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Fussbodenkühlung W",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Geraeteabluft m3/h",
+            "group": "Haustechnik/HKLS",
+            "n": 2,
+            "phaseSeed": ""
+        }, {"key": "HT_Heizlast W", "group": "Haustechnik/HKLS", "n": 1, "phaseSeed": ""}, {
+            "key": "HT_Heizung",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "HT_Kaelteabgabe_Typ", "group": "Haustechnik/HKLS", "n": 1, "phaseSeed": ""}, {
+            "key": "HT_Kuehlung",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "HT_Kühldecke W", "group": "Haustechnik/HKLS", "n": 1, "phaseSeed": ""}, {
+            "key": "HT_Kühllast W",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Kühlung Lueftung W",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Kühlwasser",
+            "group": "Haustechnik/HKLS",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Kühlwasserleistung_W",
+            "group": "Haustechnik/HKLS",
+            "n": 3,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Luftmenge Abluft m3/h",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "HT_Luftmenge m3/h", "group": "Haustechnik/HKLS", "n": 3, "phaseSeed": ""}, {
+            "key": "HT_Luftwechsel",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "HT_Luftwechsel 1/h", "group": "Haustechnik/HKLS", "n": 5, "phaseSeed": ""}, {
+            "key": "HT_Notdusche",
+            "group": "Haustechnik/HKLS",
+            "n": 7,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Punktabsaugung_Stk",
+            "group": "Haustechnik/HKLS",
+            "n": 6,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Raumtemp Sommer °C",
+            "group": "Haustechnik/HKLS",
+            "n": 8,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Raumtemp Winter °C",
+            "group": "Haustechnik/HKLS",
+            "n": 6,
+            "phaseSeed": ""
+        }, {"key": "HT_Spuele_Stk", "group": "Haustechnik/HKLS", "n": 2, "phaseSeed": ""}, {
+            "key": "HT_Summe Kühlung W",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Tempgradient_Ch",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Waermeabgabe",
+            "group": "Haustechnik/HKLS",
+            "n": 3,
+            "phaseSeed": ""
+        }, {
+            "key": "HT_Waermeabgabe_Typ",
+            "group": "Haustechnik/HKLS",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "HT_Waermeabgabe_W", "group": "Haustechnik/HKLS", "n": 6, "phaseSeed": ""}, {
+            "key": "VE_Wasser",
+            "group": "Haustechnik/HKLS",
+            "n": 5,
+            "phaseSeed": ""
+        }, {"key": "1 Kreis DL-5", "group": "Med-Gas/Labor-Gas", "n": 10, "phaseSeed": ""}, {
+            "key": "1 Kreis O2",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 11,
+            "phaseSeed": ""
+        }, {"key": "1 Kreis Va", "group": "Med-Gas/Labor-Gas", "n": 10, "phaseSeed": ""}, {
+            "key": "2 Kreis DL-5",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 10,
+            "phaseSeed": ""
+        }, {"key": "2 Kreis O2", "group": "Med-Gas/Labor-Gas", "n": 11, "phaseSeed": ""}, {
+            "key": "2 Kreis Va",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 10,
+            "phaseSeed": ""
+        }, {"key": "Ar", "group": "Med-Gas/Labor-Gas", "n": 4, "phaseSeed": ""}, {
+            "key": "Ar l/min",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "CO2", "group": "Med-Gas/Labor-Gas", "n": 14, "phaseSeed": ""}, {
+            "key": "CO2 l/min",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "DL l/min", "group": "Med-Gas/Labor-Gas", "n": 1, "phaseSeed": ""}, {
+            "key": "DL-10",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 12,
+            "phaseSeed": ""
+        }, {"key": "DL-5", "group": "Med-Gas/Labor-Gas", "n": 1, "phaseSeed": ""}, {
+            "key": "DL-tech",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 13,
+            "phaseSeed": ""
+        }, {"key": "H2", "group": "Med-Gas/Labor-Gas", "n": 4, "phaseSeed": ""}, {
+            "key": "H2 l/min",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "He", "group": "Med-Gas/Labor-Gas", "n": 4, "phaseSeed": ""}, {
+            "key": "He l/min",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "He-RF", "group": "Med-Gas/Labor-Gas", "n": 4, "phaseSeed": ""}, {
+            "key": "LN",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 3,
+            "phaseSeed": ""
+        }, {"key": "LN l/Tag", "group": "Med-Gas/Labor-Gas", "n": 2, "phaseSeed": ""}, {
+            "key": "N2",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 5,
+            "phaseSeed": ""
+        }, {"key": "N2 l/min", "group": "Med-Gas/Labor-Gas", "n": 1, "phaseSeed": ""}, {
+            "key": "N2O",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 8,
+            "phaseSeed": ""
+        }, {"key": "NGA", "group": "Med-Gas/Labor-Gas", "n": 9, "phaseSeed": ""}, {
+            "key": "O2",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 4,
+            "phaseSeed": ""
+        }, {"key": "O2 l/min", "group": "Med-Gas/Labor-Gas", "n": 1, "phaseSeed": ""}, {
+            "key": "VA",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 4,
+            "phaseSeed": ""
+        }, {"key": "VA l/min", "group": "Med-Gas/Labor-Gas", "n": 1, "phaseSeed": ""}, {
+            "key": "Wasser Qual 1 l/Tag",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "Wasser Qual 2 l/Tag",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "Wasser Qual 3 l/min",
+            "group": "Med-Gas/Labor-Gas",
+            "n": 2,
+            "phaseSeed": ""
+        }, {"key": "Wasser Qual 1", "group": "Labor-Wasser", "n": 2, "phaseSeed": ""}, {
+            "key": "Wasser Qual 2",
+            "group": "Labor-Wasser",
+            "n": 2,
+            "phaseSeed": ""
+        }, {"key": "Wasser Qual 3", "group": "Labor-Wasser", "n": 2, "phaseSeed": ""}, {
+            "key": "Anmerkung allgemein",
+            "group": "Anmerkungen",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "Anmerkung AR", "group": "Anmerkungen", "n": 2, "phaseSeed": ""}, {
+            "key": "Anmerkung BauStatik",
+            "group": "Anmerkungen",
+            "n": 10,
+            "phaseSeed": ""
+        }, {
+            "key": "Anmerkung Elektro",
+            "group": "Anmerkungen",
+            "n": 11,
+            "phaseSeed": ""
+        }, {
+            "key": "Anmerkung FunktionBO",
+            "group": "Anmerkungen",
+            "n": 14,
+            "phaseSeed": ""
+        }, {"key": "Anmerkung Geräte", "group": "Anmerkungen", "n": 4, "phaseSeed": ""}, {
+            "key": "Anmerkung HKLS",
+            "group": "Anmerkungen",
+            "n": 12,
+            "phaseSeed": ""
+        }, {
+            "key": "Anmerkung Kuechentechnik",
+            "group": "Anmerkungen",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "Anmerkung MedGas", "group": "Anmerkungen", "n": 11, "phaseSeed": ""}, {
+            "key": "Anmerkung Rohrpost",
+            "group": "Anmerkungen",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "0", "group": "Elemente/Raumbuch/Sonstiges", "n": 17, "phaseSeed": ""}, {
+            "key": "Abkuerzung",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "Anschaffungsjahr",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 9,
+            "phaseSeed": ""
+        }, {
+            "key": "Anspeisung ET Anzahl",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "Anzahl",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 13,
+            "phaseSeed": ""
+        }, {
+            "key": "AP_Gefaehrdung",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "AP_Geistige",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "Ar Reinheit",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "Bezeichnung",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 22,
+            "phaseSeed": ""
+        }, {
+            "key": "CO2 Reinheit",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "CO2_Melder",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 3,
+            "phaseSeed": ""
+        }, {"key": "DL ISO 8573", "group": "Elemente/Raumbuch/Sonstiges", "n": 2, "phaseSeed": ""}, {
+            "key": "Einheit",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 15,
+            "phaseSeed": ""
+        }, {"key": "el_Bez", "group": "Elemente/Raumbuch/Sonstiges", "n": 1, "phaseSeed": ""}, {
+            "key": "ElementID",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 14,
+            "phaseSeed": ""
+        }, {
+            "key": "Gaswarneinrichtung-Art",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "Ge Reinheit",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "Gebaeude_Bestand",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "Gewerke_Nr", "group": "Elemente/Raumbuch/Sonstiges", "n": 11, "phaseSeed": ""}, {
+            "key": "GHG",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 11,
+            "phaseSeed": ""
+        }, {
+            "key": "H2 Reinheit",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "He Reinheit",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "Hersteller", "group": "Elemente/Raumbuch/Sonstiges", "n": 9, "phaseSeed": ""}, {
+            "key": "id",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 13,
+            "phaseSeed": ""
+        }, {
+            "key": "Inventarnummer",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 9,
+            "phaseSeed": ""
+        }, {
+            "key": "Kategorie",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 14,
+            "phaseSeed": ""
+        }, {"key": "Kurzbeschreibung", "group": "Elemente/Raumbuch/Sonstiges", "n": 10, "phaseSeed": ""}, {
+            "key": "LHe",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "N2 Reinheit", "group": "Elemente/Raumbuch/Sonstiges", "n": 2, "phaseSeed": ""}, {
+            "key": "N20",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "Neu/Bestand",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 13,
+            "phaseSeed": ""
+        }, {"key": "O2 Reinheit", "group": "Elemente/Raumbuch/Sonstiges", "n": 2, "phaseSeed": ""}, {
+            "key": "O2_Mangel",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 3,
+            "phaseSeed": ""
+        }, {
+            "key": "PHY_Akustik_Schallgrad",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "PHY_Akustik_T500",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "Projektname",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 10,
+            "phaseSeed": ""
+        }, {
+            "key": "Raumhoehe",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 7,
+            "phaseSeed": ""
+        }, {
+            "key": "Raumhoehe_Soll",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 2,
+            "phaseSeed": ""
+        }, {
+            "key": "RaumNr_Bestand",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "Raumtyp BH",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 3,
+            "phaseSeed": ""
+        }, {
+            "key": "Seriennummer",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 9,
+            "phaseSeed": ""
+        }, {"key": "Spezialgase", "group": "Elemente/Raumbuch/Sonstiges", "n": 1, "phaseSeed": ""}, {
+            "key": "Standort",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 9,
+            "phaseSeed": ""
+        }, {
+            "key": "SummevonAnzahl",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {
+            "key": "TABELLE_Elemente_idTABELLE_Elemente",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 9,
+            "phaseSeed": ""
+        }, {
+            "key": "Taetigkeiten",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 1,
+            "phaseSeed": ""
+        }, {"key": "Timestamp", "group": "Elemente/Raumbuch/Sonstiges", "n": 1, "phaseSeed": ""}, {
+            "key": "Typ",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 9,
+            "phaseSeed": ""
+        }, {"key": "Variante", "group": "Elemente/Raumbuch/Sonstiges", "n": 14, "phaseSeed": ""}, {
+            "key": "Verwendung",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 9,
+            "phaseSeed": ""
+        }, {"key": "VEXAT_Zone", "group": "Elemente/Raumbuch/Sonstiges", "n": 1, "phaseSeed": ""}, {
+            "key": "Wert",
+            "group": "Elemente/Raumbuch/Sonstiges",
+            "n": 15,
+            "phaseSeed": ""
+        }, {"key": "´H2 Reinheit", "group": "Elemente/Raumbuch/Sonstiges", "n": 1, "phaseSeed": ""}],
+        "groupsOrder": ["Raumkopf/ID", "Allgemein", "Architektur/Statik", "Elektro", "Haustechnik/HKLS", "Med-Gas/Labor-Gas", "Labor-Wasser", "Anmerkungen", "Raum – sonstige", "Elemente/Raumbuch/Sonstiges"],
+        "groupLabels": {
+            "Raumkopf/ID": "Kopf/ID",
+            "Allgemein": "Allgem.",
+            "Architektur/Statik": "Arch./Statik",
+            "Elektro": "Elektro",
+            "Haustechnik/HKLS": "HKLS",
+            "Med-Gas/Labor-Gas": "MedGas/Gas",
+            "Labor-Wasser": "Lab-H₂O",
+            "Anmerkungen": "Anm.",
+            "Raum – sonstige": "Raum-sonst.",
+            "Elemente/Raumbuch/Sonstiges": "Elem./RB"
+        }
+    };
+    const PHASES = ["", "Vorentwurf", "Entwurf", "Einreichung", "Ausschreibung/Tender", "Ausführungsplanung", "Ausführung"];
+    const CATLBL = {
+        "bauangaben_neu": "Bauangaben Neu",
+        "bauangaben": "Bauangaben",
+        "einreichung": "Einreichung",
+        "elementReports": "Element-/Raum Berichte",
+        "einbringwege": "Einbringwege",
+        "oldReports": "Historische Berichte"
+    };
+    const GROUPS = DATA.groupsOrder, GLBL = DATA.groupLabels;
+    const LSKEY = "parameterphasen_v1";
+
+    function loadPhases() {
+        let saved = {};
+        try {
+            saved = JSON.parse(localStorage.getItem(LSKEY) || "{}");
+        } catch (e) {
+        }
+        DATA.params.forEach(p => {
+            p.cur = (p.key in saved) ? saved[p.key] : (p.phaseSeed || "");
+        });
+    }
+
+    function savePhases() {
+        const o = {};
+        DATA.params.forEach(p => {
+            if (p.cur) o[p.key] = p.cur;
+        });
+        try {
+            localStorage.setItem(LSKEY, JSON.stringify(o));
+        } catch (e) {
+        }
+    }
+
+    function phaseSelect(p) {
+        const seeded = p.phaseSeed ? ' title="aus Code vorbelegt (isnotVorentwurf)"' : '';
+        let s = '<select class="form-select form-select-sm phase-sel"' + seeded + ' data-key="' + encodeURIComponent(p.key) + '">';
+        PHASES.forEach(ph => {
+            s += '<option value="' + ph + '"' + (ph === p.cur ? ' selected' : '') + '>' + (ph || '—') + '</option>';
+        });
+        return s + '</select>';
+    }
+
+    function badge(n) {
+        if (!n) return '<span class="text-muted">·</span>';
+        let c = n >= 15 ? 'text-bg-danger' : n >= 8 ? 'text-bg-warning' : n >= 3 ? 'text-bg-info' : 'text-bg-secondary';
+        return '<span class="badge ' + c + '">' + n + '</span>';
+    }
+
+    $(document).ready(function () {
+        loadPhases();
+        const reps = DATA.reports;
+
+        // ---------- Parameter & Phase ----------
+        const pcols = [{title: 'Gruppe'}, {title: 'Parameter'}, {title: 'Phase (ab)'}, {
+            title: '#Ber.',
+            className: 'text-end'
+        }]
+            .concat(reps.map(r => ({title: r.text, className: 'text-center', orderable: false})));
+        const pdata = DATA.params.map(p => {
+            const row = [GLBL[p.group] || p.group, p.key, phaseSelect(p), p.n];
+            reps.forEach(r => row.push(r.fields.indexOf(p.key) >= 0 ? '<span class="text-success fw-bold">✓</span>' : ''));
+            return row;
+        });
+        const tblP = $('#tblParam').DataTable({
+            data: pdata, columns: pcols, order: [[0, 'asc'], [1, 'asc']],
+            scrollX: true, scrollY: '62vh', scrollCollapse: true, paging: false,
+            fixedColumns: {start: 3},
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'colvis',
+                    className: 'btn btn-sm btn-outline-secondary',
+                    text: 'Berichtsspalten',
+                    columns: ':gt(3)'
+                },
+                {
+                    extend: 'csvHtml5',
+                    className: 'btn btn-sm btn-outline-secondary',
+                    text: 'CSV',
+                    title: 'Parameter-Phasen'
+                }
+            ]
+        });
+        $('#tblParam').on('change', '.phase-sel', function () {
+            const key = decodeURIComponent($(this).data('key'));
+            const p = DATA.params.find(x => x.key === key);
+            if (p) p.cur = $(this).val();
+            savePhases();
+            renderPhaseBoard();
+        });
+
+        // Filter Gruppe
+        const gsel = $('#fltGroup');
+        GROUPS.forEach(g => gsel.append('<option value="' + (GLBL[g] || g) + '">' + (GLBL[g] || g) + '</option>'));
+        gsel.on('change', function () {
+            tblP.column(0).search(this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '', true, false).draw();
+        });
+        // Filter Phase (custom, liest aktuellen Select-Wert)
+        const phsel = $('#fltPhase');
+        PHASES.filter(x => x).forEach(ph => phsel.append('<option value="' + ph + '">' + ph + '</option>'));
+        phsel.append('<option value="__none__">(ohne Phase)</option>');
+        // Filter Bericht
+        const rsel = $('#fltReport');
+        reps.forEach((r, i) => rsel.append('<option value="' + i + '">' + r.text + '</option>'));
+        let repFilter = null, phaseFilter = '';
+        // eigener kombinierter Filter
+        $.fn.dataTable.ext.search.push(function (settings, rowData, dataIndex) {
+            if (settings.nTable.id !== 'tblParam') return true;
+            const p = DATA.params[dataIndex];
+            if (repFilter !== null) {
+                const r = reps[repFilter];
+                if (r.fields.indexOf(p.key) < 0) return false;
+            }
+            if (phaseFilter) {
+                const cur = p.cur || '';
+                if (phaseFilter === '__none__') {
+                    if (cur !== '') return false;
+                } else if (cur !== phaseFilter) return false;
+            }
+            return true;
+        });
+        rsel.on('change', function () {
+            repFilter = this.value === '' ? null : parseInt(this.value, 10);
+            tblP.draw();
+        });
+        phsel.on('change', function () {
+            phaseFilter = this.value;
+            tblP.draw();
+        });
+
+        // ---------- Gruppen-Matrix ----------
+        const gcols = [{title: 'Bericht'}, {title: 'Kategorie'}].concat(GROUPS.map(g => ({
+            title: GLBL[g] || g,
+            className: 'text-center'
+        }))).concat([{title: 'Σ', className: 'text-end'}]);
+        const gdata = reps.map(r => {
+            const row = [r.text, CATLBL[r.category]];
+            GROUPS.forEach(g => row.push(badge(r.groups[g] || 0)));
+            row.push('<strong>' + r.n + '</strong>');
+            return row;
+        });
+        $('#tblGruppen').DataTable({
+            data: gdata, columns: gcols, pageLength: 40, order: [[1, 'asc'], [0, 'asc']], dom: 'Bfrtip',
+            buttons: [{
+                extend: 'csvHtml5',
+                className: 'btn btn-sm btn-outline-secondary',
+                text: 'CSV',
+                title: 'Gruppen-Matrix'
+            }]
+        });
+
+        // ---------- Katalog ----------
+        const kdata = reps.map(r => [CATLBL[r.category], r.text, r.url, r.typ, r.n]);
+        $('#tblKatalog').DataTable({
+            data: kdata, pageLength: 40, order: [[0, 'asc'], [1, 'asc']],
+            columns: [{title: 'Kategorie'}, {title: 'Bericht'}, {title: 'Script'}, {title: 'Typ'}, {
+                title: '#Felder',
+                className: 'text-end'
+            }],
+            dom: 'Bfrtip', buttons: [
+                {
+                    extend: 'csvHtml5',
+                    className: 'btn btn-sm btn-outline-secondary',
+                    text: 'CSV',
+                    title: 'Berichtskatalog'
+                },
+                {
+                    extend: 'excelHtml5',
+                    className: 'btn btn-sm btn-outline-secondary',
+                    text: 'Excel',
+                    title: 'Berichtskatalog'
+                }]
+        });
+
+        // ---------- Phasen-Übersicht ----------
+        renderPhaseBoard();
+        $('#btnExport').on('click', function () {
+            const o = {};
+            DATA.params.forEach(p => {
+                o[p.key] = {
+                    gruppe: p.group,
+                    phase: p.cur || "",
+                    berichte: reps.filter(r => r.fields.indexOf(p.key) >= 0).map(r => r.text)
+                };
+            });
+            const blob = new Blob([JSON.stringify(o, null, 2)], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'parameter_phasen.json';
+            a.click();
+        });
+        $('#btnReset').on('click', function () {
+            try {
+                localStorage.removeItem(LSKEY);
+            } catch (e) {
+            }
+            location.reload();
+        });
+    });
+
+    function renderPhaseBoard() {
+        const board = $('#phaseBoard');
+        board.empty();
+        const order = PHASES.slice(1).concat(['(ohne Phase)']);
+        const byPhase = {};
+        order.forEach(p => byPhase[p] = []);
+        DATA.params.forEach(p => {
+            const ph = p.cur || '(ohne Phase)';
+            (byPhase[ph] = byPhase[ph] || []).push(p);
+        });
+        order.forEach(ph => {
+            const list = byPhase[ph] || [];
+            // nach Gruppe bündeln
+            const byG = {};
+            list.forEach(p => {
+                (byG[p.group] = byG[p.group] || []).push(p.key);
+            });
+            let body = '';
+            GROUPS.forEach(g => {
+                if (byG[g]) body += '<li class="list-group-item py-1"><span class="badge text-bg-light me-1">' + (GLBL[g] || g) + '</span>' + byG[g].map(k => '<span class="me-2">' + k + '</span>').join('') + '</li>';
+            });
+            if (!body) body = '<li class="list-group-item text-muted py-1">—</li>';
+            const head = ph === '(ohne Phase)' ? 'text-bg-light' : 'text-bg-primary';
+            board.append('<div class="col-12 col-xl-6"><div class="card h-100"><div class="card-header py-1 d-flex justify-content-between ' + head + '"><strong>' + ph + '</strong><span class="badge text-bg-secondary">' + list.length + ' Param.</span></div><ul class="list-group list-group-flush small">' + body + '</ul></div></div>');
+        });
+    }
+</script>
+</body>
+</html>

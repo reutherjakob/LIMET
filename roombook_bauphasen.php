@@ -1,18 +1,21 @@
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides("");
 $sessionProjektId = isset($_SESSION['projectID']) ? (int)$_SESSION['projectID'] : 0;
 $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
+require_once '_utils/_csrf.php';
 ?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
     <title>Bauphasen</title>
 
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
@@ -148,7 +151,7 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     const API = 'api_bauphasen.php';
     let currentProjektId = <?= $sessionProjektId ?>;

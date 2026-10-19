@@ -1,7 +1,7 @@
 <?php
 // 25 FX
 header('Content-Type: application/json');
-require_once "utils/_utils.php";
+require_once "_utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Vergabesumme,

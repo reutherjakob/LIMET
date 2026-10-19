@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once "utils/_utils.php";
+require_once "_utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -113,7 +113,7 @@ r.`CO2 l/min`,
 r.`CO2 Reinheit`,
 r.`O2 l/min`,
 r.`O2 Reinheit`,
-r.Laserklasse,
+r.Laserklasse, 
 r.`Fussboden OENORM B5220`,
 r.HT_Notdusche,
 r.VE_Wasser,
@@ -180,6 +180,9 @@ r.`PHY_Akustik_Schallgrad`,
 r.`EL_Laser 32A Stk`,
 r.`Raumtyp BH`, 
 r.Nutzfläche_Soll,
+r.HT_Kühlwasser,
+r.HT_Spezialabwasser,
+r.Nutzwasser, 
 COALESCE(el.element_mask, 0) AS element_mask   -- ← FIX: aus dem JOIN, nicht Subquery
 FROM tabelle_räume r 
 INNER JOIN tabelle_funktionsteilstellen f 

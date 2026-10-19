@@ -1,10 +1,11 @@
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, 
         tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
         FROM tabelle_elemente
+        where Kurzbeschreibung not like '%(NICHT VERWENDEN)%' 
         ORDER BY tabelle_elemente.ElementID;";
 
 $result = $mysqli->query($sql);

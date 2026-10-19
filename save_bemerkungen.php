@@ -1,12 +1,10 @@
 <?php
-ob_start();
-require_once 'utils/_utils.php';
-init_page_serversides();
-
+// 26 FX - unchecked#
+require_once '_utils/_utils.php';
+check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
 $projectID = (int)($_SESSION["projectID"] ?? 0);
-
-ob_clean();
-session_write_close();
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

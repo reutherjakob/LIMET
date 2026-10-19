@@ -1,7 +1,8 @@
 <?php
-require_once 'utils/_utils.php';
-include 'utils/_format.php';
+require_once '_utils/_utils.php';
+include '_utils/_format_money.php';
 init_page_serversides("No Redirect");
+require_once '_utils/_csrf.php';
 
 $mysqli = utils_connect_sql();
 
@@ -88,6 +89,10 @@ $rows_proj = $mysqli->query("SELECT idTABELLE_Projekte, Interne_Nr, Projektname 
 $rows_lief = $mysqli->query("SELECT idTABELLE_Lieferant, Lieferant FROM tabelle_lieferant ORDER BY Lieferant")->fetch_all(MYSQLI_ASSOC);
 
 $mysqli->close();
+
+$excelfilenameGerätepreise = buildExcelFilename('Gerätepreise');
+$excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -95,7 +100,8 @@ $mysqli->close();
     <title>Preise</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -111,7 +117,7 @@ $mysqli->close();
           rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
 </head>
 <body>
 
@@ -249,17 +255,22 @@ $mysqli->close();
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($rows_wp as $row):
+                            <?php
+                            $wartungsartLabels = [
+                                '0' => 'Betriebswartung',
+                                '1' => 'Vollwartung',
+                                '2' => 'Medizintechnikgarantie',
+                                '3' => 'Ersatzteilgarantie'
+                            ];
+                            foreach ($rows_wp as $row):
                                 $menge = (int)($row['Menge'] ?? 0);
                                 $preis_jahr = (float)($row['WartungspreisProJahr'] ?? 0);
                                 $datum = $row['Datum'] ? date('d.m.Y', strtotime($row['Datum'])) : '–';
                                 $datum_iso = $row['Datum'] ? date('Y-m-d', strtotime($row['Datum'])) : '';
                                 $datum_order = $row['Datum'] ? strtotime($row['Datum']) : 0;
                                 $artRaw = $row['Wartungsart'] ?? '';
-                                $art = htmlspecialchars(
-                                    $artRaw === '0' ? 'Betriebswartung' : 'Vollwartung',
-                                    ENT_QUOTES, 'UTF-8'
-                                );
+                                $artRaw = (string)($row['Wartungsart'] ?? '');
+                                $art = htmlspecialchars($wartungsartLabels[$artRaw] ?? '', ENT_QUOTES, 'UTF-8');
                                 ?>
                                 <tr data-wartung-id="<?= (int)$row['idtabelle_wartungspreise'] ?>"
                                     data-geraete-id="<?= (int)($row['idTABELLE_Geraete'] ?? 0) ?>"
@@ -429,6 +440,8 @@ $mysqli->close();
                     <select class="form-select" id="wp_wartungsart">
                         <option value="0">Betriebswartung</option>
                         <option value="1">Vollwartung</option>
+                        <option value="2">Medizintechnikgarantie</option>
+                        <option value="3">Ersatzteilgarantie</option>
                     </select>
                 </div>
 
@@ -469,8 +482,13 @@ $mysqli->close();
     </div>
 </div>
 
-
+<script src="_utils/_utils.js"></script>
 <script>
+
+    const $excelfilenameGerätepreise = <?= json_encode($excelfilenameGerätepreise) ?>;
+    const $excelfilenameWartungspreise = <?= json_encode($excelfilenameWartungspreise) ?>;
+
+
     $(document).ready(function () {
 
         // ── Tooltip init ──────────────────────────────────────────────────────
@@ -482,8 +500,10 @@ $mysqli->close();
             buttons: [
                 {
                     extend: 'excel',
-                    className: 'btn btn-sm btn-outline-dark bg-white',
+                    className: 'btn btn-sm btn-outline-dark bg-white fas fa-file-excel',
                     title: 'Gerätepreise',
+                    filename: $excelfilenameGerätepreise,
+
                     exportOptions: {columns: ':not(:last-child)'}
                 },
                 {
@@ -500,7 +520,9 @@ $mysqli->close();
                 bottomStart: 'info',
                 bottomEnd: ['pageLength', 'paging']
             },
-            language: {url: 'https://cdn.datatables.net/plug-ins/2.2.1/i18n/de-DE.json'},
+            language: {
+                url: "/_utils/de-DE.json"
+            },
             pageLength: 25,
             lengthMenu: [25, 50, 100, 500, -1],
             order: [[4, 'desc']],
@@ -526,8 +548,9 @@ $mysqli->close();
             buttons: [
                 {
                     extend: 'excel',
-                    className: 'btn btn-sm btn-outline-dark bg-white',
+                    className: 'btn btn-sm btn-outline-dark bg-white ',
                     title: 'Wartungspreise',
+                    filename: $excelfilenameWartungspreise,
                     exportOptions: {columns: ':not(:last-child)'}
                 },
                 {
@@ -536,7 +559,10 @@ $mysqli->close();
                     title: 'Wartungspreise',
                     exportOptions: {columns: ':not(:last-child)'}
                 },
-                {extend: 'colvis', className: 'btn btn-sm btn-outline-dark bg-white'}
+                {
+                    extend: 'colvis',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                }
             ],
             layout: {
                 topStart: 'buttons',
@@ -544,7 +570,9 @@ $mysqli->close();
                 bottomStart: 'info',
                 bottomEnd: ['pageLength', 'paging']
             },
-            language: {url: 'https://cdn.datatables.net/plug-ins/2.2.1/i18n/de-DE.json'},
+            language: {
+                url: "/_utils/de-DE.json"
+            },
             pageLength: 25,
             lengthMenu: [25, 50, 100, 500, -1],
             order: [[0, 'asc']],
@@ -669,28 +697,26 @@ $mysqli->close();
         });
 
         $('#saveWartungspreis').on('click', function () {
-            const wartungID = $('#wp_wartungID').val();
-            const geraeteID = $('#wp_geraeteID').val();
+            const servicePriceID = $('#wp_wartungID').val();
             const date = $('#wp_date').val();
-            const art = $('#wp_wartungsart').val();
+            const wartungsart = $('#wp_wartungsart').val();
             const menge = $('#wp_menge').val();
-            const preis = $('#wp_preis').val().replace(',', '.');
+            const wartungspreis = $('#wp_preis').val().replace(',', '.');
             const info = $('#wp_info').val();
             const lieferant = $('#wp_lieferant').val();
 
-            if (!date || !menge || !preis) {
+            if (!date || !menge || !wartungspreis) {
                 alert('Bitte Datum, Menge und Preis ausfüllen!');
                 return;
             }
 
             $.ajax({
-                url: 'updateWartungspreis.php',
+                url: 'updateDeviceServicePrice.php',
                 type: 'POST',
-                data: {wartungID, geraeteID, date, wartungsart: art, menge, preis, info, lieferant},
+                data: {servicePriceID, date, info, menge, wartungsart, wartungspreis, lieferant},
                 success: function (data) {
                     bootstrap.Modal.getInstance(document.getElementById('editWartungspreisModal')).hide();
                     makeToaster(data.trim(), true);
-                    // Reload table row or full table as needed
                 },
                 error: function () {
                     makeToaster('Fehler beim Speichern!', false);
@@ -700,6 +726,5 @@ $mysqli->close();
 
     });
 </script>
-<script src="utils/_utils.js"></script>
 </body>
 </html>

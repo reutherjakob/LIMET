@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Nutzerwünsche">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/costsOverall.php" beforeDir="false" afterPath="$PROJECT_DIR$/costsOverall.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/costsRoomArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/costsRoomArea.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getElementeJeRaumbereich.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementeJeRaumbereich.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookElementsPerArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementsPerArea.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/saveRoomProperties.php" beforeDir="false" afterPath="$PROJECT_DIR$/saveRoomProperties.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/login.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +32,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="bildsupport" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -49,24 +41,31 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {}
 }</component>
-  <component name="GitHubPullRequestState">{
-  &quot;prStates&quot;: [
+  <component name="GitHubPullRequestState"><![CDATA[{
+  "prStates": [
     {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOKp49586-evgR&quot;,
-        &quot;number&quot;: 70
+      "id": {
+        "id": "PR_kwDOKp49586-evgR",
+        "number": 70
       },
-      &quot;lastSeen&quot;: 1769170786755
+      "lastSeen": 1769170786755
     },
     {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOKp49587G04hY&quot;,
-        &quot;number&quot;: 74
+      "id": {
+        "id": "PR_kwDOKp49587G04hY",
+        "number": 74
       },
-      &quot;lastSeen&quot;: 1776066601063
+      "lastSeen": 1776066601063
+    },
+    {
+      "id": {
+        "id": "PR_kwDOKp49588AAAABJRmN9A",
+        "number": 83
+      },
+      "lastSeen": 1792394801827
     }
   ]
-}</component>
+}]]></component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://FuxWolfgang@github.com/reutherjakob/LIMET.git&quot;,
@@ -83,6 +82,7 @@
     &quot;repository&quot;: &quot;LIMET&quot;
   }
 }</component>
+  <component name="PhpDebugGeneral" listening_started="true" />
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
@@ -98,35 +98,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JavaScript Debug._utils.php.executor&quot;: &quot;Run&quot;,
-    &quot;PHP Web Page.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#81 on ifc__excel__import&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug._utils.php.executor": "Run",
+    "PHP Web Page.Unnamed.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
+    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
+    "git-widget-placeholder": "#83 on Werq__08__26",
+    "last_opened_file_path": "C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "database.query.execution",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mariadb&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mariadb"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;TEXT&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
@@ -136,11 +136,11 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\LOGIN" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_wip" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs\custom_report" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs\" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\img_support" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\DB_analysis" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils\DB_analysis" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -148,7 +148,7 @@
       <command value=" cla+" />
     </option>
   </component>
-  <component name="RunManager" selected="PHP Script._pdf_createBericht_Custom_utils.php">
+  <component name="RunManager" selected="JavaScript Debug._utils.php">
     <configuration name="_utils.php" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="https://work.limet-rb.com/index.php/https://work.limet-rb.com/utils/_utils.php">
       <method v="2" />
     </configuration>
@@ -162,7 +162,7 @@
       <list>
         <item itemvalue="PHP Script._pdf_createBericht_Custom_utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
-        <item itemvalue="JavaScript Debug._utils.php" />
+        <item itemvalue="PHP Script._pdf_createBericht_Custom_utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
       </list>
@@ -618,110 +618,65 @@
       <workItem from="1784627844961" duration="1656000" />
       <workItem from="1784720095449" duration="642000" />
       <workItem from="1784724338029" duration="1166000" />
-    </task>
-    <task id="LOCAL-00202" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772120700217</created>
-      <option name="number" value="00202" />
-      <option name="presentableId" value="LOCAL-00202" />
-      <option name="project" value="LOCAL" />
-      <updated>1772120700217</updated>
-    </task>
-    <task id="LOCAL-00203" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772198533985</created>
-      <option name="number" value="00203" />
-      <option name="presentableId" value="LOCAL-00203" />
-      <option name="project" value="LOCAL" />
-      <updated>1772198533985</updated>
-    </task>
-    <task id="LOCAL-00204" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772198883112</created>
-      <option name="number" value="00204" />
-      <option name="presentableId" value="LOCAL-00204" />
-      <option name="project" value="LOCAL" />
-      <updated>1772198883112</updated>
-    </task>
-    <task id="LOCAL-00205" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772198890887</created>
-      <option name="number" value="00205" />
-      <option name="presentableId" value="LOCAL-00205" />
-      <option name="project" value="LOCAL" />
-      <updated>1772198890887</updated>
-    </task>
-    <task id="LOCAL-00206" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
-      <option name="closed" value="true" />
-      <created>1773063177644</created>
-      <option name="number" value="00206" />
-      <option name="presentableId" value="LOCAL-00206" />
-      <option name="project" value="LOCAL" />
-      <updated>1773063177644</updated>
-    </task>
-    <task id="LOCAL-00207" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
-      <option name="closed" value="true" />
-      <created>1773313076179</created>
-      <option name="number" value="00207" />
-      <option name="presentableId" value="LOCAL-00207" />
-      <option name="project" value="LOCAL" />
-      <updated>1773313076180</updated>
-    </task>
-    <task id="LOCAL-00208" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
-      <option name="closed" value="true" />
-      <created>1773762182244</created>
-      <option name="number" value="00208" />
-      <option name="presentableId" value="LOCAL-00208" />
-      <option name="project" value="LOCAL" />
-      <updated>1773762182244</updated>
-    </task>
-    <task id="LOCAL-00209" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
-      <option name="closed" value="true" />
-      <created>1773765613024</created>
-      <option name="number" value="00209" />
-      <option name="presentableId" value="LOCAL-00209" />
-      <option name="project" value="LOCAL" />
-      <updated>1773765613024</updated>
-    </task>
-    <task id="LOCAL-00210" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
-      <option name="closed" value="true" />
-      <created>1774451347187</created>
-      <option name="number" value="00210" />
-      <option name="presentableId" value="LOCAL-00210" />
-      <option name="project" value="LOCAL" />
-      <updated>1774451347187</updated>
-    </task>
-    <task id="LOCAL-00211" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
-      <option name="closed" value="true" />
-      <created>1775120557522</created>
-      <option name="number" value="00211" />
-      <option name="presentableId" value="LOCAL-00211" />
-      <option name="project" value="LOCAL" />
-      <updated>1775120557523</updated>
-    </task>
-    <task id="LOCAL-00212" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
-      <option name="closed" value="true" />
-      <created>1775120575783</created>
-      <option name="number" value="00212" />
-      <option name="presentableId" value="LOCAL-00212" />
-      <option name="project" value="LOCAL" />
-      <updated>1775120575783</updated>
-    </task>
-    <task id="LOCAL-00213" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
-      <option name="closed" value="true" />
-      <created>1775121462967</created>
-      <option name="number" value="00213" />
-      <option name="presentableId" value="LOCAL-00213" />
-      <option name="project" value="LOCAL" />
-      <updated>1775121462967</updated>
-    </task>
-    <task id="LOCAL-00214" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
-      <option name="closed" value="true" />
-      <created>1775140582465</created>
-      <option name="number" value="00214" />
-      <option name="presentableId" value="LOCAL-00214" />
-      <option name="project" value="LOCAL" />
-      <updated>1775140582465</updated>
+      <workItem from="1785913576801" duration="4112000" />
+      <workItem from="1785922618376" duration="7427000" />
+      <workItem from="1786002621768" duration="10534000" />
+      <workItem from="1786091918946" duration="1808000" />
+      <workItem from="1786366300273" duration="1099000" />
+      <workItem from="1786373189393" duration="150000" />
+      <workItem from="1786375969429" duration="438000" />
+      <workItem from="1786433092076" duration="5555000" />
+      <workItem from="1786519579121" duration="5015000" />
+      <workItem from="1786524882042" duration="6959000" />
+      <workItem from="1786536432311" duration="13002000" />
+      <workItem from="1786612030979" duration="18927000" />
+      <workItem from="1786696531605" duration="5220000" />
+      <workItem from="1787570405144" duration="7300000" />
+      <workItem from="1787641625514" duration="17556000" />
+      <workItem from="1787729007792" duration="10099000" />
+      <workItem from="1787757988427" duration="421000" />
+      <workItem from="1787815558826" duration="13296000" />
+      <workItem from="1787833008617" duration="6349000" />
+      <workItem from="1787901949353" duration="10729000" />
+      <workItem from="1788167938574" duration="167000" />
+      <workItem from="1788178794707" duration="714000" />
+      <workItem from="1788247447192" duration="14220000" />
+      <workItem from="1788340590277" duration="4462000" />
+      <workItem from="1788346213673" duration="6854000" />
+      <workItem from="1788420373296" duration="10305000" />
+      <workItem from="1788440956514" duration="11000" />
+      <workItem from="1788441297397" duration="5179000" />
+      <workItem from="1788506064499" duration="7628000" />
+      <workItem from="1788765220663" duration="5822000" />
+      <workItem from="1788782431845" duration="3376000" />
+      <workItem from="1788859142853" duration="4545000" />
+      <workItem from="1788873301521" duration="1839000" />
+      <workItem from="1788960415466" duration="3457000" />
+      <workItem from="1789032108468" duration="5193000" />
+      <workItem from="1789044686790" duration="5013000" />
+      <workItem from="1789112415499" duration="2564000" />
+      <workItem from="1789372122413" duration="16588000" />
+      <workItem from="1789464631890" duration="2578000" />
+      <workItem from="1789546036128" duration="12431000" />
+      <workItem from="1789631183278" duration="4587000" />
+      <workItem from="1789636479890" duration="19387000" />
+      <workItem from="1789715141727" duration="11845000" />
+      <workItem from="1790582601395" duration="3244000" />
+      <workItem from="1790765726380" duration="10199000" />
+      <workItem from="1790839990470" duration="5325000" />
+      <workItem from="1791186474239" duration="9826000" />
+      <workItem from="1791285673657" duration="7595000" />
+      <workItem from="1791296148923" duration="4322000" />
+      <workItem from="1791371146540" duration="3002000" />
+      <workItem from="1791450581111" duration="13317000" />
+      <workItem from="1791801293442" duration="5437000" />
+      <workItem from="1791874988357" duration="21744000" />
+      <workItem from="1791979215544" duration="7408000" />
+      <workItem from="1791986880045" duration="221000" />
+      <workItem from="1792049341201" duration="12663000" />
+      <workItem from="1792134727463" duration="624000" />
+      <workItem from="1792153845032" duration="2149000" />
+      <workItem from="1792394617346" duration="9803000" />
     </task>
     <task id="LOCAL-00215" summary="SF Umfrage DONE.&#10;&#10;LOGIN speichert nun VERSCHLÜSSELTE Userdaten in tabelle_user.&#10;&#10;Bugfixes.&#10;&#10;KOR Seiten -&gt; LeitungsAbgleich seite - Ansatz dark mode.">
       <option name="closed" value="true" />
@@ -1011,7 +966,111 @@
       <option name="project" value="LOCAL" />
       <updated>1782311504561</updated>
     </task>
-    <option name="localTasksCounter" value="251" />
+    <task id="LOCAL-00251" summary="LosElemente Übersicht nachbearbeitet. &#10;KDo Icons.&#10;Wartungpreise editierbar. &#10;Ages 0er Vars löschen.">
+      <option name="closed" value="true" />
+      <created>1785938472352</created>
+      <option name="number" value="00251" />
+      <option name="presentableId" value="LOCAL-00251" />
+      <option name="project" value="LOCAL" />
+      <updated>1785938472353</updated>
+    </task>
+    <task id="LOCAL-00252" summary="Bilder zu Projekten Zuordnen.">
+      <option name="closed" value="true" />
+      <created>1786442262561</created>
+      <option name="number" value="00252" />
+      <option name="presentableId" value="LOCAL-00252" />
+      <option name="project" value="LOCAL" />
+      <updated>1786442262561</updated>
+    </task>
+    <task id="LOCAL-00253" summary="Wartungpreise update">
+      <option name="closed" value="true" />
+      <created>1786460901543</created>
+      <option name="number" value="00253" />
+      <option name="presentableId" value="LOCAL-00253" />
+      <option name="project" value="LOCAL" />
+      <updated>1786460901543</updated>
+    </task>
+    <task id="LOCAL-00254" summary="Wartungpreise update">
+      <option name="closed" value="true" />
+      <created>1787757587794</created>
+      <option name="number" value="00254" />
+      <option name="presentableId" value="LOCAL-00254" />
+      <option name="project" value="LOCAL" />
+      <updated>1787757587794</updated>
+    </task>
+    <task id="LOCAL-00255" summary="REports/Spargefeld">
+      <option name="closed" value="true" />
+      <created>1787902365431</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1787902365433</updated>
+    </task>
+    <task id="LOCAL-00256" summary="Reports/Spargefeld">
+      <option name="closed" value="true" />
+      <created>1788340850786</created>
+      <option name="number" value="00256" />
+      <option name="presentableId" value="LOCAL-00256" />
+      <option name="project" value="LOCAL" />
+      <updated>1788340850786</updated>
+    </task>
+    <task id="LOCAL-00257" summary="Budget Timeline finished">
+      <option name="closed" value="true" />
+      <created>1788429721116</created>
+      <option name="number" value="00257" />
+      <option name="presentableId" value="LOCAL-00257" />
+      <option name="project" value="LOCAL" />
+      <updated>1788429721116</updated>
+    </task>
+    <task id="LOCAL-00258" summary="Budget Timeline,&#10;Custom Report">
+      <option name="closed" value="true" />
+      <created>1788863564539</created>
+      <option name="number" value="00258" />
+      <option name="presentableId" value="LOCAL-00258" />
+      <option name="project" value="LOCAL" />
+      <updated>1788863564539</updated>
+    </task>
+    <task id="LOCAL-00259" summary="Excel Filenames überall;&#10;Bugfixes,">
+      <option name="closed" value="true" />
+      <created>1789563870799</created>
+      <option name="number" value="00259" />
+      <option name="presentableId" value="LOCAL-00259" />
+      <option name="project" value="LOCAL" />
+      <updated>1789563870799</updated>
+    </task>
+    <task id="LOCAL-00260" summary="Umstrukturierung der Files;&#10;Ungenutzen Code entfernt; &#10;CRSF überall;&#10;KOR Änderungsverfolgung Seite;">
+      <option name="closed" value="true" />
+      <created>1792057106754</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1792057106754</updated>
+    </task>
+    <task id="LOCAL-00261" summary="Bugfixes">
+      <option name="closed" value="true" />
+      <created>1792136619213</created>
+      <option name="number" value="00261" />
+      <option name="presentableId" value="LOCAL-00261" />
+      <option name="project" value="LOCAL" />
+      <updated>1792136619213</updated>
+    </task>
+    <task id="LOCAL-00262" summary="Bugfixes">
+      <option name="closed" value="true" />
+      <created>1792394634708</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1792394634708</updated>
+    </task>
+    <task id="LOCAL-00263" summary="Bugfixes">
+      <option name="closed" value="true" />
+      <created>1792403155415</created>
+      <option name="number" value="00263" />
+      <option name="presentableId" value="LOCAL-00263" />
+      <option name="project" value="LOCAL" />
+      <updated>1792403155415</updated>
+    </task>
+    <option name="localTasksCounter" value="264" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1041,16 +1100,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="..." />
-    <MESSAGE value="Feedback Center getuned.&#10;lose TOdo finalisiert.&#10;Kommentar bei preise ergänzt.&#10;Alle lose workflocw gefixed.&#10;RB specs verbessert. und sortiert.&#10;raum kopie erweitert. &#10;&#10;RB texte verbessert." />
-    <MESSAGE value="Merge remote-tracking branch 'origin/roombookElementsPerArea' into roombookElementsPerArea&#10;&#10;# Conflicts:&#10;#&#9;Nutzerumfrage/form_fields_forNutzergruppe1.php" />
-    <MESSAGE value="Bugfixes;&#10;Sf Umfrage;&#10;Kor Liste" />
-    <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header." />
-    <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.&#10;element Admin - pagelength option ergänzt." />
-    <MESSAGE value="Ui upgrade while workin" />
-    <MESSAGE value="Fixes, VErbesserungen,&#10;upgrades Nutezrkatalog" />
-    <MESSAGE value="Element parameter Änderungen Website" />
-    <MESSAGE value=" ifc_import" />
     <MESSAGE value="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden" />
     <MESSAGE value="IFC Quest - import seems to work" />
     <MESSAGE value="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots." />
@@ -1066,7 +1115,17 @@
     <MESSAGE value=" KHI und KOR upgrade - zudem SF import Fixes" />
     <MESSAGE value="Workflow Editing" />
     <MESSAGE value="Nutzerwünsche" />
-    <option name="LAST_COMMIT_MESSAGE" value="Nutzerwünsche" />
+    <MESSAGE value="LosElemente Übersicht nachbearbeitet. &#10;KDo Icons.&#10;Wartungpreise editierbar. &#10;Ages 0er Vars löschen." />
+    <MESSAGE value="Bilder zu Projekten Zuordnen." />
+    <MESSAGE value="Wartungpreise update" />
+    <MESSAGE value="REports/Spargefeld" />
+    <MESSAGE value="Reports/Spargefeld" />
+    <MESSAGE value="Budget Timeline finished" />
+    <MESSAGE value="Budget Timeline,&#10;Custom Report" />
+    <MESSAGE value="Excel Filenames überall;&#10;Bugfixes," />
+    <MESSAGE value="Umstrukturierung der Files;&#10;Ungenutzen Code entfernt; &#10;CRSF überall;&#10;KOR Änderungsverfolgung Seite;" />
+    <MESSAGE value="Bugfixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1078,7 +1137,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/PDFs/pdf_createMTTabelle.php</url>
-          <line>137</line>
+          <line>139</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -1107,7 +1166,7 @@
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/Nutzerumfrage/save_room_data.php</url>
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/save_room_data.php</url>
           <line>82</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
@@ -1118,7 +1177,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/get_rb_specs_data.php</url>
-          <line>182</line>
+          <line>184</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -1130,6 +1189,21 @@
           <url>file://$PROJECT_DIR$/saveRoomElementComment.php</url>
           <line>19</line>
           <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php</url>
+          <line>347</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php</url>
+          <line>453</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/roombook_image_support/projectGallery.js</url>
+          <line>252</line>
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

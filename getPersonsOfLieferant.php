@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-include "utils/_utils.php";
+include "_utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -73,7 +73,7 @@ echo "</tbody></table>";
             info: false,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
             }
         });
     });

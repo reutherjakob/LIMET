@@ -1,7 +1,9 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
+
+
 $deviceID = getPostInt('deviceID', 0);
 $_SESSION["deviceID"] = $deviceID;
 $mysqli = utils_connect_sql();
@@ -21,7 +23,7 @@ $result = $stmt->get_result();
 
 echo "<table class='table table-striped table-sm' id='tableStandardDeviceParameters'  >
 	<thead><tr>
-        <th>Kategorie</th>
+    <th>Kategorie</th>
 	<th>Parameter</th>
 	<th>Wert</th>
 	<th>Einheit</th>
@@ -30,13 +32,12 @@ echo "<table class='table table-striped table-sm' id='tableStandardDeviceParamet
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td>" . $row["Kategorie"] . "</td>";
-    echo "<td>" . $row["Bezeichnung"] . "</td>";
-    echo "<td>" . $row["Wert"] . "</td>";
-    echo "<td>" . $row["Einheit"] . "</td>";
+    echo "<td>" . h($row["Kategorie"]) . "</td>";
+    echo "<td>" . h($row["Bezeichnung"]) . "</td>";
+    echo "<td>" . h($row["Wert"] ). "</td>";
+    echo "<td>" . h($row["Einheit"] ). "</td>";
     echo "</tr>";
 }
-
 echo "</tbody></table>";
 echo "<button type='button' id='" . $deviceID . "' class='btn btn-success btn-sm mt-2' value='ParameterOvertakeBtn' data-bs-toggle='modal' data-bs-target='#parameterOvertakeModal'><span class='glyphicon glyphicon-open-file'></span> Parameter übernehmen</button>";
 echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-warning btn-sm mt-2 ms-2' value='ParameterBearbeiten' data-bs-toggle='modal' data-bs-target='#changeDeviceParameters'><span class='glyphicon glyphicon-open-file'></span> Parameter ändern</button>";
@@ -111,12 +112,21 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
                                             <tbody>";
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-outline-danger btn-sm' value='deleteDEVICEParameter'><i class='fas fa-minus'></i></button></td>";
-                                        echo "<td>" . $row["Kategorie"] . "</td>";
-                                        echo "<td>" . $row["Bezeichnung"] . "</td>";
-                                        echo "<td><input type='text' id='wert" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Wert"] . "'></td>";
-                                        echo "<td><input type='text' id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "'></td>";
-                                        echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveDEVICEParameter'><i class='far fa-save'></i></button></td>";
+                                        echo "<td><button type='button' id='" .
+                                           
+                                            h($row["tabelle_parameter_idTABELLE_Parameter"]) . "' class='btn btn-outline-danger btn-sm' value='deleteDEVICEParameter'><i class='fas fa-minus'></i></button></td>";
+                                        echo "<td>" .
+                                            h($row["Kategorie"]) . "</td>";
+                                        echo "<td>" .
+                                            h($row["Bezeichnung"]) . "</td>";
+                                        echo "<td><input type='text' id='wert" .
+                                            h($row["tabelle_parameter_idTABELLE_Parameter"]) . "' value='" .
+                                            h($row["Wert"]) . "'></td>";
+                                        echo "<td><input type='text' id='einheit" .
+                                            h($row["tabelle_parameter_idTABELLE_Parameter"]) . "' value='" .
+                                            h($row["Einheit"]) . "'></td>";
+                                        echo "<td><button type='button' id='" .
+                                            h($row["tabelle_parameter_idTABELLE_Parameter"]) . "' class='btn btn-warning btn-sm' value='saveDEVICEParameter'><i class='far fa-save'></i></button></td>";
                                         echo "</tr>";
                                     }
                                     echo "</tbody></table>";
@@ -165,9 +175,12 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
                                         <tbody>";
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td><button type='button' id='" . $row["idTABELLE_Parameter"] . "' class='btn btn-outline-success btn-sm' value='addDEVICEParameter'><i class='fas fa-plus'></i></button></td>";
-                                        echo "<td>" . $row["Kategorie"] . "</td>";
-                                        echo "<td>" . $row["Bezeichnung"] . "</td>";
+                                        echo "<td><button type='button' id='" .
+                                            h($row["idTABELLE_Parameter"]) . "' class='btn btn-outline-success btn-sm' value='addDEVICEParameter'><i class='fas fa-plus'></i></button></td>";
+                                        echo "<td>" .
+                                            h($row["Kategorie"]) . "</td>";
+                                        echo "<td>" .
+                                            h($row["Bezeichnung"]) . "</td>";
                                         echo "</tr>";
                                     }
                                     echo "</tbody></table>";
@@ -186,17 +199,16 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
-
     deviceID = '<?php echo $deviceID; ?>';
+
     new DataTable('#tableStandardDeviceParameters', {
         paging: false,
-
         searching: false,
         info: false,
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+             url: "/_utils/de-DE.json",
         },
         scrollY: '20vh',
         scrollCollapse: true,
@@ -221,7 +233,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
             }
         ],
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+             url: "/_utils/de-DE.json",
         },
         scrollY: '20vh',
         scrollCollapse: true,
@@ -232,6 +244,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
             bottomEnd: 'search'
         },
         initComplete: function () {
+
             $('#CardHeaderGeräteParameter .xxx').remove();
             $('#GeräteparameterCard .dt-search label').remove();
             $('#GeräteparameterCard .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx float-right").appendTo('#CardHeaderGeräteParameter');
@@ -251,7 +264,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
             }
         ],
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+             url: "/_utils/de-DE.json",
         },
         scrollY: '20vh',
         scrollCollapse: true,
@@ -308,7 +321,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
                     data: {"parameterID": id},
                     type: "POST",
                     success: function (data) {
-                        alert(data);
+                         makeToaster(data, true);
                         $.ajax({
                             url: "getDeviceParameters.php",
                             type: "POST",
@@ -326,7 +339,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
                     }
                 });
             } else {
-                alert("Fehler beim Löschen des Parameters!");
+                makeToaster("Fehler beim Löschen des Parameters!", false);
             }
         }
     });

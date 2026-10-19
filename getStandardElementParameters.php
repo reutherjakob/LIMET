@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -57,7 +57,8 @@ $stmt->close();
             paging: false,
             searching: false,
             info: false,
-            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json", search: ""}
+            language: {url: '/_utils/de-DE.json' 
+, search: ""}
         });
     });
 

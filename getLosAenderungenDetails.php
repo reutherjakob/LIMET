@@ -1,5 +1,5 @@
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $id = getPostInt('id', 0);
 $lotID = getPostInt('lotID', 0);

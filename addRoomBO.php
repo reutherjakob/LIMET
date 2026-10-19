@@ -1,7 +1,11 @@
 <?php
-// 10 -2025 FX
-require_once "utils/_utils.php";
+// 26 FX - unchecked
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
+
 $mysqli = utils_connect_sql();
 
 

@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -70,7 +70,7 @@ $mysqli->close();
             }
         ],
         language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/de-DE.json'
+            url: '/_utils/de-DE.json' 
         },
         scrollY: '20vh',
         scrollCollapse: true
@@ -125,7 +125,7 @@ $mysqli->close();
                 data: {"ansprechpersonenID": ansprechpersonenID, "anwesenheit": anwesenheit, "groupID": groupID},
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkgruppenMembers.php",
                         type: "POST",
@@ -156,7 +156,7 @@ $mysqli->close();
                 data: {"ansprechpersonenID": ansprechpersonenID, "verteiler": verteiler, "groupID": groupID},
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkgruppenMembers.php",
                         type: "POST",

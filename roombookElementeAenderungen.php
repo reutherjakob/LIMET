@@ -1,11 +1,19 @@
+<?php require_once '_utils/_utils.php';
+init_page_serversides("");
+$excelfilename = buildExcelFilename('Element_Aenderungen');
+require_once '_utils/_csrf.php';
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <title>Element Änderungen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -29,16 +37,16 @@
 <body>
 
 <div id="limet-navbar"></div>
-<?php require_once 'utils/_utils.php';
-init_page_serversides(""); ?>
 <div class="container-fluid">
     <div class="row row-cols-2">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-4 d-flex ">
+                        <div class="col-4 d-flex align-items-center">
                             <span><strong> Übersicht RB Änderungen</strong> &emsp;</span>
+                        </div>
+                        <div class="col-6 d-flex align-items-center justify-content-end">
                             <div class="me-2">
                                 <label for="dateSelect" class="visually-hidden">Änderungsdatum</label>
                                 <input type="date" id="dateSelect" name="dateSelect"
@@ -48,7 +56,7 @@ init_page_serversides(""); ?>
                                        data-bs-custom-class="custom-tooltip"/>
                             </div>
                         </div>
-                        <div class="col-8 d-flex align-items-top justify-content-end" id="CardHeaderSub">
+                        <div class="col-2 d-flex align-items-center justify-content-end" id="CardHeaderSub">
                         </div>
                     </div>
                 </div>
@@ -86,12 +94,10 @@ init_page_serversides(""); ?>
     </div>
 </div>
 
-
+<script src="_utils/_utils.js"></script>
 <script>
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
 
-    // FIX: `this` (and the original arguments) must be forwarded to the debounced
-    // function. Calling `func(...args)` bare made `this` === window inside the
-    // handler, so `$(this).val()` blew up with "t.nodeName is undefined".
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -108,7 +114,6 @@ init_page_serversides(""); ?>
     $(document).ready(function () {
         const DEFAULT_DATE = '2024-01-01';
 
-        // FIX: seed oldValue so the first change is compared against something real
         $('#dateSelect').val(DEFAULT_DATE).data('oldValue', DEFAULT_DATE);
 
         const rbChangeTable = $('#rbChangeTable').DataTable({
@@ -127,7 +132,8 @@ init_page_serversides(""); ?>
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                url: '/_utils/de-DE.json'
+
             },
             order: [[8, 'desc']], // sort descending by Timestamp column (index 8)
             select: "single",
@@ -155,9 +161,11 @@ init_page_serversides(""); ?>
                 },
                 {
                     extend: 'excel',
+                    filename: $excelfilename,
                     text: '<i class="fas fa-file-excel"></i>',
                     titleAttr: 'Excel Export',
                     className: 'btn btn-sm btn-outline-dark bg-white'
+
                 },
                 {
                     extend: 'pdf',
@@ -172,15 +180,8 @@ init_page_serversides(""); ?>
                     className: 'btn btn-sm btn-outline-dark bg-white'
                 }
             ], initComplete: function () {
-                $('.dt-search label').remove();
-                $('.dt-search').children()
-                    .removeClass('form-control form-control-sm')
-                    .addClass("btn btn-sm btn-outline-dark bg-white")
-                    .appendTo('#CardHeaderSub');
+                relocateControls(this.api(), '#CardHeaderSub');
 
-                // ganzen wrapper verschieben, nicht nur children (wichtig für colvis)
-                $('#rbChangeTable_wrapper .dt-buttons')
-                    .appendTo('#CardHeaderSub');
 
                 $('#dateSelect').on('change', debounce(function () {
                     // FIX: reference the element explicitly instead of relying on `this`,

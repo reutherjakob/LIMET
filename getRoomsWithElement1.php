@@ -6,38 +6,38 @@
 </head>
 <body>
 
+<?php
+// 25 FX
+require_once '_utils/_utils.php';
+check_login();
+
+$mysqli = utils_connect_sql();
+
+$variantenMap = [];
+$res = $mysqli->query("SELECT idtabelle_Varianten, Variante FROM tabelle_varianten ORDER BY idtabelle_Varianten");
+while ($v = $res->fetch_assoc()) {
+    $variantenMap[(int)$v['idtabelle_Varianten']] = $v['Variante'];
+}
+
+function selectOption($value, $selectedValue, $label): string
+{
+    $selected = ($value == $selectedValue) ? ' selected' : '';
+    $v = htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    $l = htmlspecialchars((string)$label, ENT_QUOTES, 'UTF-8');
+    return "<option value='$v'$selected>$l</option>";
+}
+
+?>
+
 <div class="btn-group text-nowrap" id="hide0Wrapper_RwE">
     <div class="btn-group" id="variantenMassenWrapper">
         <label class=" btn btn-sm btn-outline-secondary " for="massenVariante">
             Alle Var
         </label>
         <select class="form-control form-control-sm" id="massenVariante">
-            <option value="1">A</option>
-            <option value="2">B</option>
-            <option value="3">C</option>
-            <option value="4">D</option>
-            <option value="5">E</option>
-            <option value="6">F</option>
-            <option value="7">G</option>
-            <option value="8">H</option>
-            <option value="9">I</option>
-            <option value="10">J</option>
-            <option value="11">K</option>
-            <option value="12">L</option>
-            <option value="13">M</option>
-            <option value="14">N</option>
-            <option value="15">O</option>
-            <option value="16">P</option>
-            <option value="17">Q</option>
-            <option value="18">R</option>
-            <option value="19">S</option>
-            <option value="20">T</option>
-            <option value="21">U</option>
-            <option value="22">V</option>
-            <option value="23">W</option>
-            <option value="24">X</option>
-            <option value="25">Y</option>
-            <option value="26">Z</option>
+            <?php foreach ($variantenMap as $vId => $vLabel) {
+                echo selectOption($vId, null, $vLabel);
+            } ?>
         </select>
         <!--button type="button" id="massenVarianteSetzen" class="btn btn-sm btn-outline-primary">
             <i class="far fa-edit"></i> Alle Var
@@ -54,10 +54,6 @@
 
 
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
-check_login();
-
 $elementID = getPostInt("elementID", 0);
 $projectID = (int)$_SESSION["projectID"];
 
@@ -83,8 +79,6 @@ if ($variantenID !== null) {
 
 $whereClause = implode(' AND ', $where);
 
-
-$mysqli = utils_connect_sql();
 $sql = "SELECT
     tabelle_räume_has_tabelle_elemente.id,
     tabelle_räume.idTABELLE_Räume,
@@ -136,12 +130,7 @@ $columns = [
     ["ElementName", "Element-Bezeichnung"]
 ];
 
-// Helper for select options
-function selectOption($value, $selectedValue, $label): string
-{
-    $selected = ($value == $selectedValue) ? ' selected' : '';
-    return "<option value='$value'$selected>$label</option>";
-}
+
 
 // Helper for safe output
 function safe($str): string
@@ -159,8 +148,6 @@ foreach ($columns as [$key, $label]) {
 }
 
 echo "</tr></thead><tbody>";
-
-$options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
@@ -185,11 +172,11 @@ while ($row = $result->fetch_assoc()) {
     // Anzahl (editable)
     echo "<td data-order='" . intval($row["Anzahl"]) . "'><input class='form-control form-control-sm' type='text' id='amount" . safe($row["id"]) . "' value='" . intval($row["Anzahl"]) . "' size='2'></td>";
 
-    // Variante (editable)
+    // Variante (editable) — values now come from $variantenMap (real DB IDs)
     echo "<td data-order='" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "'><select class='form-control form-control-sm' id='variante" . safe($row["id"]) . "'>";
     $selected = $row["tabelle_Varianten_idtabelle_Varianten"];
-    foreach ($options as $index => $option) {
-        echo selectOption($index + 1, $selected, $option);
+    foreach ($variantenMap as $vId => $vLabel) {
+        echo selectOption($vId, $selected, $vLabel);
     }
     echo "</select></td>";
 
@@ -229,7 +216,8 @@ while ($row = $result->fetch_assoc()) {
     echo "<td data-order=''><button type='button' id='" . safe($row["id"]) . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
 
     // Additional MT columns and element info
-    echo "<td data-order='" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "'>" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "</td>";
+    $vId = (int)$row["tabelle_Varianten_idtabelle_Varianten"];
+    echo "<td data-order='" . $vId . "'>" . safe($variantenMap[$vId] ?? '') . "</td>";
     echo "<td data-order='" . safe($row["Standort"]) . "'>" . safe($row["Standort"]) . "</td>";
     echo "<td data-order='" . safe($row["Verwendung"]) . "'>" . safe($row["Verwendung"]) . "</td>";
     echo "<td data-order='" . safe($row["Neu/Bestand"]) . "'>" . safe($row["Neu/Bestand"]) . "</td>";
@@ -241,12 +229,15 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</tbody></table>";
 $mysqli->close();
+$excelfilename2 = buildExcelFilename('Räume_mit_Element');
+
 ?>
 
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script charset="utf-8" type="module">
-    import CustomPopover from './utils/_popover.js';
+    import CustomPopover from './_utils/_popover.js';
+    const $excelfilename2 = <?= json_encode($excelfilename2) ?>;
 
     $(document).ready(function () {
         window.tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
@@ -264,7 +255,7 @@ $mysqli->close();
             order: [[1, 'asc']],
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: ""
             },
             layout: {
@@ -281,6 +272,7 @@ $mysqli->close();
                     },
                     text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
                     className: 'btn btn-sm btn-outline-success bg-white text-nowrap', // Bootstrap small
+                    filename: $excelfilename2
                 }
             ],
             initComplete: function () {
@@ -319,11 +311,10 @@ $mysqli->close();
 
         CustomPopover.init('.comment-btn', {
             onSave: function (trigger, newText) {
-                // console.log("Custompopover: ", newText);
                 trigger.dataset.description = newText;
                 let id = trigger.id;
                 $.ajax({
-                    url: "saveRoomElementComment.php",
+                    url: "saveRoombookComment.php",
                     data: {
                         "comment": newText,
                         "id": id
@@ -349,7 +340,6 @@ $mysqli->close();
         });
 
 
-// Logik zentral, wird von change UND button genutzt
         function setAlleVarianten() {
             let neueVariante = $("#massenVariante").val();
             if (!neueVariante) {
@@ -363,15 +353,11 @@ $mysqli->close();
             makeToaster("Alle Varianten auf '" + variantName + "' gesetzt!", true);
         }
 
-// Sofort bei Auswahl im Dropdown
         $(document).off('change.mvSelect').on('change.mvSelect', '#massenVariante', function () {
             setAlleVarianten();
         });
 
-
-// Alle Varianten massenhaft speichern
         let massenSpeichernRunning = false;
-
         $(document).off('click.mvSpeichern').on('click.mvSpeichern', '#massenSpeichern', function () {
             // Re-Entry verhindern
             if (massenSpeichernRunning) {
@@ -379,21 +365,30 @@ $mysqli->close();
             }
 
             let rows = [];
+            let invalid = false;
             $("#tableRoomsWithElement select[id^='variante']").each(function () {
                 let id = $(this).attr('id').replace('variante', '');
-                let amount = $("#amount" + id).val();
-                let variantenID = $(this).val();
-                let bestand = $("#bestand" + id).val();
                 let standort = $("#Standort" + id).val();
                 let verwendung = $("#Verwendung" + id).val();
-                let comment = $(".comment-btn[id='" + id + "']").attr('data-description') || "";
-
                 if (standort === '0' && verwendung === '0') {
-                    alert("Standort und Verwendung kann nicht Nein sein!");
+                    invalid = true;
                     return false;
                 }
-                rows.push({id, comment, amount, variantenID, bestand, standort, verwendung});
+                rows.push({
+                    id,
+                    comment: $(".comment-btn[id='" + id + "']").attr('data-description') || "",
+                    amount: $("#amount" + id).val(),
+                    variantenID: $(this).val(),
+                    bestand: $("#bestand" + id).val(),
+                    standort,
+                    verwendung
+                });
             });
+
+            if (invalid) {
+                alert("Standort und Verwendung kann nicht Nein sein!");
+                return;
+            }
 
             if (rows.length === 0) {
                 makeToaster("Keine Einträge zu speichern!", true);
@@ -424,9 +419,45 @@ $mysqli->close();
             });
         });
 
+// Liest den Text aus dem aktuell offenen Kommentar-Popover
+        function getOpenPopoverComment() {
+            const ta = document.querySelector('.custom-popover textarea.popover-textarea');
+            return (ta && ta.offsetParent !== null) ? ta.value : null; // nur wenn sichtbar
+        }
+
+// Popover schließt evtl. beim Klick auf den Save-Button, BEVOR der click-Handler
+// feuert. Deshalb den Text schon beim mousedown (capture-Phase) sichern.
+        let pendingPopoverComment = null;
+        document.addEventListener('mousedown', (e) => {
+            if (e.target.closest("button[value='saveElement']")) {
+                pendingPopoverComment = getOpenPopoverComment();
+            }
+        }, true);
+
+
         $(document).off('click.saveEl').on('click.saveEl', "button[value='saveElement']", function () {
             let id = this.id;
-            let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
+            let $commentBtn = $(".comment-btn[id='" + id + "']");
+
+            // beim mousedown gesicherten Popover-Text nehmen (falls Popover offen war)
+            let openComment = pendingPopoverComment;
+            pendingPopoverComment = null;
+
+            let comment;
+            if (openComment !== null) {
+                comment = openComment;
+                $commentBtn.attr('data-description', comment).data('description', comment);
+                let empty = comment.trim() === '';
+                $commentBtn
+                    .toggleClass('btn-outline-secondary', empty)
+                    .toggleClass('btn-outline-dark', !empty)
+                    .find('i')
+                    .toggleClass('fa-comment-slash', empty)
+                    .toggleClass('fa-comment', !empty);
+            } else {
+                comment = $commentBtn.attr('data-description');
+            }
+
             let amount = $("#amount" + id).val();
             let variantenID = $("#variante" + id).val();
             let bestand = $("#bestand" + id).val();
@@ -445,7 +476,6 @@ $mysqli->close();
                 });
             }
         });
-
     });
 </script>
 </body>

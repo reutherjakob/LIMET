@@ -1,11 +1,21 @@
+<?php
+require_once '_utils/_utils.php';
+init_page_serversides("x");
+$excelfilename = buildExcelFilename('Losliste_Elemente');
+require_once '_utils/_csrf.php';
+
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>Lose &amp; Elemente – Übersicht</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -19,10 +29,7 @@
 </head>
 
 <body id="bodyLosElemente">
-<?php
-require_once 'utils/_utils.php';
-init_page_serversides("x");
-?>
+
 
 <div id="limet-navbar"></div>
 <div class="container-fluid">
@@ -95,7 +102,7 @@ init_page_serversides("x");
                         <div class="col-6 col-md-3">
                             <div class="card border-light">
                                 <div class="card-body py-2">
-                                    <div class="small text-muted">Schätzkosten</div>
+                                    <div class="small text-muted">PP</div>
                                     <div class="fs-5 fw-bold" id="statSumme">–</div>
                                 </div>
                             </div>
@@ -121,8 +128,8 @@ init_page_serversides("x");
                             <th class="text-end">Stk</th>
                             <th class="text-end">Räume</th>
                             <th>Raumliste</th>
-                            <th class="text-end">Einzelkosten</th>
-                            <th class="text-end">Schätzkosten</th>
+                            <th class="text-end">EP</th>
+                            <th class="text-end">PP</th>
                             <th class="text-end">Vergabesumme</th>
                         </tr>
                         </thead>
@@ -133,9 +140,10 @@ init_page_serversides("x");
         </div>
     </div>
 
-    <script src="utils/_utils.js"></script>
+    <script src="_utils/_utils.js"></script>
     <script charset="utf-8">
         var tableLosElemente;
+        const $excelfilename = <?= json_encode($excelfilename) ?>;
 
         const eur = new Intl.NumberFormat('de-DE', {style: 'currency', currency: 'EUR'});
         const num = new Intl.NumberFormat('de-DE');
@@ -209,7 +217,7 @@ init_page_serversides("x");
                 pageLength: 50,
                 lengthMenu: [[25, 50, 100, 250, -1], [25, 50, 100, 250, 'Alle']],
                 language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                      url: "/_utils/de-DE.json",
                     decimal: ',',
                     thousands: '.',
                     searchPlaceholder: 'Suche..',
@@ -224,7 +232,9 @@ init_page_serversides("x");
                         attr: {'data-bs-toggle': 'tooltip', 'data-bs-title': 'Spalten ein/ausblenden'}
                     },
                     {
-                        extend: 'excel', className: "btn btn-light btn-outline-dark fas fa-file-excel", text: '',
+                        extend: 'excel',
+                        className: "btn btn-light btn-outline-dark fas fa-file-excel", text: '',
+                        filename: $excelfilename,
                         title: 'Losliste_Elemente',
                         exportOptions: {columns: ':visible, :hidden'},
                         attr: {'data-bs-toggle': 'tooltip', 'data-bs-title': 'Download als Excel'}

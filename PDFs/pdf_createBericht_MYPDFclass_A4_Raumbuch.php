@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../utils/_utils.php';
+require_once '../_utils/_utils.php';
 check_login();
 require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "pdf_createBericht_LOGO.php";
@@ -34,7 +34,7 @@ class MYPDF extends TCPDF
             }
 
             $this->cell(0, 0, '', 'B', 0, 'L');
-            $this->Ln(1);
+            $this->Ln(0.5);
             $this->cell(0, 0, '', 'B', 0, 'L');
             $this->Ln(1);
 

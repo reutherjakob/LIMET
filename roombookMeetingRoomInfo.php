@@ -5,7 +5,7 @@
 <body>
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides();
 $mysqli = utils_connect_sql();
 

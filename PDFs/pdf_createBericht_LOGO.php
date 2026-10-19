@@ -10,11 +10,12 @@ function get_header_logo($pdf): void
         $image_file1 = '../Logo/LIMET_web.png';
         $image_file2 = '../Logo/MADER_Logo.png';
 
+
+        if (file_exists($image_file2)) {
+            $pdf->Image($image_file2, 38, 6, 14, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
+        }
         if (file_exists($image_file1)) {
             $pdf->Image($image_file1, 17, 4, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        }
-        if (file_exists($image_file2)) {
-            $pdf->Image($image_file2, 38, 4, 14, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
         }
 
     } else if ($_SESSION["projectAusfuehrung"] === "LIMET") {
@@ -51,8 +52,7 @@ function get_titelblatt_logo($pdf, $format = "A4"): void
         if (file_exists($image_file)) {
             $pdf->Image($image_file, 150 + $spacer, 40, 40, 40, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
         }
-    }
-    else if ($_SESSION["projectAusfuehrung"] === "LIMET-MADER") {
+    } else if ($_SESSION["projectAusfuehrung"] === "LIMET-MADER") {
         $image_file = '../Logo/LIMET_web.png';
         $pdf->Image($image_file, 145 + $spacer, 40, 30, 13, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
         $image_file = '../Logo/MADER_Logo.png';

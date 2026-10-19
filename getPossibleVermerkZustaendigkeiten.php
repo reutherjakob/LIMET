@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -60,7 +60,8 @@ $mysqli->close();
                 },
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/de-DE.json',
+                url: '/_utils/de-DE.json' 
+
             },
             scrollY: '20vh',
             scrollCollapse: true,
@@ -81,7 +82,7 @@ $mysqli->close();
                     data: {"ansprechpersonenID": id, "vermerkID": vermerkID},
                     type: "POST",
                     success: function (data) {
-                        alert(data);
+                         makeToaster(data, true);
                         $.ajax({
                             url: "getVermerkZustaendigkeiten.php",
                             type: "POST",

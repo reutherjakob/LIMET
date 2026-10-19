@@ -1,8 +1,11 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+// 26 FX
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 init_page_serversides();
+$excelfilename = buildExcelFilename('Elemente_Bestand');
+require_once '_utils/_csrf.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -11,10 +14,10 @@ init_page_serversides();
     <title>RB-Bestand</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
 
-    <!-- Rework 2025 CDNs -->
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -25,30 +28,30 @@ init_page_serversides();
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
-    <style>
-        /* Zeilen ohne hinterlegte Bestandsdaten dezent markieren */
-        #tableBestandsElemente tbody tr.ohne-bestandsdaten > td {
-            background-color: #fff8e1;
-        }
-    </style>
 </head>
 
-<body style="height:100%">
+<body>
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="mt-4 card">
 
         <div class="card-header">
             <div class="row">
-                <div class="col-xxl-6"><b>Elemente im Bestand</b></div>
-                <div class="col-xxl-6 d-flex flex-nowrap justify-content-end align-items-center gap-2" id="CardHeader">
+                <div class="col-xxl-4"><b>Elemente im Bestand</b></div>
+                <div class="col-xxl-8 d-flex flex-nowrap justify-content-end align-items-center" id="CardHeader">
 
                     <div class="form-check form-switch d-flex align-items-center mb-0 text-nowrap"
                          title="Zeigt zusätzlich alle Bestands-Elemente, zu denen noch keine Bestandsdaten erfasst wurden">
                         <input class="form-check-input mt-0" type="checkbox" role="switch" id="switchOhneBestandsdaten">
                         <label class="form-check-label ms-2" for="switchOhneBestandsdaten">inkl. ohne
                             Bestandsdaten</label>
+                    </div>
+
+                    <div class="form-check form-switch d-flex align-items-center mb-0 text-nowrap"
+                         title="Zeigt zusätzlich Neuanschaffungen (Elemente, die nicht im Bestand sind)">
+                        <input class="form-check-input mt-0" type="checkbox" role="switch" id="switchNeuanschaffungen">
+                        <label class="form-check-label ms-2" for="switchNeuanschaffungen">inkl.
+                            Neuanschaffungen</label>
                     </div>
 
                     <div id="dateSelectContainer">
@@ -103,8 +106,10 @@ init_page_serversides();
     </div>
 </div>
 </body>
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
+
     $(document).ready(function () {
 
         // null-Werte sauber ausgeben + escapen
@@ -116,17 +121,22 @@ init_page_serversides();
             return $('#switchOhneBestandsdaten').is(':checked') ? 1 : 0;
         }
 
+        function neuAktiv() {
+            return $('#switchNeuanschaffungen').is(':checked') ? 1 : 0;
+        }
+
         var table = new DataTable('#tableBestandsElemente', {
             ajax: {
-                url: 'api_bestand_elemente.php',
+                url: 'get_bestand_elemente.php',
                 dataSrc: 'data',
                 data: function (d) {
                     d.alle = alleAktiv();
+                    d.neu = neuAktiv();
                 },
                 error: function (xhr) {
                     console.error('Bestandsdaten laden fehlgeschlagen', xhr.status, xhr.responseText);
                     alert('Bestandsdaten konnten nicht geladen werden (HTTP ' + xhr.status + ').\n' +
-                        'Details in der Browser-Konsole, oder api_bestand_elemente.php?debug=1 direkt aufrufen.');
+                        'Details in der Browser-Konsole.');
                 }
             },
             columns: [
@@ -165,7 +175,7 @@ init_page_serversides();
             info: true,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.',
                 search: "",
@@ -174,7 +184,10 @@ init_page_serversides();
             buttons: [
                 {
                     extend: 'excel',
-                    text: '<i class="far fa-file-excel"></i> Excel',
+                    text: '<i class="far fa-file-excel"></i> ',
+                    filename: $excelfilename,
+                    title: '',
+                    className: " btn-sm btn-success",
                     exportOptions: {
                         // ID (0) und formatierte Kosten (11) raus, Rohwert (12) bleibt drin
                         columns: function (idx) {
@@ -191,7 +204,11 @@ init_page_serversides();
                 bottomEnd: ["pageLength", "paging"]
             },
             rowCallback: function (row, data) {
-                $(row).toggleClass('ohne-bestandsdaten', data.hatBestandsdaten === 0);
+                var neu = data.istNeuanschaffung === 1;
+                // Neuanschaffungen (nicht im Bestand) -> Bootstrap-Blau
+                $(row).toggleClass('table-info', neu);
+                // Bestands-Elemente ohne erfasste Bestandsdaten -> dezentes Gelb
+                $(row).toggleClass('bg-danger-subtle', !neu && data.hatBestandsdaten === 0);
             },
             drawCallback: function () {
                 // Popover je Button nur einmal initialisieren
@@ -202,15 +219,13 @@ init_page_serversides();
                 });
             },
             initComplete: function () {
-                $('.dt-buttons').children().addClass("btn-sm").appendTo('#CardHeader');
-                $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm")
-                    .addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeader');
+                relocateControls(this.api(), '#CardHeader');
+
             }
         });
 
-        // Switch -> Daten neu holen (Sortierung/Suche bleiben erhalten)
-        $('#switchOhneBestandsdaten').on('change', function () {
+        // Switches -> Daten neu holen (Sortierung/Suche bleiben erhalten)
+        $('#switchOhneBestandsdaten, #switchNeuanschaffungen').on('change', function () {
             table.ajax.reload(null, false);
         });
 
@@ -227,7 +242,8 @@ init_page_serversides();
                 datum = new Date().toISOString().slice(0, 10); // aktuelles Datum YYYY-MM-DD
             }
             window.open("PDFs/pdf_createBestandPDF.php?datum=" + encodeURIComponent(datum) +
-                "&alle=" + alleAktiv());
+                "&alle=" + alleAktiv() +
+                "&neu=" + neuAktiv());
         });
     });
 </script>
