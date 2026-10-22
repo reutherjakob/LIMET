@@ -1,7 +1,6 @@
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "_utils/_utils.php";
-}
+require_once "_utils/_utils.php";
+
 init_page_serversides();
 require_once '_utils/_csrf.php'; ?>
 

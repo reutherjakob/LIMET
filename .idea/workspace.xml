@@ -4,21 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A4_Raumbuch.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A4_Raumbuch.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createElementEinbringwegePDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createElementEinbringwegePDF.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createElementEinbringwegePDF2.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createElementEinbringwegePDF2.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_wip/_work.php" beforeDir="false" afterPath="$PROJECT_DIR$/_wip/_work.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_icons_legend.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/_utils.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/forward.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/forward.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/_utils.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/pdf_raumtypen_sf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getCommentHistory.php" beforeDir="false" afterPath="$PROJECT_DIR$/getCommentHistory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getElementVariante.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementVariante.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getStandardDeviceParameters.php" beforeDir="false" afterPath="$PROJECT_DIR$/getStandardDeviceParameters.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_befu.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_befu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementsInProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementsInProject.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -692,23 +684,8 @@
       <workItem from="1792419960444" duration="364000" />
       <workItem from="1792485319087" duration="156000" />
       <workItem from="1792485845457" duration="596000" />
-      <workItem from="1792656083312" duration="3397000" />
-    </task>
-    <task id="LOCAL-00216" summary="Feedback Center getuned.&#10;lose TOdo finalisiert.&#10;Kommentar bei preise ergänzt.&#10;Alle lose workflocw gefixed.&#10;RB specs verbessert. und sortiert.&#10;raum kopie erweitert. &#10;&#10;RB texte verbessert.">
-      <option name="closed" value="true" />
-      <created>1775572206172</created>
-      <option name="number" value="00216" />
-      <option name="presentableId" value="LOCAL-00216" />
-      <option name="project" value="LOCAL" />
-      <updated>1775572206172</updated>
-    </task>
-    <task id="LOCAL-00217" summary="Bugfixes;&#10;Sf Umfrage;&#10;Kor Liste">
-      <option name="closed" value="true" />
-      <created>1775818516003</created>
-      <option name="number" value="00217" />
-      <option name="presentableId" value="LOCAL-00217" />
-      <option name="project" value="LOCAL" />
-      <updated>1775818516003</updated>
+      <workItem from="1792656083312" duration="3483000" />
+      <workItem from="1792665763177" duration="4404000" />
     </task>
     <task id="LOCAL-00218" summary="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.">
       <option name="closed" value="true" />
@@ -1086,7 +1063,23 @@
       <option name="project" value="LOCAL" />
       <updated>1792419970045</updated>
     </task>
-    <option name="localTasksCounter" value="265" />
+    <task id="LOCAL-00265" summary="Bugfixes.">
+      <option name="closed" value="true" />
+      <created>1792660914914</created>
+      <option name="number" value="00265" />
+      <option name="presentableId" value="LOCAL-00265" />
+      <option name="project" value="LOCAL" />
+      <updated>1792660914914</updated>
+    </task>
+    <task id="LOCAL-00266" summary="Bugfixes.">
+      <option name="closed" value="true" />
+      <created>1792665931313</created>
+      <option name="number" value="00266" />
+      <option name="presentableId" value="LOCAL-00266" />
+      <option name="project" value="LOCAL" />
+      <updated>1792665931313</updated>
+    </task>
+    <option name="localTasksCounter" value="267" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1116,7 +1109,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden" />
     <MESSAGE value="IFC Quest - import seems to work" />
     <MESSAGE value="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots." />
     <MESSAGE value="Neue Seite: Geräte- und Wartungspreise Liste" />
@@ -1141,7 +1133,8 @@
     <MESSAGE value="Excel Filenames überall;&#10;Bugfixes," />
     <MESSAGE value="Umstrukturierung der Files;&#10;Ungenutzen Code entfernt; &#10;CRSF überall;&#10;KOR Änderungsverfolgung Seite;" />
     <MESSAGE value="Bugfixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes" />
+    <MESSAGE value="Bugfixes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1215,6 +1208,11 @@
           <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php</url>
           <line>453</line>
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/PDFs/pdf_createKostenOverallBauabschnittBudgetPDF.php</url>
+          <line>214</line>
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/roombook_image_support/projectGallery.js</url>
