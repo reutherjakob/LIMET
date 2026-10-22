@@ -6,7 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A4_Raumbuch.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A4_Raumbuch.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createElementEinbringwegePDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createElementEinbringwegePDF.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createElementEinbringwegePDF2.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createElementEinbringwegePDF2.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_wip/_work.php" beforeDir="false" afterPath="$PROJECT_DIR$/_wip/_work.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_icons_legend.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/_utils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/forward.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/forward.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/_utils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/pdf_raumtypen_sf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,31 +53,31 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {}
 }</component>
-  <component name="GitHubPullRequestState"><![CDATA[{
-  "prStates": [
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
     {
-      "id": {
-        "id": "PR_kwDOKp49586-evgR",
-        "number": 70
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOKp49586-evgR&quot;,
+        &quot;number&quot;: 70
       },
-      "lastSeen": 1769170786755
+      &quot;lastSeen&quot;: 1769170786755
     },
     {
-      "id": {
-        "id": "PR_kwDOKp49587G04hY",
-        "number": 74
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOKp49587G04hY&quot;,
+        &quot;number&quot;: 74
       },
-      "lastSeen": 1776066601063
+      &quot;lastSeen&quot;: 1776066601063
     },
     {
-      "id": {
-        "id": "PR_kwDOKp49588AAAABJRmN9A",
-        "number": 83
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOKp49588AAAABJRmN9A&quot;,
+        &quot;number&quot;: 83
       },
-      "lastSeen": 1792394801827
+      &quot;lastSeen&quot;: 1792394801827
     }
   ]
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://FuxWolfgang@github.com/reutherjakob/LIMET.git&quot;,
@@ -98,35 +110,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug._utils.php.executor": "Run",
-    "PHP Web Page.Unnamed.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
-    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
-    "git-widget-placeholder": "#83 on Werq__08__26",
-    "last_opened_file_path": "C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "database.query.execution",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug._utils.php.executor&quot;: &quot;Run&quot;,
+    &quot;PHP Web Page.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Werq__08__26&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mariadb"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mariadb&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "TEXT"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;TEXT&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
@@ -677,14 +689,10 @@
       <workItem from="1792134727463" duration="624000" />
       <workItem from="1792153845032" duration="2149000" />
       <workItem from="1792394617346" duration="9803000" />
-    </task>
-    <task id="LOCAL-00215" summary="SF Umfrage DONE.&#10;&#10;LOGIN speichert nun VERSCHLÜSSELTE Userdaten in tabelle_user.&#10;&#10;Bugfixes.&#10;&#10;KOR Seiten -&gt; LeitungsAbgleich seite - Ansatz dark mode.">
-      <option name="closed" value="true" />
-      <created>1775549651505</created>
-      <option name="number" value="00215" />
-      <option name="presentableId" value="LOCAL-00215" />
-      <option name="project" value="LOCAL" />
-      <updated>1775549651505</updated>
+      <workItem from="1792419960444" duration="364000" />
+      <workItem from="1792485319087" duration="156000" />
+      <workItem from="1792485845457" duration="596000" />
+      <workItem from="1792656083312" duration="3397000" />
     </task>
     <task id="LOCAL-00216" summary="Feedback Center getuned.&#10;lose TOdo finalisiert.&#10;Kommentar bei preise ergänzt.&#10;Alle lose workflocw gefixed.&#10;RB specs verbessert. und sortiert.&#10;raum kopie erweitert. &#10;&#10;RB texte verbessert.">
       <option name="closed" value="true" />
@@ -1070,7 +1078,15 @@
       <option name="project" value="LOCAL" />
       <updated>1792403155415</updated>
     </task>
-    <option name="localTasksCounter" value="264" />
+    <task id="LOCAL-00264" summary="Bugfixes">
+      <option name="closed" value="true" />
+      <created>1792419970045</created>
+      <option name="number" value="00264" />
+      <option name="presentableId" value="LOCAL-00264" />
+      <option name="project" value="LOCAL" />
+      <updated>1792419970045</updated>
+    </task>
+    <option name="localTasksCounter" value="265" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

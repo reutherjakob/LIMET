@@ -9,7 +9,7 @@
  *  - Kopfzeile mit Lime-Logo, Vorgabe-Fußzeile (Datum + Seite X von Y)
  *  - Parameter thematisch gegliedert (Architektur · Klima/Lüftung/HLK ·
  *    Elektrotechnik · Medien · Abzüge/Absaugung · Sicherheit)
- *  - Rendert DIREKT aus $labortypen (Nutzerumfrage/raumtypen.php),
+ *  - Rendert DIREKT aus $labortypen (roombook_nutzerumfrage_V1_2026/raumtypen.php),
  *    d. h. Änderungen an den Raumtypen erscheinen automatisch im PDF.
  *
  *  Aufruf:  .../pdf_createRaumtypenKatalog.php          (Inline)
@@ -26,7 +26,7 @@ $RK_LOGO_PATH = __DIR__ . '/../PDFs/pdf_createBericht_LOGO.php';   // definiert 
 $RK_LOGO_IMG = '';   // optional: Pfad zu einer Logo-Grafik (png/jpg/svg); hat Vorrang
 $RK_DATA_CANDIDATES = [
     __DIR__ . '/../roombook_nutzerumfrage_V1_2026/raumtypen.php',
-    __DIR__ . '/Nutzerumfrage/raumtypen.php',
+    __DIR__ . '/roombook_nutzerumfrage_V1_2026/raumtypen.php',
     __DIR__ . '/raumtypen.php',
 ];
 

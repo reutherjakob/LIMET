@@ -1,8 +1,8 @@
 <?php
 
 // ─── Pfade zu den Definitions-Quellen — ggf. an euer Projekt anpassen ──────
-$PFAD_DB_CONFIG = '../IFCQuest/import_2_db_config.php';   // ELEMENT_MAPPING, PARAMETER_MAPPING, Konstanten
-$PFAD_RAUMTYPEN = '../Nutzerumfrage/raumtypen.php';            // $labortypen
+$PFAD_DB_CONFIG = '../roombook_spargelfeld/import_2_db_config.php';   // ELEMENT_MAPPING, PARAMETER_MAPPING, Konstanten
+$PFAD_RAUMTYPEN = '../roombook_nutzerumfrage_V1_2026/raumtypen.php';            // $labortypen
 
 if (!function_exists('check_login')) {
     include "../_utils/_utils.php";
@@ -32,15 +32,15 @@ $mz_warn_diff = defined('MZ_LAENGE_WARN_DIFF_CM') ? MZ_LAENGE_WARN_DIFF_CM : nul
 // Werkzeug-Links (rechte Spalte)
 // ══════════════════════════════════════════════════════════════════════════
 $werkzeug_links = [
-    ['icon' => 'fa-cat', 'href' => '/IFCQuest/import_excel.php', 'label' => 'Import Model Excel'],
-    ['icon' => 'fa-spider', 'href' => '/SF/roombook_Raumtypen_zu_Raumbuch.php', 'label' => 'RT übernehmen'],
-    ['icon' => 'fa-dog', 'href' => '/SF/roombook_RB_RT_Abgleich.php', 'label' => 'Abgleich RT - RB'],
-    ['icon' => 'fa-frog', 'href' => '/SF/pdf_raumtypen_sf.php', 'label' => 'RT PDF'],
-    ['icon' => 'fa-kiwi-bird', 'href' => '/SF/roombook_sf_av_sv.php', 'label' => 'AV/SV Aufteilung'],
-    ['icon' => 'fa-kiwi-bird', 'href' => '/SF/roombook_sf_flaechen_je_raumtyp.php', 'label' => 'Flächen je Raumtyp'],
-    ['icon' => 'fa-dove', 'href' => '/SF/roombook_elementsInProject_delete0.php', 'label' => 'Nuller Vars entfernen'],
+    ['icon' => 'fa-cat', 'href' => '/roombook_spargelfeld/import_excel.php', 'label' => 'Import Model Excel'],
+    ['icon' => 'fa-spider', 'href' => '/roombook_spargelfeld/roombook_Raumtypen_zu_Raumbuch.php', 'label' => 'RT übernehmen'],
+    ['icon' => 'fa-dog', 'href' => '/roombook_spargelfeld/roombook_RB_RT_Abgleich.php', 'label' => 'Abgleich RT - RB'],
+    ['icon' => 'fa-frog', 'href' => '/roombook_spargelfeld/pdf_raumtypen_roombook_spargelfeld.php', 'label' => 'RT PDF'],
+    ['icon' => 'fa-kiwi-bird', 'href' => '/roombook_spargelfeld/roombook_roombook_spargelfeld_av_sv.php', 'label' => 'AV/SV Aufteilung'],
+    ['icon' => 'fa-kiwi-bird', 'href' => '/roombook_spargelfeld/roombook_roombook_spargelfeld_flaechen_je_raumtyp.php', 'label' => 'Flächen je Raumtyp'],
+    ['icon' => 'fa-dove', 'href' => '/roombook_spargelfeld/roombook_elementsInProject_delete0.php', 'label' => 'Nuller Vars entfernen'],
 
-    ['icon' => 'fa-user', 'href' => '/Nutzerlogin/index.php', 'label' => 'Nutzerumfrage/Sonderfragekathalog'],
+    ['icon' => 'fa-user', 'href' => '/roombook_nutzerlogin/index.php', 'label' => 'roombook_nutzerumfrage_V1_2026/Sonderfragekathalog'],
 
 ];
 

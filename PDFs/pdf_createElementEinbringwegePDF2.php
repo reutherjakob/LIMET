@@ -1,12 +1,11 @@
 <?php
-#2025done
-
+#2026 FX
 require_once '../_utils/_utils.php';
+check_login();
+$_SESSION["Einbring"]= 1;
 require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include 'pdf_createBericht_MYPDFclass_A4_Raumbuch.php';
 include '_pdf_createBericht_utils.php';
-
-check_login();
 
 function cheat($str)
 {
@@ -153,13 +152,6 @@ foreach ($proportions as $prop) {
 }
 
 $_SESSION["PDFTITEL"] = "Einbringung von medizinischen Großgeräten";
-$_SESSION["DisclaimerText"] = "Die beschriebenen Komponenten weisen die jeweils größten Abmessungen "
-    . "und/oder Gewichtslasten je Anlage auf. Die vollständigen Systeme bestehen aus"
-    . " mehreren, hier nicht angeführten Elementen, die jedoch kleiner und/oder leichter als"
-    . " das größte bzw. schwerste Einzelteil sind. Die angegebenen Werte sind produktneutrale"
-    . " Maximalspezifikationen, was bedeutet, dass beispielsweise das Gewicht von Leitfabrikat "
-    . "A und die Abmessungen von Leitfabrikat B verwendet wurden. Die hier angeführten Parameter"
-    . " dienen exklusiv der Bestimmung der Einbringwege.";
 
 $pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
 $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Großgeräte Einbringung");

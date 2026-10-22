@@ -24,7 +24,7 @@ function init_page($allowed_roles): string
 function check_login_new(): void
 {
     if (!isset($_SESSION['user_id'])) {
-        header("Location: ../../Nutzerlogin/index.php");
+        header("Location: ../../roombook_nutzerlogin/index.php");
         exit;
     }
 
@@ -47,7 +47,7 @@ function check_role_based_access($allowed_roles): string
         }
     } else {
         if ($role !== $allowed_roles) {
-            header("Location: ../../Nutzerlogin/index.php");
+            header("Location: ../../roombook_nutzerlogin/index.php");
             exit;
         }
     }

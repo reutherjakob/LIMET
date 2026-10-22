@@ -61,7 +61,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="consentCheckbox" name="consentCheckbox" required>
                                 <label class="form-check-label" for="consentCheckbox">
-                                    Ich habe die <a href="../Nutzerumfrage/DSGVO_Nutzerumfrage.php" target="_blank" rel="noopener">Datenschutzerklärung</a>
+                                    Ich habe die <a href="../roombook_nutzerumfrage_V1_2026/DSGVO_Nutzerumfrage.php" target="_blank" rel="noopener">Datenschutzerklärung</a>
                                     gelesen und stimme der Verarbeitung meiner personenbezogenen Daten zu.
                                 </label>
                             </div>
@@ -82,7 +82,7 @@
                            value="<?php
                            require_once "_utils.php";
                            start_session();
-                           require '_csrf.php';
+                           require 'csrf.php';
                            echo csrf_token(); ?>">
                     <input type="hidden" name="hashed_password" id="hashed_password"/>
                 </form>

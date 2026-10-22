@@ -1,7 +1,7 @@
 <?php
 
 global $role;// = get_user_role();
-// include '../Nutzerumfrage/footer_Nutzerumfrage.html';
+// include '../roombook_nutzerumfrage_V1_2026/footer_Nutzerumfrage.html';
 ?>
 
 <script>
@@ -10,7 +10,7 @@ global $role;// = get_user_role();
     }
 
     let userRole = "<?php echo $role; ?>";
-    $.get("../Nutzerumfrage/navbar.html", function (data) {
+    $.get("../roombook_nutzerumfrage_V1_2026/navbar.html", function (data) {
         $("#limet-navbar").html(data);
         let Username = "<?php echo $_SESSION['user_name']?>";
         $("#navbar-username").text(capitalizeFirstLetter(Username));
