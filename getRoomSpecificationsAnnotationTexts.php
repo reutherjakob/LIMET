@@ -143,7 +143,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
         let medgas = $("#MedGas").val();
         let baustatik = $("#BauStatik").val();
         let hkls = $("#HKLS").val();
-        let allg = $("#Allgemein").val();
+        let allg = $("#allgemein").val();
         $.ajax({
             url: "updateRoomSpecificationAnnotationTexts.php",
             data: {
