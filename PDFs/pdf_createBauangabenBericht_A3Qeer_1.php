@@ -5,7 +5,7 @@ check_login();
 
 include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('../TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include '_pdf_createBericht_utils.php';
-include 'pdf_createMTTabelle_neu.php';
+include 'pdf_createMTTabelle.php';
 include 'pdf_createBauangabenBericht_constDefinitions.php';
 
 $roomIDs = filter_input(INPUT_GET, 'roomID');
@@ -132,7 +132,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
     tabelle_räume.`1 Kreis DL-5`, 
     tabelle_räume.`2 Kreis DL-5`, 
     tabelle_räume.`DL-10`, 
-    abelle_räume.`DL-tech`, 
+    tabelle_räume.`DL-tech`, 
     tabelle_räume.CO2, 
     tabelle_räume.NGA, 
     tabelle_räume.N2O,
@@ -316,6 +316,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         anmA3($pdf, $row['Anmerkung MedGas'], $SB, $block_header_w);
 
 
+
+        $pdf->Ln($horizontalSpacerLN2);
         ////     ------- BauStatik ---------
         $anm = trim($row['Anmerkung BauStatik'] ?? '');
         if ($anm !== '' && $anm !== 'Keine Anmerkung' && $anm !== 'keine Angaben MT') {

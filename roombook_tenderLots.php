@@ -210,16 +210,19 @@ $excelfilename = buildExcelFilename('Lose_im_Projekt"');
                             echo "<td >";
                             switch ($row["Vergabe_abgeschlossen"]) {
                                 case 0:
-                                    //echo "<b><font color='red'>&#10007;</font></b>";
-                                    echo "<span class='badge badge-pill bg-danger'>Offen</span>";
+                                    echo "<span class='badge badge-pill bg-warning'>Offen</span>";
                                     break;
                                 case 1:
-                                    //echo "<b><font color='green'>&#10003;</font></b>";
                                     echo "<span class='badge badge-pill bg-success'>Fertig</span>";
                                     break;
                                 case 2:
-                                    //echo "<b><font color='blue'>&#8776;</font></b>";
                                     echo "<span class='badge badge-pill bg-primary'>Wartend</span>";
+                                    break;
+                                case 3:
+                                    echo "<span class='badge badge-pill bg-danger'>Entfallen</span>";
+                                    break;
+                                case 4:
+                                    echo "<span class='badge badge-pill bg-danger'>Bestand</span>";
                                     break;
                             }
                             echo "</td>";
@@ -434,6 +437,8 @@ $excelfilename = buildExcelFilename('Lose_im_Projekt"');
                             <option value='0' selected>Nicht abgeschlossen</option>
                             <option value='1'>Abgeschlossen</option>
                             <option value='2'>Wartend</option>
+                            <option value="3">Entfallen</option>
+                            <option value="4">Bestand</option>
                         </select>
                     </div>
                     <div class='form-group'>
@@ -600,6 +605,12 @@ require "modal_los_aenderungen.php";
                 case 'Wartend':
                     selectedValue = 2;
                     break;
+                case 'Entfallen':
+                    selectedValue = 3;
+                    break;
+                case 'Bestand':
+                    selectedValue = 4;
+                    break;
                 default:
                     selectedValue = 0; // Default to 'Offen' if not recognized
             }
@@ -743,30 +754,23 @@ require "modal_los_aenderungen.php";
     });
 
     function sendData(formData) {
-        const modal = document.getElementById('addTenderLotModal');
-        if (modal) {
-            modal.style.display = 'none';
-            if (typeof $ === 'function' && $('#addTenderLotModal').modal) {
-                $('#addTenderLotModal').modal('hide');
-            }
-        }
-        fetch("addTenderLot.php", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-            },
-            body: new URLSearchParams(formData).toString()
-        })
-            .then(response => response.text())
-            .then(data => {
+        $('#addTenderLotModal').modal('hide');
+
+        $.ajax({
+            url: 'addTenderLot.php',
+            method: 'POST',
+            data: new URLSearchParams(formData).toString(),
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            dataType: 'text',
+            success: function (data) {
                 makeToaster(data, true);
                 location.reload();
-            })
-            .catch(error => {
-                makeToaster("Fehler beim Speichern: " + error, false);
+            },
+            error: function (xhr, status, error) {
+                makeToaster('Fehler beim Speichern: ' + (error || status), false);
                 location.reload();
-            });
-
+            }
+        });
     }
 
 
@@ -929,7 +933,6 @@ require "modal_los_aenderungen.php";
     });
 
     $('#toggleVermerkeBtn').click(function () {
-
         $('#mainCardColumn').toggleClass('col-xxl-8 col-xxl-11');
         $('#vermerkeCardColumn').toggleClass('col-xxl-4 col-xxl-1');
         $('#lotVermerke').toggleClass('d-none');
@@ -960,9 +963,11 @@ require "modal_los_aenderungen.php";
     const lh_norm = v => (v === null || v === undefined || v === '') ? '' : String(v);
 
     const lh_statusBadges = {
-        '0': "<span class='badge bg-danger'>Offen</span>",
+        '0': "<span class='badge bg-warning'>Offen</span>",
         '1': "<span class='badge bg-success'>Fertig</span>",
         '2': "<span class='badge bg-primary'>Wartend</span>",
+        '3': "<span class='badge bg-danger'>Entfallen</span>",
+        '4': "<span class='badge bg-danger'>Bestand</span>",
     };
     const lh_variantLabels = {'1': 'A', '2': 'B', '3': 'C', '4': 'D', '5': 'E'};
 

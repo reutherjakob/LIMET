@@ -16,7 +16,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
     <meta name="csrf" content="<?= h(csrf_token()) ?>">
 
     <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logos/iphone_favicon.png"/>
+    <link rel="icon" href="Logos/favicon.icon"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -105,8 +105,14 @@ $excelfilename = buildExcelFilename('Änderungsliste');
 
                             <select id="selBudgetHide" class="form-select form-select-sm" multiple
                                     disabled></select>
-                            <div class="form-text">
-                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="border rounded position-relative px-2 pt-3 pb-2 mb-2 mt-2">
+                            <legend class="float-none w-auto px-1 mb-0 small">
+                                <span class="form-text text-dark">Budget-Status (Endbudget)</span>
+                            </legend>
+                            <div id="statusFilter" class=""></div>
                         </fieldset>
 
 
@@ -130,7 +136,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
 
                         <fieldset class="border rounded position-relative  pt-3 pb-2 mb-2 mt-2">
                             <legend class="float-none w-auto px-1 mb-0 small">
-                                <span id="apHint" class="form-text text-dark">Änderungsarten Filtern</span>
+                                <span class="form-text text-dark">Änderungsarten Filtern</span>
                             </legend>
                             <div id="artFilter" class="d-flex flex-wrap gap-1 border border-light "></div>
                         </fieldset>
@@ -138,7 +144,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
 
                         <fieldset class="border rounded position-relative  pt-3 pb-2 mb-2 mt-2">
                             <legend class="float-none w-auto px-1 mb-0 small">
-                                <span id="apHint" class="form-text text-dark"> Preisänderungen ignorieren bis (± Einheitspreis)</span>
+                                <span class="form-text text-dark"> Preisänderungen ignorieren bis (± Einheitspreis)</span>
                             </legend>
                             <div class="input-group input-group-sm">
                                 <input type="number" id="inpPreisSchwelle" class="form-control" value="0.50"
@@ -258,6 +264,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                                 <th>Veränderung zum VE (Kommentar)</th>
                                 <th>Budget Start</th>
                                 <th>Budget Ende</th>
+                                <th>Status Ende</th>
                                 <th class="text-end">Stk Start</th>
                                 <th class="text-end">Stk Ende</th>
                                 <th class="text-end">EP Start</th>
@@ -270,7 +277,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                             <tbody></tbody>
                             <tfoot class="table-light fw-bold">
                             <tr>
-                                <th colspan="11" class="text-end">Gesamt (gefiltert)</th>
+                                <th colspan="12" class="text-end">Gesamt (gefiltert)</th>
                                 <th class="text-end"></th>
                                 <th class="text-end"></th>
                                 <th></th>
@@ -289,7 +296,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
     </div>
 </div>
 
-<?php include "modal_rhe_aenderungsliste.php" ?>
+<?php include "modal_roombook_aenderungsliste.php" ?>
 
 <script src="_utils/_utils.js"></script>
 <script charset="utf-8">
@@ -297,13 +304,23 @@ $excelfilename = buildExcelFilename('Änderungsliste');
     const CSRF = $('meta[name="csrf"]').attr('content');
     const EXCELJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
     const eur = new Intl.NumberFormat('de-DE', {style: 'currency', currency: 'EUR'});
-    const COL = {stkStart: 11, stkEnd: 12, epStart: 13, epEnd: 14, ppStart: 15, ppEnd: 16, ppDiff: 17};
+    const COL = {stkStart: 12, stkEnd: 13, epStart: 14, epEnd: 15, ppStart: 16, ppEnd: 17, ppDiff: 18};
+    const DEFAULT_START = '2025-12-20';
 
     // Budgets, deren Nummer so beginnt, werden standardmäßig ausgeblendet (Änderungsevidenzen)
     const BUDGET_HIDE_DEFAULT = /^AE[VG]/i;
     const BUDGET_HIDE_EXCLUDE_IDS = new Set(
         Array.from({length: 152 - 112 + 1}, (_, i) => 112 + i)   // IDs 112–152
     );
+
+    // Budget-Status (wie auf der Budget-Seite)
+    const STATUS = {
+        0: {label: 'Offen', cls: 'warning', icon: 'fa-minus'},
+        1: {label: 'Freigegeben', cls: 'success', icon: 'fa-check'},
+        2: {label: 'Abgelehnt', cls: 'danger', icon: 'fa-times'},
+        3: {label: 'Planfortschreibung', cls: 'info', icon: 'fa-map'},
+    };
+
     // Änderungsart -> Badge-Klasse, Button-Klasse, standardmäßig sichtbar?
     const ARTEN = {
         'Zusatz': {badge: 'text-bg-success', btn: 'btn-outline-success', on: true},
@@ -317,7 +334,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
     let table = null;
     let lastMeta = null;
     let lastRange = null;
-    let rawRows = [];   // Zeilen wie von der API geliefert (vor Schwellwert)
+    let rawRows = [];     // Zeilen wie von der API geliefert (+ Status Ende), vor Schwellwert
+    let budgetMap = {};   // id -> {id, nr, name, status}
 
     const $excelfilename = <?= json_encode($excelfilename) ?>;
 
@@ -340,6 +358,11 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         return new Date(isoDate + 'T00:00:00').toLocaleDateString('de-DE', {dateStyle: 'medium'});
     }
 
+    function setDefaultRange() {
+        $('#inpStart').val(DEFAULT_START);
+        $('#inpEnd').val(toLocalInput(new Date()));
+    }
+
     function setRange(days) {
         const end = new Date();
         const start = new Date();
@@ -348,10 +371,16 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         $('#inpEnd').val(toLocalInput(end));
     }
 
+    function esc(v) {
+        return String(v ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+
     function showMsg(text, type = 'danger') {
         $('#msgArea').html(
             '<div class="alert alert-' + type + ' alert-dismissible fade show small mb-0" role="alert">'
-            + $('<div>').text(text).html()
+            + esc(text)
             + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Schließen"></button></div>'
         );
     }
@@ -432,38 +461,49 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         });
     }
 
-    // ---------- Budgets ausblenden (AEV/AEG) ----------
-    let budgetHiddenCount = 0;
+    // ---------- Budgets ausblenden (Dropdown) + Status-Filter ----------
+    // Ausgeblendet wird serverseitig pro Raumbuch-Zeile anhand ihres Endbudgets.
 
-    function hiddenBudgets() {
-        return new Set(($('#selBudgetHide').val() || []).map(Number));
+    function setBudgetMap(list) {
+        budgetMap = {};
+        (list || []).forEach(b => budgetMap[b.id] = b);
     }
 
-    /**
-     * Blendet Positionen aus, deren Budget(s) zum Endzeitpunkt alle in den gewählten Budgets liegen.
-     * Ausnahme: zum Endzeitpunkt entfallen (Stk Ende = 0) -> bleibt sichtbar,
-     * auch wenn die Position ursprünglich über ein solches Budget hinzugekommen ist.
-     */
-    function applyBudgetFilter(rows) {
-        const hide = hiddenBudgets();
-        if (!hide.size) {
-            budgetHiddenCount = 0;
-            return rows;
-        }
-        const out = rows.filter(r => {
-            if (!(Number(r.stkEnd) > 0)) return true;                  // Entfall -> immer zeigen
-            const ids = r.budgetIdsEnd || [];
-            return !(ids.length && ids.every(id => hide.has(id)));     // nur ausblenden, wenn alle Budgets betroffen
+    function hiddenBudgets() {
+        return ($('#selBudgetHide').val() || []).map(Number);
+    }
+
+    function hiddenStatus() {
+        return $('#statusFilter input:not(:checked)').map((i, el) => Number(el.value)).get();
+    }
+
+    function statusBadge(s) {
+        const st = STATUS[s] ?? {label: 'unbekannt', cls: 'secondary', icon: 'fa-question'};
+        return '<span class="badge text-bg-' + st.cls + ' me-1" title="' + st.label + '">'
+            + '<i class="fas ' + st.icon + ' me-1"></i>' + st.label + '</span>';
+    }
+
+    function buildStatusFilter() {
+        const $w = $('#statusFilter').empty();
+        Object.entries(STATUS).forEach(([s, st]) => {
+            const id = 'chkStatus' + s;
+            $w.append($('<div class="form-check form-switch mb-1">').append(
+                $('<input class="form-check-input" type="checkbox" checked>').attr('id', id).val(s),
+                $('<label class="form-check-label small">').attr('for', id).append(
+                    $('<span class="badge">').addClass('text-bg-' + st.cls)
+                        .append($('<i class="fas me-1">').addClass(st.icon), document.createTextNode(st.label)),
+                    document.createTextNode(' anzeigen')
+                )
+            ));
         });
-        budgetHiddenCount = rows.length - out.length;
-        return out;
     }
 
     function updateBudgetHint() {
-        const n = hiddenBudgets().size;
+        const n = hiddenBudgets().length, ns = hiddenStatus().length;
         let t = n ? n + ' Budget' + (n === 1 ? '' : 's') + ' ausgeblendet. ' : 'Kein Budget ausgeblendet. ';
-        if (n && rawRows.length) t += budgetHiddenCount + ' Positionen ausgeblendet. ';
-        $('#budgetHint').text(t + 'Entfallene Elemente aus diesen Budgets bleiben sichtbar.');
+        if (ns) t += ns + ' Status ausgeblendet. ';
+        if (lastMeta && (n || ns)) t += (lastMeta.hiddenRows || 0) + ' Raumbuch-Einträge ausgeblendet.';
+        $('#budgetHint').text(t);
     }
 
     function selectDefaultBudgets() {
@@ -475,15 +515,34 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         $('#selBudgetHide').trigger('change');
     }
 
+    // Budget-/Status-Filter wirken serverseitig -> nach Änderung (entprellt) neu laden, sofern schon geladen
+    let reloadTimer = null;
+
+    function scheduleReload() {
+        updateBudgetHint();
+        if (!lastRange) return;
+        clearTimeout(reloadTimer);
+        reloadTimer = setTimeout(loadData, 500);
+    }
+
+    /** Status der Endbudgets je Zeile ergänzen. */
+    function withStatusEnd(rows) {
+        return rows.map(r => {
+            const s = [...new Set((r.budgetIdsEnd || []).map(id => budgetMap[id]?.status)
+                .filter(v => v !== undefined && v !== null))].sort();
+            return Object.assign({}, r, {
+                statusEndIds: s,
+                statusEnd: s.map(v => STATUS[v]?.label ?? '?').join(', ')
+            });
+        });
+    }
+
     // ---------- Filter Änderungsarten ----------
     function buildArtFilter() {
         const $wrap = $('#artFilter').empty();
         Object.entries(ARTEN).forEach(([art, cfg], i) => {
-
             const id = 'artChk' + i;
-
             $wrap.append(
-
                 $('<input type="checkbox" class="btn-check" autocomplete="off">')
                     .attr('id', id).val(art).prop('checked', cfg.on),
                 $('<label class="btn btn-sm">').addClass(cfg.btn).attr('for', id)
@@ -523,6 +582,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         {header: 'Variante', key: 'variante', width: 9},
         {header: 'VE Budget', key: 'veBudget', width: 11},
         {header: 'ENT Budget', key: 'entBudget', width: 11},
+        {header: 'ENT Budget Status', key: 'entStatus', width: 18},
         {header: 'Zusatz/ Entfall', key: 'art', width: 16},
         {header: 'Veränderung zum VE auf Grund Nutzerabstimmung', key: 'kommentar', width: 50},
         {header: 'Σ VE Stk', key: 'veStk', width: 9},
@@ -567,7 +627,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             if (grey) cell.fill = {type: 'pattern', pattern: 'solid', fgColor: {argb: XL_GREY}};
             if (bold) cell.font = {bold: true};
             cell.border = {bottom: {style: 'hair', color: {argb: 'FFBFBFBF'}}};
-            cell.alignment = {vertical: 'top', wrapText: c === 10 || c === 4 || c === 5};
+            cell.alignment = {vertical: 'top', wrapText: c === 11 || c === 4 || c === 5};
         }
         row.getCell('vePP').numFmt = XL_MONEY;
         row.getCell('entPP').numFmt = XL_MONEY;
@@ -662,6 +722,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 variante: r.variante,
                 veBudget: r.stkStart > 0 ? (r.budgetStart || 'NULL') : '--',
                 entBudget: r.stkEnd > 0 ? (r.budgetEnd || 'NULL') : '--',
+                entStatus: r.stkEnd > 0 ? (r.statusEnd || '') : '--',
                 art: r.art,
                 kommentar: r.kommentar || '',
                 veStk: Number(r.stkStart) || 0,
@@ -698,8 +759,10 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             ['Preisänderungen ignoriert bis', eur.format(getSchwelle()) + ' je Einheit'],
             ['Preisanpassung Start (VE)', fmtPct(getFaktor('#rngFaktorStart')) + ' auf alle Einheitspreise'],
             ['Preisanpassung Ende (ENT)', fmtPct(getFaktor('#rngFaktorEnd')) + ' auf alle Einheitspreise'],
-            ['Ausgeblendete Budgets', $('#selBudgetHide option:selected').map((i, o) => $(o).data('nr')).get().join(', ')
-            + ' (entfallene Elemente daraus bleiben enthalten)'],
+            ['Ausgeblendete Budgets (Endbudget)',
+                $('#selBudgetHide option:selected').map((i, o) => $(o).data('nr')).get().join(', ') || '–'],
+            ['Ausgeblendete Budget-Status (Endbudget)',
+                hiddenStatus().map(s => STATUS[s].label).join(', ') || '–'],
             ['Angezeigte Änderungsarten', Array.from(activeArts()).join(', ')],
             ['Exportiert am', new Date().toLocaleString('de-DE')]
         ].forEach(v => {
@@ -723,7 +786,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         const txt = DataTable.render.text();
         table = new DataTable('#tblAenderungen', {
             data: rows,
-            language: {url: '/_utils/de-DE.json'},
+            language: {url: '/utils/de-DE.json'},
             scrollX: true,
             pageLength: 100,
             lengthMenu: [25, 50, 100, 250, {label: 'Alle', value: -1}],
@@ -739,7 +802,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 endRender: function (rows, group) {
                     const d = rows.data().toArray();
                     const s = (k) => d.reduce((a, r) => a + (Number(r[k]) || 0), 0);
-                    return 'Σ ' + $('<span>').text(group).html() + ': Stk ' + s('stkStart') + ' → ' + s('stkEnd')
+                    return 'Σ ' + esc(group) + ': Stk ' + s('stkStart') + ' → ' + s('stkEnd')
                         + ' | PP ' + eur.format(s('ppStart')) + ' → ' + eur.format(s('ppEnd'))
                         + ' | Δ ' + signedMoney(s('ppEnd') - s('ppStart'));
                 }
@@ -758,9 +821,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                         {
                             extend: 'searchBuilder',
                             text: 'Filter',
-                            className: 'btn btn-sm btn-outline-dark bg-white fas fa-filter',
-
-
+                            className: 'btn btn-sm btn-outline-dark bg-white fas fa-filter'
                         },
                         {
                             extend: 'colvis',
@@ -785,7 +846,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                         if (type !== 'display') return d;
                         const warn = row.ohnePreis
                             ? ' <i class="fas fa-exclamation-triangle text-warning" title="Kein Preis hinterlegt"></i>' : '';
-                        return $('<span>').text(d).prop('outerHTML') + warn;
+                        return esc(d) + warn;
                     }
                 },
                 {data: 'variante', render: txt, className: 'text-center'},
@@ -805,8 +866,18 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                     data: 'budgetEnd',
                     render: function (d, type, row) {
                         if (type !== 'display') return d;
-                        const t = $('<span>').text(d).prop('outerHTML');
+                        const t = esc(d);
                         return d !== row.budgetStart ? '<strong class="text-primary">' + t + '</strong>' : t;
+                    }
+                },
+                {
+                    data: 'statusEnd',
+                    className: 'text-nowrap',
+                    render: function (d, type, row) {
+                        if (type !== 'display') return d;
+                        return row.statusEndIds.length
+                            ? row.statusEndIds.map(statusBadge).join('')
+                            : '<span class="text-muted">–</span>';
                     }
                 },
                 {data: 'stkStart', className: 'text-end'},
@@ -871,7 +942,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
 
     /** Schwellwert (auf Originalpreise) und Preisanpassung anwenden, dann Tabelle (neu) befüllen. */
     function renderRows() {
-        const rows = applyFaktoren(applySchwelle(applyBudgetFilter(rawRows)));
+        const rows = applyFaktoren(applySchwelle(rawRows));
         updateBudgetHint();
         updateArtCounts(rows);
         if (!table) {
@@ -879,42 +950,6 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         } else {
             table.clear().rows.add(rows).draw();
         }
-    }
-
-    // ---------- Daten ----------
-    function loadFilters() {
-        $.post(API, {action: 'filters', csrf: CSRF}, function (res) {
-            if (!res.ok) {
-                showMsg(res.error);
-                return;
-            }
-            const $sel = $('#selAP').empty();
-            if (!res.hasAp) {
-                $('#apHint').text('Arbeitspaket-Spalte in tabelle_räume nicht gefunden.');
-                return;
-            }
-            res.arbeitspakete.forEach(ap => {
-                const label = ap.nr + (ap.name ? ' – ' + ap.name : '') + ' (' + ap.raeume + ' Räume)';
-                $sel.append(new Option(label, ap.nr, true, true));
-            });
-            if (res.ohneAp > 0) {
-                $sel.append(new Option('— ohne Arbeitspaket — (' + res.ohneAp + ' Räume)', AP_NONE, true, true));
-            }
-            const hasOptions = $sel.find('option').length > 0;
-            $sel.prop('disabled', !hasOptions).trigger('change');
-            updateApHint();
-
-            // Budgets: AEV/AEG standardmäßig ausgeblendet
-            const STATUS = {0: 'offen', 1: 'freigegeben', 2: 'abgelehnt'};
-            const $bud = $('#selBudgetHide').empty();
-            (res.budgets || []).forEach(b => {
-                const label = b.nr + (b.name ? ' – ' + b.name : '') + (b.status in STATUS ? ' (' + STATUS[b.status] + ')' : '');
-                $bud.append($(new Option(label, b.id, false, false)).data('nr', b.nr));
-            });
-            const hasBudgets = $bud.find('option').length > 0;
-            $bud.prop('disabled', !hasBudgets);
-            selectDefaultBudgets();
-        }, 'json').fail(xhr => showMsg(xhr.responseJSON?.error || 'Filter konnten nicht geladen werden.'));
     }
 
     // ---------- Arbeitspaket-Auswahl ----------
@@ -943,8 +978,46 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         $('#selAP').trigger('change');
     }
 
+    // ---------- Daten ----------
+    function loadFilters() {
+        $.post(API, {action: 'filters', csrf: CSRF}, function (res) {
+            if (!res.ok) {
+                showMsg(res.error);
+                return;
+            }
+            const $sel = $('#selAP').empty();
+            if (!res.hasAp) {
+                $('#apHint').text('Arbeitspaket-Spalte in tabelle_räume nicht gefunden.');
+            } else {
+                res.arbeitspakete.forEach(ap => {
+                    const label = ap.nr + (ap.name ? ' – ' + ap.name : '') + ' (' + ap.raeume + ' Räume)';
+                    $sel.append(new Option(label, ap.nr, true, true));
+                });
+                if (res.ohneAp > 0) {
+                    $sel.append(new Option('— ohne Arbeitspaket — (' + res.ohneAp + ' Räume)', AP_NONE, true, true));
+                }
+                $sel.prop('disabled', !$sel.find('option').length).trigger('change');
+                updateApHint();
+            }
+
+            // Budgets: AEV/AEG standardmäßig ausgeblendet
+            setBudgetMap(res.budgets);
+            const $bud = $('#selBudgetHide').empty();
+            (res.budgets || []).forEach(b => {
+                const st = STATUS[b.status];
+                const label = b.nr + (b.name ? ' – ' + b.name : '') + (st ? ' (' + st.label + ')' : '');
+                $bud.append($(new Option(label, b.id, false, false)).data('nr', b.nr));
+            });
+            $bud.prop('disabled', !$bud.find('option').length);
+            selectDefaultBudgets();
+        }, 'json').fail(xhr => showMsg(xhr.responseJSON?.error || 'Filter konnten nicht geladen werden.'));
+    }
 
     function loadData() {
+        if ($('#btnLoad').prop('disabled')) {   // läuft gerade -> später nochmal
+            scheduleReload();
+            return;
+        }
         const von = $('#inpStart').val();
         const bis = $('#inpEnd').val();
         if (!von || !bis) {
@@ -973,7 +1046,9 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             apAll: apSel.all || $('#selAP option').length === 0 ? '1' : '0',
             ap: apSel.values,
             standort: $('#chkStandort').is(':checked') ? '1' : '0',
-            ohneBestand: $('#chkOhneBestand').is(':checked') ? '1' : '0'
+            ohneBestand: $('#chkOhneBestand').is(':checked') ? '1' : '0',
+            hideBudgets: hiddenBudgets(),
+            hideStatus: hiddenStatus()
         }, function (res) {
             if (!res.ok) {
                 showMsg(res.error);
@@ -981,7 +1056,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             }
             lastMeta = res.meta;
             lastRange = {von: von, bis: bis};
-            rawRows = res.rows;
+            setBudgetMap(res.budgets);              // aktuelle Status, falls inzwischen geändert
+            rawRows = withStatusEnd(res.rows);
             $('#emptyState').addClass('d-none');
             $('#tableWrap').removeClass('d-none');
             renderRows();
@@ -993,26 +1069,42 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             .always(() => setLoading(false));
     }
 
+    // ---------- Linke Spalte ein-/ausblenden ----------
+    function toggleLeftCol(show) {
+        $('#colLeft').toggleClass('d-none', !show);
+        $('#colRight')
+            .toggleClass('col-lg-8 col-xxl-9', show)   // neben der linken Spalte
+            .toggleClass('col-lg-12', !show);          // volle Breite
+        $('#showLeftCardBtn').toggleClass('d-none', show);
+        if (table) table.columns.adjust();             // DataTable an neue Breite anpassen
+    }
+
+    function show_modal(modal_id) {
+        $('#' + modal_id).modal('show');
+    }
+
     // ---------- Init ----------
     $(function () {
-        setRange(30);
+        setDefaultRange();
         buildArtFilter();
+        buildStatusFilter();
+
         $('#selAP').select2({
             width: '100%',
             placeholder: 'Kein Arbeitspaket gewählt',
             allowClear: true,
             closeOnSelect: false
         }).on('change', updateApHint);
+
         $('#selBudgetHide').select2({
             width: '100%',
             placeholder: 'Kein Budget ausgeblendet',
             allowClear: true,
             closeOnSelect: false
-        }).on('change', () => {
-            if (rawRows.length) renderRows(); else updateBudgetHint();
-        });
-        $('#btnBudAev').on('click', selectDefaultBudgets);
+        }).on('change', scheduleReload);
 
+        $('#statusFilter').on('change', 'input', scheduleReload);
+        $('#btnBudAev').on('click', selectDefaultBudgets);
         $('#btnApAll').on('click', () => setAllAps(true));
         loadFilters();
 
@@ -1041,18 +1133,6 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         });
         updateFaktorLabels();
     });
-
-    function show_modal(modal_id) {
-        $('#' + modal_id).modal('show');
-    }// ---------- Linke Spalte ein-/ausblenden ----------
-    function toggleLeftCol(show) {
-        $('#colLeft').toggleClass('d-none', !show);
-        $('#colRight')
-            .toggleClass('col-lg-8 col-xxl-9', show)   // neben der linken Spalte
-            .toggleClass('col-lg-12', !show);          // volle Breite
-        $('#showLeftCardBtn').toggleClass('d-none', show);
-        if (table) table.columns.adjust();             // DataTable an neue Breite anpassen
-    }
 </script>
 </body>
 </html>

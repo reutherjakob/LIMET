@@ -1,11 +1,11 @@
 <?php
 
 require_once '../_utils/_utils.php';
+
+check_login();
 include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('../TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include '_pdf_createBericht_utils.php';
 include 'pdf_createMTTabelle.php';
-
-check_login();
 
 
 function renderElectricalItems($pdf, $items, $parameter_changes, $row, $font_size, $col_map, $horizontalSpacerLN2, $block_header_w): void

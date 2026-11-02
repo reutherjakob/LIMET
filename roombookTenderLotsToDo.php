@@ -161,6 +161,9 @@ require_once '_utils/_csrf.php';
                                 <option value="0">Offen</option>
                                 <option value="2">Wartend</option>
                                 <option value="1">Fertig</option>
+                                <option value="3">Entfallen</option>
+                                <option value="4">Bestand</option>
+
                             </select>
                         </div>
                         <div class="col-1 d-flex justify-content-end" id="losEinträge"></div>
@@ -248,6 +251,8 @@ require_once '_utils/_csrf.php';
                                 <option value="0">🔴 Offen</option>
                                 <option value="2">🔵 Wartend</option>
                                 <option value="1">✅ Fertig</option>
+                                <option value="3">   Entfallen</option>
+                                <option value="4">   Bestand</option>
                             </select>
                         </div>
                     </div>
@@ -356,11 +361,17 @@ require_once '_utils/_csrf.php';
     function statusBadge(val) {
         switch (parseInt(val)) {
             case 0:
-                return '<span class="badge bg-danger">Offen</span>';
+                return '<span class="badge bg-warning">Offen</span>';
             case 1:
                 return '<span class="badge bg-success">Fertig</span>';
             case 2:
                 return '<span class="badge bg-primary">Wartend</span>';
+            case 3:
+                return '<span class="badge bg-danger">Entfallen</span>';
+            case 4:
+                return '<span class="badge bg-danger">Bestand</span>';
+
+
             default:
                 return '<span class="badge bg-secondary">Unbekannt</span>';
         }
@@ -374,6 +385,10 @@ require_once '_utils/_csrf.php';
                 return '✅ Fertig';
             case 2:
                 return '🔵 Wartend';
+            case 3:
+                return 'Entfallen';
+            case 4:
+                return 'Bestand';
             default:
                 return '?';
         }

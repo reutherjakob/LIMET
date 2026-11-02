@@ -562,9 +562,11 @@ require_once '_utils/_csrf.php';
         const lh_norm = v => (v === null || v === undefined || v === '') ? '' : String(v);
 
         const lh_statusBadges = {
-            '0': "<span class='badge bg-danger'>Offen</span>",
+            '0': "<span class='badge bg-warning'>Offen</span>",
             '1': "<span class='badge bg-success'>Fertig</span>",
             '2': "<span class='badge bg-primary'>Wartend</span>",
+            '3': "<span class='badge bg-danger'>Entfallen</span>",
+            '4': "<span class='badge bg-danger'>Bestand</span>",
         };
         const lh_variantLabels = {'1': 'A', '2': 'B', '3': 'C', '4': 'D', '5': 'E'};
 

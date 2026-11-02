@@ -1141,7 +1141,7 @@ $rtKeys = raumtyp_all_keys();
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="../_utils/_utils.js"></script>
 <script>
     const PROJECT_ID = <?= (int)$projectID ?>;
     const SELF = location.pathname.split('/').pop();

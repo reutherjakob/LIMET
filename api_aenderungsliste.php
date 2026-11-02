@@ -8,8 +8,9 @@
  * "zurückgespielt" werden.
  *
  * Actions (POST):
- *   action=filters  -> Arbeitspakete für den Filter
- *   action=load     -> Änderungsliste (start, end, ap[], standort, ohneBestand)
+ *   action=filters  -> Arbeitspakete + Budgets (inkl. Status) für die Filter
+ *   action=load     -> Änderungsliste (start, end, ap[], standort, ohneBestand,
+ *                      hideBudgets[], hideStatus[])
  */
 require_once '_utils/_utils.php';
 require_once '_utils/_csrf.php';
@@ -100,6 +101,33 @@ function hasApColumns(mysqli $db): bool
         }
     }
     return true;
+}
+
+/** Budgets des Projekts inkl. Status, natürlich nach Nummer sortiert. */
+function loadBudgets(mysqli $db, int $projectId): array
+{
+    $list = [];
+    foreach (fetchAll($db,
+        "SELECT idtabelle_projektbudgets AS id, Budgetnummer AS nr, Budgetname AS name, status
+           FROM tabelle_projektbudgets
+          WHERE tabelle_projekte_idTABELLE_Projekte = ?",
+        'i', [$projectId]) as $r) {
+        $list[] = [
+            'id' => (int)$r['id'],
+            'nr' => (string)$r['nr'],
+            'name' => (string)$r['name'],
+            'status' => $r['status'] === null ? null : (int)$r['status'],
+        ];
+    }
+    usort($list, fn($a, $b) => strnatcasecmp($a['nr'], $b['nr']));
+    return $list;
+}
+
+/** POST-Array -> Liste eindeutiger Ganzzahlen. */
+function postIntList(string $key): array
+{
+    $v = array_filter((array)($_POST[$key] ?? []), fn($x) => is_numeric($x));
+    return array_values(array_unique(array_map('intval', $v)));
 }
 
 function parseDateTime(string $value): ?string
@@ -222,19 +250,8 @@ if ($action === 'filters') {
         usort($aps, fn($a, $b) => strnatcasecmp($a['nr'], $b['nr']));
     }
 
-    // Budgets des Projekts (für den Filter "Budgets ausblenden")
-    $budgetList = [];
-    foreach (fetchAll($db,
-        "SELECT idtabelle_projektbudgets AS id, Budgetnummer AS nr, Budgetname AS name, status
-           FROM tabelle_projektbudgets
-          WHERE tabelle_projekte_idTABELLE_Projekte = ?",
-        'i', [$projectId]) as $r) {
-        $budgetList[] = ['id' => (int)$r['id'], 'nr' => $r['nr'], 'name' => $r['name'], 'status' => (int)$r['status']];
-    }
-    usort($budgetList, fn($a, $b) => strnatcasecmp($a['nr'], $b['nr']));
-
     respond(['ok' => true, 'hasAp' => $hasAp, 'arbeitspakete' => $aps, 'ohneAp' => $ohneAp,
-        'budgets' => $budgetList]);
+        'budgets' => loadBudgets($db, $projectId)]);
 }
 
 if ($action !== 'load') {
@@ -264,6 +281,8 @@ $apFilter = array_values(array_filter(
 if (!$apAll && !$apFilter) {
     fail('Bitte mindestens ein Arbeitspaket wählen.');
 }
+$hideBudgetIds = postIntList('hideBudgets');   // im Dropdown gewählte Budgets
+$hideStatus = postIntList('hideStatus');       // abgewählte Budget-Status (0–3)
 
 // ---------------------------------------------------------------------------
 // Räume des Projekts
@@ -395,12 +414,45 @@ $costEnd ??= $cost;
 $costStart = $cost;
 
 // ---------------------------------------------------------------------------
+// Budgets + auszublendende Raumbuch-Zeilen
+// ---------------------------------------------------------------------------
+// Entschieden wird PRO RAUMBUCH-ZEILE (nicht pro zusammengefasster Position)
+// anhand ihres Endbudgets:
+//   - Zeile existiert zum Endzeitpunkt  -> Budget zum Endzeitpunkt
+//   - Zeile zum Endzeitpunkt gelöscht   -> letztes bekanntes Budget (Stand Start)
+// Liegt dieses Budget im Dropdown oder hat einen abgewählten Status, fällt die
+// Zeile komplett raus (Start UND Ende) – egal ob Zusatz, Entfall, Mengen-,
+// Budget- oder Preisänderung.
+
+$budgetList = loadBudgets($db, $projectId);
+$budgets = array_column($budgetList, null, 'id');
+
+$hiddenBudgets = array_fill_keys($hideBudgetIds, true);
+foreach ($budgetList as $b) {
+    if ($b['status'] !== null && in_array($b['status'], $hideStatus, true)) {
+        $hiddenBudgets[$b['id']] = true;
+    }
+}
+
+$hiddenRows = [];
+if ($hiddenBudgets) {
+    foreach (array_keys($stateStart + $stateEnd) as $rheId) {
+        $sEnd = $stateEnd[$rheId] ?? null;
+        $ref = ($sEnd && $sEnd['exists']) ? $sEnd : ($stateStart[$rheId] ?? null);
+        if ($ref && $ref['budget'] !== null && isset($hiddenBudgets[$ref['budget']])) {
+            $hiddenRows[$rheId] = true;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Aggregation je Raum / Element / Variante
 // ---------------------------------------------------------------------------
 
 $groups = [];
+$hiddenSeen = [];   // tatsächlich ausgeblendete Raumbuch-Zeilen (nach den übrigen Filtern)
 foreach (['Start' => $stateStart, 'End' => $stateEnd] as $phase => $states) {
-    foreach ($states as $s) {
+    foreach ($states as $rheId => $s) {
         if (!$s['exists'] || $s['raum'] === null || $s['element'] === null || $s['variante'] === null) {
             continue;
         }
@@ -415,6 +467,16 @@ foreach (['Start' => $stateStart, 'End' => $stateEnd] as $phase => $states) {
         }
         if ($hideBestand && $s['neu'] === 0) {
             continue;
+        }
+        if (!$apAll) {
+            $apNr = (string)($rooms[$s['raum']]['apNr'] ?? '');
+            if (!in_array($apNr === '' ? AP_NONE : $apNr, $apFilter, true)) {
+                continue;
+            }
+        }
+        if (isset($hiddenRows[$rheId])) {
+            $hiddenSeen[$rheId] = true;
+            continue;   // Endbudget ausgeblendet (Dropdown oder Status)
         }
         $key = $s['raum'] . '|' . $s['element'] . '|' . $s['variante'];
         $groups[$key] ??= [
@@ -453,18 +515,10 @@ while ($r = $res->fetch_assoc()) {
     $varianten[(int)$r['id']] = $r['Variante'];
 }
 
-$budgets = [];
-foreach (fetchAll($db,
-    "SELECT idtabelle_projektbudgets AS id, Budgetnummer, Budgetname
-       FROM tabelle_projektbudgets
-      WHERE tabelle_projekte_idTABELLE_Projekte = ?",
-    'i', [$projectId]) as $r) {
-    $budgets[(int)$r['id']] = $r;
-}
 $budgetLabel = function (array $ids) use ($budgets): string {
     $labels = [];
     foreach (array_keys($ids) as $id) {
-        $labels[] = $budgets[$id]['Budgetnummer'] ?? ('#' . $id);
+        $labels[] = $budgets[$id]['nr'] ?? ('#' . $id);
     }
     sort($labels, SORT_NATURAL);
     return implode(', ', $labels);
@@ -477,12 +531,6 @@ $budgetLabel = function (array $ids) use ($budgets): string {
 $rows = [];
 foreach ($groups as $key => $g) {
     $room = $rooms[$g['raum']];
-    if (!$apAll) {
-        $apKey = (string)$room['apNr'] === '' ? AP_NONE : (string)$room['apNr'];
-        if (!in_array($apKey, $apFilter, true)) {
-            continue;
-        }
-    }
     $ckey = $g['element'] . '|' . $g['variante'];
     $epStart = $costStart[$ckey] ?? null;
     $epEnd = $costEnd[$ckey] ?? null;
@@ -537,6 +585,7 @@ foreach ($groups as $key => $g) {
 respond([
     'ok' => true,
     'hasAp' => $hasAp,
+    'budgets' => $budgetList,
     'meta' => [
         'start' => $start,
         'end' => $end,
@@ -544,6 +593,7 @@ respond([
         'costEntries' => count($costLog),
         'onlyStandort' => $onlyStandort,
         'hideBestand' => $hideBestand,
+        'hiddenRows' => count($hiddenSeen),
     ],
     'rows' => $rows,
 ]);
