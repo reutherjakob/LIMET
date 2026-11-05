@@ -39,7 +39,7 @@ function varianteToLetter(?int $id): string
 
 $mysqli = utils_connect_sql();
 
-$dummyIds = ["8.20.10.1", "8.20.10.2", "8.20.10.3", "8.20.10.4"];
+$dummyIds = ["8.20.10.1", "8.20.10.2", "8.20.10.3", "8.20.10.4", "8.20.10.5"];
 $dummyIdList = implode("', '", $dummyIds);
 
 // Alle Elemente laden – auch aus nicht freigegebenen Budgets.

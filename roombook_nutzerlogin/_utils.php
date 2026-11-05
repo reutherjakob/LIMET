@@ -4,10 +4,19 @@ function start_session(): void
     if (session_status() === PHP_SESSION_NONE) {
         session_start([
             'cookie_httponly' => true,
-            'cookie_secure' => isset($_SERVER['HTTPS']),
+            'cookie_secure' => true,
             'cookie_samesite' => 'Strict',
+            'use_strict_mode' => true,
+            'use_only_cookies' => true,
         ]);
     }
+}
+
+function send_security_headers(): void
+{
+    header('X-Frame-Options: DENY');
+    header('X-Content-Type-Options: nosniff');
+    header('Referrer-Policy: no-referrer');
 }
 
 function init_page($allowed_roles): string

@@ -4,9 +4,9 @@ require_once "../roombook_nutzerlogin/_utils.php";
 if (!function_exists('loadEnv')) {
     include "../roombook_nutzerlogin/db.php";
 }
-require_once "../roombook_nutzerumfrage_V1_2026/raumtypen.php"; // lädt $labortypen
+require_once "../roombook_nutzerumfrage_sf/raumtypen.php"; // lädt $labortypen
 
-require_once "../roombook_nutzerlogin/_csrf.php";
+require_once "../roombook_nutzerlogin/csrf.php";
 $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin", "spargelfeld_view"]);
 $user_name = $_SESSION["user_name"];
 $projekt_id = 95;
@@ -34,7 +34,7 @@ if ($role === "internal_rb_user" || $role === "spargelfeld_admin" || $role === "
         die("Fehler in der Abfrage: " . $mysqli->error);
     }
 } else {
-    $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
+    $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer, 
                    `Raumbereich Nutzer` AS bereich, Nutzfläche,
                    Bauabschnitt, Geschoss,   `Raumtyp BH`
             FROM tabelle_räume
@@ -61,7 +61,7 @@ $stmt->close();
 
 
 $savedRoomIDs = [];
-$sqlSaved = "SELECT roomID FROM tabelle_room_requirements_from_user 
+/* $sqlSaved = "SELECT roomID FROM tabelle_room_requirements_from_user
              WHERE roomID IN (SELECT idTABELLE_Räume FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ?)";
 if ($stmtSaved = $mysqli->prepare($sqlSaved)) {
     $stmtSaved->bind_param("i", $projekt_id);
@@ -72,7 +72,7 @@ if ($stmtSaved = $mysqli->prepare($sqlSaved)) {
     }
     $stmtSaved->close();
 }
-
+*/
 $mysqli->close();
 
 
@@ -111,7 +111,7 @@ foreach ($labortypen as $lt) {
 
 
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php"; ?>
 
 
 <body class="">
@@ -235,7 +235,7 @@ foreach ($labortypen as $lt) {
             responsive: true,       // Enable responsive design for smaller screens
             autoWidth: false,       // Disable automatic column width calculation
             language: {             // Customize language strings (example: German)
-                  url: "/_utils/de-DE.json",
+                url: "/_utils/de-DE.json",
                 search: "Suchen:",
                 lengthMenu: "Zeige _MENU_",
 
@@ -282,7 +282,6 @@ foreach ($labortypen as $lt) {
                         $(this).css('background-color', '#d4edda');
                     }
                 });
-
 
 
             }
@@ -333,7 +332,7 @@ foreach ($labortypen as $lt) {
             let nf = $(this).data("nf") || '';
 
             $.ajax({
-                url: "spargelfeld_nutzerabfrage_1.php",
+                url: "spargelfeld_nutzerabfrage_Entwurf.php",
                 method: "POST",
                 data: {
                     roomID: roomID,
@@ -368,7 +367,7 @@ foreach ($labortypen as $lt) {
             const roomID = $form.find('[name="roomID"]').val();
 
             $.ajax({
-                url: 'save_room_data.php', // war: spargelfeld_save.php
+                url: 'save_room_data_Entwurf.php', // war: spargelfeld_save.php
                 type: 'POST',
                 data: $(this).serialize() + '&csrf_token=' + encodeURIComponent(csrfToken),
                 dataType: 'json',
@@ -390,9 +389,9 @@ foreach ($labortypen as $lt) {
             });
         });
 
-        // loadFormData-Funktion (gehört hierher, nicht in spargelfeld_nutzerabfrage_1.php)
+        // loadFormData-Funktion (gehört hierher, nicht in spargelfeld_nutzerabfrage_Ent.php)
         function loadFormData(roomId) {
-            $.get('load_room_data_userinputs.php', {roomId: roomId}, function (response) {
+            $.get('load_room_data_userinputs_Entwurf.php', {roomId: roomId}, function (response) {
                 if (response.error || response.newRoom) return;
 
                 const data = response.data;

@@ -4,25 +4,56 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Upgrade Kort Liste">
-      <change afterPath="$PROJECT_DIR$/modal_roombook_aenderungsliste.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs.">
+      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/Nutzerabfrage_Entwurf.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/_utils.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/form_fields_forNutzergruppe_Entwurf.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/load_room_data_userinputs_VE.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/navbar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/raumtyp_resolver_Entwurf.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/save_room_data_VE.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/spargelfeld_nutzerabfrage_VE.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_CINO.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_CINO.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_wip/roombook_inflationsrechner.php" beforeDir="false" afterPath="$PROJECT_DIR$/_wip/roombook_inflationsrechner.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_wip/roombook_vorlage.php" beforeDir="false" afterPath="$PROJECT_DIR$/_wip/roombook_vorlage.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/api_aenderungsliste.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_los_todos.php" beforeDir="false" afterPath="$PROJECT_DIR$/api_los_todos.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/get_khi_export.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_khi_export.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modal_rhe_aenderungsliste.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookReports.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookReports.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookTenderLotsToDo.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookTenderLotsToDo.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_FeedbackCenter/FeedbackModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_FeedbackCenter/FeedbackModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_allTenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_allTenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getElementeJeRaeumePivotTable.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementeJeRaeumePivotTable.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_ElemetsInRoom_ParameterTable.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ElemetsInRoom_ParameterTable.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_KOR_ElementeListe.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_KOR_ElementeListe.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_befu.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_befu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementAdministration.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementAdministration.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/DEF.txt" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/DEF.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/Kontakt&amp;Impressum.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/Kontakt&amp;Impressum.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/_utils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/change_pw.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/change_pw.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/csrf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/csrf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/db.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/db.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/footer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/forward.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/forward.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerlogin/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerlogin/login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/DSGVO_Nutzerumfrage.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/DSGVO_Nutzerumfrage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/Nutzerabfrage.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/Nutzerabfrage_VE.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/Raumkategorien.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/Raumkategorien.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/Support.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/Support.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/_utils.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/adminpanel.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/adminpanel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/bericht_VE.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/ergebnisse.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/ergebnisse_VE.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/footer_Nutzerumfrage.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/footer_Nutzerumfrage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/form_fields_forNutzergruppe1.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/form_fields_forNutzergruppe_VE.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/load_room_data_userinputs.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/load_room_data_userinputs_Entwurf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/navbar_VE.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/raumtyp_resolver.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/raumtyp_resolver.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/save_room_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/save_room_data_Entwurf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/spargelfeld_nutzerabfrage_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/spargelfeld_nutzerabfrage_Entwurf.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/pdf_raumtypen_sf.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/roombook_RB_RT_Abgleich.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/roombook_RB_RT_Abgleich.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/roombook_sf_av_sv.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/roombook_sf_av_sv.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/roombook_Raumtypen_zu_Raumbuch.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/roombook_Raumtypen_zu_Raumbuch.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_tenderCalendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderCalendar.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,7 +148,7 @@
     &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;git-widget-placeholder&quot;: &quot;Werq__08__26&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/roombook_nutzerumfrage_sf&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -138,18 +169,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_nutzerumfrage_sf" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_nutzerumfrage_V1_2026" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\IFCQuest" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\LOGIN" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_spargelfeld" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_wip" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\DB_analysis" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils\DB_analysis" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -691,15 +722,11 @@
       <workItem from="1792485845457" duration="596000" />
       <workItem from="1792656083312" duration="3483000" />
       <workItem from="1792665763177" duration="4404000" />
-      <workItem from="1793629457315" duration="2701000" />
-    </task>
-    <task id="LOCAL-00219" summary="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.&#10;element Admin - pagelength option ergänzt.">
-      <option name="closed" value="true" />
-      <created>1776082650440</created>
-      <option name="number" value="00219" />
-      <option name="presentableId" value="LOCAL-00219" />
-      <option name="project" value="LOCAL" />
-      <updated>1776082650440</updated>
+      <workItem from="1793629457315" duration="3667000" />
+      <workItem from="1793697527738" duration="4413000" />
+      <workItem from="1793718162155" duration="4039000" />
+      <workItem from="1793795131912" duration="9550000" />
+      <workItem from="1793866065788" duration="763000" />
     </task>
     <task id="LOCAL-00220" summary="Ui upgrade while workin">
       <option name="closed" value="true" />
@@ -1085,7 +1112,15 @@
       <option name="project" value="LOCAL" />
       <updated>1793616671001</updated>
     </task>
-    <option name="localTasksCounter" value="268" />
+    <task id="LOCAL-00268" summary="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs.">
+      <option name="closed" value="true" />
+      <created>1793634371596</created>
+      <option name="number" value="00268" />
+      <option name="presentableId" value="LOCAL-00268" />
+      <option name="project" value="LOCAL" />
+      <updated>1793634371596</updated>
+    </task>
+    <option name="localTasksCounter" value="269" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1115,7 +1150,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Neue Seite: Geräte- und Wartungspreise Liste" />
     <MESSAGE value="Fragekatalog angepasst" />
     <MESSAGE value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
     <MESSAGE value="Bestand Eintragen bugfix." />
@@ -1140,7 +1174,8 @@
     <MESSAGE value="Bugfixes." />
     <MESSAGE value="Bugfixes.&#10;Upgrade El. Historie" />
     <MESSAGE value="Upgrade Kort Liste" />
-    <option name="LAST_COMMIT_MESSAGE" value="Upgrade Kort Liste" />
+    <MESSAGE value="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs." />
+    <option name="LAST_COMMIT_MESSAGE" value="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1181,7 +1216,7 @@
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/save_room_data.php</url>
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_sf/save_room_data_VE.php</url>
           <line>82</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
@@ -1206,12 +1241,12 @@
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php</url>
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_sf/bericht_VE.php</url>
           <line>347</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php</url>
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_sf/bericht_VE.php</url>
           <line>453</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>

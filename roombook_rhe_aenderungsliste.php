@@ -34,7 +34,13 @@ $excelfilename = buildExcelFilename('Änderungsliste');
 </head>
 <style>
     .card-header {
-        height: 40px;
+        height: 45px;
+    }
+
+    .sb-standard {
+        background-color: #f8d7da !important;
+        border-color: #dc3545 !important;
+        color: #842029 !important;
     }
 </style>
 <body>
@@ -64,8 +70,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                         </button>
                     </div>
                 </div>
-                <div class="card-body p-0">
-                    <div class="card mb-1">
+                <div class="card-body bg-secondary p-0">
+                    <div class="card mb-2 mt-2">
 
 
                         <fieldset class="border rounded position-relative px-2 pt-1 pb-1 mt-2">
@@ -99,7 +105,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
 
                             <div class="position-absolute top-0 end-0 translate-middle-y me-2 px-1 bg-white">
                                 <button type="button" id="btnBudAev" class="btn btn-sm btn-outline-secondary">
-                                    Alle
+                                    AEV/AEG
                                 </button>
                             </div>
 
@@ -131,7 +137,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                         <div id="msgArea" class="mt-3"></div>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card mb-2">
                     <div class="card-body">
 
                         <fieldset class="border rounded position-relative  pt-3 pb-2 mb-2 mt-2">
@@ -315,21 +321,62 @@ $excelfilename = buildExcelFilename('Änderungsliste');
 
     // Budget-Status (wie auf der Budget-Seite)
     const STATUS = {
-        0: {label: 'Offen', cls: 'warning', icon: 'fa-minus'},
-        1: {label: 'Freigegeben', cls: 'success', icon: 'fa-check'},
-        2: {label: 'Abgelehnt', cls: 'danger', icon: 'fa-times'},
-        3: {label: 'Planfortschreibung', cls: 'info', icon: 'fa-map'},
+        0: {label: 'Offen', cls: 'warning', icon: 'fa-minus', on: false},
+        1: {label: 'Freigegeben', cls: 'success', icon: 'fa-check', on: true},
+        2: {label: 'Abgelehnt', cls: 'danger', icon: 'fa-times', on: false},
+        3: {label: 'Planfortschreibung', cls: 'info', icon: 'fa-map', on: true},
     };
-
     // Änderungsart -> Badge-Klasse, Button-Klasse, standardmäßig sichtbar?
     const ARTEN = {
         'Zusatz': {badge: 'text-bg-success', btn: 'btn-outline-success', on: true},
         'Entfall': {badge: 'text-bg-danger', btn: 'btn-outline-danger', on: true},
         'Mengenänderung': {badge: 'text-bg-warning', btn: 'btn-outline-warning', on: true},
         'Budgetänderung': {badge: 'text-bg-info', btn: 'btn-outline-info', on: true},
-        'Preisänderung': {badge: 'text-bg-secondary', btn: 'btn-outline-secondary', on: true},
+        'Preisänderung': {badge: 'text-bg-secondary', btn: 'btn-outline-secondary', on: false},
         'unverändert': {badge: 'text-bg-light border', btn: 'btn-outline-dark', on: false}
     };
+    // Budget Ende leer ODER (Art != Zusatz UND Budget Ende nicht leer
+    //                        UND (Status enthält Freigegeben ODER Planfortschreibung))
+    const sbCrit = (origData, data, condition, value = []) =>
+        ({condition, data, origData, type: 'string', value});
+
+    const SB_STANDARDFILTER = {
+        logic: 'OR',
+        criteria: [
+            sbCrit('budgetEnd', 'Budget Ende', 'null'),
+            {
+                logic: 'AND',
+                criteria: [
+                    sbCrit('art', 'Änderungsart', '!=', ['Zusatz']),
+                    sbCrit('budgetEnd', 'Budget Ende', '!null'),
+                    {
+                        logic: 'OR',
+                        criteria: [
+                            sbCrit('statusEnd', 'Status Ende', 'contains', ['Freigegeben']),
+                            sbCrit('statusEnd', 'Status Ende', 'contains', ['Planfortschreibung'])
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+
+    /** Reduziert eine Filterdefinition auf das Wesentliche, damit sie vergleichbar ist. */
+    function sbKey(d) {
+        if (d?.criteria) return [d.logic, d.criteria.map(sbKey)];
+        return [d?.origData, d?.condition, String(d?.value ?? '')];
+    }
+
+    /** Text und Farbe des Filter-Buttons je nach aktivem Filter setzen. */
+    function updateSbButton(dt) {
+        const aktiv = JSON.stringify(sbKey(dt.searchBuilder.getDetails()))
+            === JSON.stringify(sbKey(SB_STANDARDFILTER));
+        const btn = dt.button('sbFilter:name');
+
+        if (aktiv) btn.text('Standardfilter eingestellt');
+        $(btn.node()).toggleClass('sb-standard', aktiv).toggleClass('bg-white', !aktiv);
+    }
+
 
     let table = null;
     let lastMeta = null;
@@ -488,7 +535,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         Object.entries(STATUS).forEach(([s, st]) => {
             const id = 'chkStatus' + s;
             $w.append($('<div class="form-check form-switch mb-1">').append(
-                $('<input class="form-check-input" type="checkbox" checked>').attr('id', id).val(s),
+                $('<input class="form-check-input" type="checkbox">').attr('id', id).val(s).prop('checked', st.on),
                 $('<label class="form-check-label small">').attr('for', id).append(
                     $('<span class="badge">').addClass('text-bg-' + st.cls)
                         .append($('<i class="fas me-1">').addClass(st.icon), document.createTextNode(st.label)),
@@ -720,9 +767,9 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 raumbez: r.raumbez,
                 element: r.element,
                 variante: r.variante,
-                veBudget: r.stkStart > 0 ? (r.budgetStart || 'NULL') : '--',
-                entBudget: r.stkEnd > 0 ? (r.budgetEnd || 'NULL') : '--',
-                entStatus: r.stkEnd > 0 ? (r.statusEnd || '') : '--',
+                veBudget: r.budgetStart || (r.stkStart > 0 ? 'NULL' : '--'),
+                entBudget: r.budgetEnd || (r.stkEnd > 0 ? 'NULL' : '--'),
+                entStatus: r.statusEnd || (r.stkEnd > 0 ? '' : '--'),
                 art: r.art,
                 kommentar: r.kommentar || '',
                 veStk: Number(r.stkStart) || 0,
@@ -820,6 +867,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                         },
                         {
                             extend: 'searchBuilder',
+                            name: 'sbFilter',
                             text: 'Filter',
                             className: 'btn btn-sm btn-outline-dark bg-white fas fa-filter'
                         },
@@ -827,7 +875,15 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                             extend: 'colvis',
                             text: '<i class="fas fa-columns me-1"></i> Spalten',
                             className: 'btn btn-sm btn-outline-dark bg-light'
-                        }
+                        },
+                        {
+                            text: '<i class="fas fa-magic me-1"></i> Standardfilter',
+                            className: 'btn btn-sm btn-outline-dark bg-light',
+                            action: (e, dt) => {
+                                dt.searchBuilder.rebuild(structuredClone(SB_STANDARDFILTER));
+                                updateSbButton(dt);
+                            }
+                        },
                     ]
                 },
                 topEnd: 'search',
@@ -904,9 +960,12 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 }
             ],
             initComplete: function () {
-                this.api().columns.adjust();
-                relocateControls(this.api(), '#CardHeaderAenderungsliste');
-            },
+                    const api = this.api();
+                    api.columns.adjust();
+                    relocateControls(api, '#CardHeaderAenderungsliste');
+                    api.on('draw', () => updateSbButton(api));
+                },
+
             footerCallback: function () {
                 const api = this.api();
                 const sum = (c) => api.column(c, {search: 'applied'}).data().toArray()
@@ -1009,7 +1068,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 $bud.append($(new Option(label, b.id, false, false)).data('nr', b.nr));
             });
             $bud.prop('disabled', !$bud.find('option').length);
-            selectDefaultBudgets();
+            updateBudgetHint();
+//            selectDefaultBudgets();
         }, 'json').fail(xhr => showMsg(xhr.responseJSON?.error || 'Filter konnten nicht geladen werden.'));
     }
 

@@ -25,7 +25,7 @@ const buttonRanges = [
 
 
 const columnsDefinition = [
-    {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false}, // 0 | -
+    {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projekt ID', visible: false, searchable: false}, // 0 | -
     {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false}, // 1 | -
     {
         data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',

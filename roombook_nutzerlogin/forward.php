@@ -21,11 +21,11 @@ if ($stmt->fetch()) {
         case 'spargelfeld_admin':
         case 'spargelfeld_view':
         case 'spargelfeld_ext_user':
-            header('Location: ../roombook_nutzerumfrage_V1_2026/ergebnisse.php');
+            header('Location: ../roombook_nutzerumfrage_sf/Nutzerabfrage_Entwurf.php');
             break;
         case 'internal_rb_user':
-            header('Location: ../roombook_nutzerumfrage_V1_2026/ergebnisse.php');
-//            header('Location: ../roombook_nutzerumfrage_V1_2026/adminpanel.php');
+            header('Location: ../roombook_nutzerumfrage_sf/Nutzerabfrage_Entwurf.php');
+//            header('Location: ../roombook_nutzerumfrage_sf/adminpanel.php');
             break;
 
         default:

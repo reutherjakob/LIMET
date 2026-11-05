@@ -40,9 +40,9 @@ header('X-Content-Type-Options: nosniff');
 
 $projektid = 95;
 
-require_once "form_fields_forNutzergruppe1.php"; // $formFields (Basis)
+require_once "form_fields_forNutzergruppe_VE.php"; // $formFields (Basis)
 require_once "raumtyp_resolver.php";             // getRaumtypById / applyRaumtypOverrides
-require_once "../roombook_nutzerumfrage_V1_2026/raumtypen.php";   // lädt $labortypen
+require_once "../roombook_nutzerumfrage_sf/raumtypen.php";   // lädt $labortypen
 
 /* ── TCPDF + Logo laden ───────────────────────────────────────────────────── */
 if (!is_file($NB_TCPDF_PATH)) {
@@ -89,7 +89,7 @@ $HEX = [
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ERGEBNIS-FELDER  ·  [feld, Label, Typ(B|N|T), Kommentarfeld|null]
-   Reihenfolge/Bezeichnungen abgeleitet aus form_fields_forNutzergruppe1.php
+   Reihenfolge/Bezeichnungen abgeleitet aus form_fields_forNutzergruppe_VE.php
    ═══════════════════════════════════════════════════════════════════════════ */
 $NB_RESULT_FIELDS = [
     ['doppelfluegeltuer', 'Doppelflügeltür (1,8 m) erforderlich', 'B', null],

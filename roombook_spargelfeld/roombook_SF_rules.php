@@ -2,7 +2,7 @@
 
 // ─── Pfade zu den Definitions-Quellen — ggf. an euer Projekt anpassen ──────
 $PFAD_DB_CONFIG = '../roombook_spargelfeld/import_2_db_config.php';   // ELEMENT_MAPPING, PARAMETER_MAPPING, Konstanten
-$PFAD_RAUMTYPEN = '../roombook_nutzerumfrage_V1_2026/raumtypen.php';            // $labortypen
+$PFAD_RAUMTYPEN = '../roombook_nutzerumfrage_sf/raumtypen.php';            // $labortypen
 
 if (!function_exists('check_login')) {
     include "../_utils/_utils.php";
@@ -40,7 +40,7 @@ $werkzeug_links = [
     ['icon' => 'fa-kiwi-bird', 'href' => '/roombook_spargelfeld/roombook_roombook_spargelfeld_flaechen_je_raumtyp.php', 'label' => 'Flächen je Raumtyp'],
     ['icon' => 'fa-dove', 'href' => '/roombook_spargelfeld/roombook_elementsInProject_delete0.php', 'label' => 'Nuller Vars entfernen'],
 
-    ['icon' => 'fa-user', 'href' => '/roombook_nutzerlogin/index.php', 'label' => 'roombook_nutzerumfrage_V1_2026/Sonderfragekathalog'],
+    ['icon' => 'fa-user', 'href' => '/roombook_nutzerlogin/index.php', 'label' => 'roombook_nutzerumfrage_sf/Sonderfragekathalog'],
 
 ];
 

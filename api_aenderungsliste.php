@@ -30,7 +30,7 @@ const AP_NAME_COL = '';
 
 // Platzhalter im Filter für Räume ohne Arbeitspaket (muss zur Seite passen)
 const AP_NONE = '__ohne__';
-const DUMMY_ELEMENT_IDS = [2032, 2033, 2034, 2035];
+const DUMMY_ELEMENT_IDS = [2032, 2033, 2034, 2035, 2075];
 
 
 // Zuordnung alt/neu in tabelle_rb_aenderung: Basisspalte = alt, *_copy1 = neu
@@ -435,13 +435,14 @@ foreach ($budgetList as $b) {
 }
 
 $hiddenRows = [];
-if ($hiddenBudgets) {
-    foreach (array_keys($stateStart + $stateEnd) as $rheId) {
-        $sEnd = $stateEnd[$rheId] ?? null;
-        $ref = ($sEnd && $sEnd['exists']) ? $sEnd : ($stateStart[$rheId] ?? null);
-        if ($ref && $ref['budget'] !== null && isset($hiddenBudgets[$ref['budget']])) {
-            $hiddenRows[$rheId] = true;
-        }
+$endBudget = [];   // Raumbuch-Zeile -> Endbudget (auch Trennmerkmal für die Positionen)
+foreach (array_keys($stateStart + $stateEnd) as $rheId) {
+    $sEnd = $stateEnd[$rheId] ?? null;
+    $ref = ($sEnd && $sEnd['exists']) ? $sEnd : ($stateStart[$rheId] ?? null);
+    $endBudget[$rheId] = $ref['budget'] ?? null;
+
+    if ($endBudget[$rheId] !== null && isset($hiddenBudgets[$endBudget[$rheId]])) {
+        $hiddenRows[$rheId] = true;
     }
 }
 
@@ -478,7 +479,10 @@ foreach (['Start' => $stateStart, 'End' => $stateEnd] as $phase => $states) {
             $hiddenSeen[$rheId] = true;
             continue;   // Endbudget ausgeblendet (Dropdown oder Status)
         }
-        $key = $s['raum'] . '|' . $s['element'] . '|' . $s['variante'];
+
+// Getrennt nach Endbudget, damit Budgetwechsel eine Position bleiben
+        $key = $s['raum'] . '|' . $s['element'] . '|' . $s['variante'] . '|' . ($endBudget[$rheId] ?? '');
+
         $groups[$key] ??= [
             'raum' => $s['raum'], 'element' => $s['element'], 'variante' => $s['variante'],
             'stkStart' => 0, 'stkEnd' => 0, 'budgetsStart' => [], 'budgetsEnd' => [],

@@ -1,8 +1,10 @@
 <?php
+// getDevicesAndTheirPricesForElements
 require_once "_utils/_utils.php";
 include "_utils/_format_money.php";
 
 $elementID = getPostInt('elementID', 0);
+$chartData = []; // Gerät => Liste der Chart-Punkte
 
 if ($elementID > 0) {
     $mysqli = utils_connect_sql();
@@ -42,7 +44,7 @@ if ($elementID > 0) {
                <i class='fas fa-calendar-alt' ></i></th>
             <th>Info</th>
             <th>Gerät</th>      
-            <th> <i class='fas fa-euro-sign'></i> </i> <i class='far fa-comment'></i></th>      
+            <th> <i class='fas fa-euro-sign'></i> <i class='far fa-comment'></i></th>      
             
           
             <th>Herst./Lief.</th>
@@ -76,17 +78,31 @@ if ($elementID > 0) {
                 echo "-";
             }
             echo "</td>";
-            echo "<td>" . htmlspecialchars($row["Projektname"] ?? '') ?? '-' . "</td>";
+            echo "<td>" . htmlspecialchars($row["Projektname"] ?? '-') . "</td>";
             echo "</tr>";
+
+            // Chart: x = Jahr inkl. Position im Jahr, y = Punkte (1 Punkt = 1000 Euro)
+            if (!empty($row["Datum"]) && $row["EP"] !== null) {
+                $chartData[$row['Gerät']][] = [
+                    'x' => round((int)date_format($date, 'Y') + (int)date_format($date, 'z') / 365, 3),
+                    'y' => round((float)$row["EP"] / 1000, 3),
+                    'date' => date_format($date, 'Y-m-d'),
+                    'project' => $row["Projektname"] ?? '',
+                ];
+            }
         }
     } else {
-        echo "<tr><td colspan='9' class='text-center text-muted'>Keine Gerätepreise gefunden</td></tr>";
+        echo "<tr><td colspan='10' class='text-center text-muted'>Keine Gerätepreise gefunden</td></tr>";
     }
 
     echo "</tbody></table> ";
 
     $stmt->close();
     $mysqli->close();
+}
+
+if (!empty($chartData)) {
+    echo "<div class='mt-3'><canvas id='ChartDevicePricesByYear' width='1000' height='350'></canvas></div>";
 }
 ?>
 
@@ -127,5 +143,103 @@ if ($elementID > 0) {
             });
         });
 
+        initDevicePriceChart(<?= json_encode(
+            $chartData,
+            JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        ) ?>);
     });
+
+    function initDevicePriceChart(chartData) {
+        const paneSelector = '#elementPricesInOtherProjects-2';
+        const tabEvent = 'shown.bs.tab.devicePriceChart';
+
+        // Dieser Inhalt wird bei jedem Elementwechsel neu geladen: alten Zustand aufräumen
+        $(document).off(tabEvent);
+        if (window.devicePriceChart) {
+            window.devicePriceChart.destroy();
+            window.devicePriceChart = null;
+        }
+
+        const canvas = document.getElementById('ChartDevicePricesByYear');
+        if (!canvas) {
+            return;
+        }
+
+        const colors = ['#0d6efd', '#dc3545', '#198754', '#ffc107', '#6f42c1', '#fd7e14', '#20c997', '#d63384', '#0dcaf0', '#6c757d'];
+        const datasets = Object.keys(chartData).map(function (device, index) {
+            const color = colors[index % colors.length];
+            return {
+                label: device,
+                data: chartData[device],
+                showLine: false,
+                backgroundColor: color,
+                borderColor: color,
+                pointBackgroundColor: color,
+                pointBorderColor: color,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            };
+        });
+
+        const xValues = [].concat.apply([], datasets.map(function (dataset) {
+            return dataset.data.map(function (point) {
+                return point.x;
+            });
+        }));
+        const minYear = Math.floor(Math.min.apply(null, xValues));
+        const maxYear = Math.floor(Math.max.apply(null, xValues)) + 1;
+
+        function renderChart() {
+            window.devicePriceChart = new Chart(canvas.getContext('2d'), {
+                type: 'scatter',
+                data: {datasets: datasets},
+                options: {
+                    legend: {position: 'bottom'},
+                    scales: {
+                        xAxes: [{
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                min: minYear,
+                                max: maxYear,
+                                stepSize: 1,
+                                callback: function (value) {
+                                    return Math.floor(value) === value ? value : '';
+                                }
+                            },
+                            scaleLabel: {display: true, labelString: 'Jahr'}
+                        }],
+                        yAxes: [{
+                            ticks: {beginAtZero: true},
+                            scaleLabel: {display: true, labelString: 'Punkte (1 Punkt = 1.000 €)'}
+                        }]
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                const dataset = data.datasets[tooltipItem.datasetIndex];
+                                const point = dataset.data[tooltipItem.index];
+                                const euro = (point.y * 1000).toLocaleString('de-DE');
+                                const project = point.project ? ', ' + point.project : '';
+                                return dataset.label + ': ' + point.y.toLocaleString('de-DE') +
+                                    ' Punkte (' + euro + ' €, ' + point.date + project + ')';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // In einem versteckten Tab hätte der Canvas die Breite 0
+        if ($(paneSelector).is(':visible')) {
+            renderChart();
+        } else {
+            $(document).on(tabEvent, function (e) {
+                if ($(e.target).attr('data-bs-target') === paneSelector) {
+                    $(document).off(tabEvent);
+                    renderChart();
+                }
+            });
+        }
+    }
 </script>

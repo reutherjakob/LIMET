@@ -9,7 +9,7 @@ if (!function_exists('loadEnv')) {
 
 $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin", "spargelfeld_view"]);
 
-require_once "../roombook_nutzerumfrage_V1_2026/raumtypen.php"; // lädt $labortypen
+require_once "../roombook_nutzerumfrage_sf/raumtypen.php"; // lädt $labortypen
 
 
 // =========================================================
@@ -120,7 +120,6 @@ foreach ($columns as $col) {
     }
     $visible_index++;
 }
-$excelfilename = buildExcelFilename('Raumkategorien');
 
 ?>
 <!DOCTYPE html>
@@ -147,7 +146,8 @@ $excelfilename = buildExcelFilename('Raumkategorien');
 </style>
 
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php";
+$excelfilename = buildExcelFilename('Raumkategorien'); ?>
 
 <body>
 <div class="container-fluid">

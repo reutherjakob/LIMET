@@ -1,5 +1,3 @@
-
-
 <?php
 // 26 FX
 require_once '_utils/_utils.php';
@@ -552,33 +550,29 @@ require_once '_utils/_csrf.php';
     }
 
     function updateDate(url, idParts, date) {
-        //console.log('updateDate called with:', {url, idParts, date});
-        const params = new URLSearchParams();
-        params.append('lotID', idParts[1]);
-        params.append('workflowTeilID', idParts[2]);
-        params.append('workflowID', idParts[3]);
-        params.append('date', date);
-        //console.log('URLSearchParams toString():', params.toString());
-
-        fetch(url, {
+        $.ajax({
+            url: url,
             method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: params.toString()
-        })
-            .then(r => {
-                //console.log('fetch response status:', r.status);
-                return r.text();
-            })
-            .then(data => {
-                //console.log('server response text:', data);
-                const isSuccess = data.startsWith("Soll") || data.startsWith("Ist-");
-                //console.log('toast success flag:', isSuccess);
+            data: {
+                lotID: idParts[1],
+                workflowTeilID: idParts[2],
+                workflowID: idParts[3],
+                date: date
+            },
+            dataType: 'text',
+            success: function (data) {
+                const isSuccess = data.startsWith('Soll') || data.startsWith('Ist-');
                 makeToaster(data, isSuccess);
-            })
-            .catch(err => {
-                //console.error('fetch error:', err);
-                makeToaster('Netzwerkfehler', false);
-            });
+            },
+            error: function (jqXHR) {
+                // Status 0 = keine Antwort vom Server (echter Netzwerkfehler)
+                if (jqXHR.status === 0) {
+                    makeToaster('Netzwerkfehler', false);
+                } else {
+                    makeToaster(jqXHR.responseText, false);
+                }
+            }
+        });
     }
 
 

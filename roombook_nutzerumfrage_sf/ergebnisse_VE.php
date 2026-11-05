@@ -12,9 +12,9 @@ header('X-Content-Type-Options: nosniff');
 
 $projektid = 95;
 
-require_once "form_fields_forNutzergruppe1.php"; // $formFields (Basis)
+require_once "form_fields_forNutzergruppe_VE.php"; // $formFields (Basis)
 require_once "raumtyp_resolver.php";             // getRaumtypById / applyRaumtypOverrides
-require_once "../roombook_nutzerumfrage_V1_2026/raumtypen.php";   // lädt $labortypen
+require_once "../roombook_nutzerumfrage_sf/raumtypen.php";   // lädt $labortypen
 
 $baseFormFields = $formFields;
 
@@ -159,7 +159,7 @@ function renderCell($val, $type)
 
 <body>
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php"; ?>
 
 <div class="container-fluid mt-3">
     <div class="card">

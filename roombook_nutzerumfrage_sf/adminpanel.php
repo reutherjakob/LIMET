@@ -65,7 +65,7 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
 
 <body>
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php"; ?>
 <div class="container-fluid mt-3">
     <div class="card">
         <div class="card-header">

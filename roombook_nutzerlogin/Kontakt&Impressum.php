@@ -42,7 +42,7 @@ $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admi
 </head>
 <body>
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php"; ?>
 
 <div class="d-flex justify-content-center align-items-center">
     <div class="card mx-5 col-6 text-center">

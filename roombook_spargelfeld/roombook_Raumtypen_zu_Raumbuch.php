@@ -24,7 +24,7 @@
  */
 
 require_once '../_utils/_utils.php';
-require_once '../roombook_nutzerumfrage_V1_2026/raumtypen.php';   // definiert $labortypen
+require_once '../roombook_nutzerumfrage_sf/raumtypen.php';   // definiert $labortypen
 
 
 /* ═══════════════════════════════════════════════════════════════════════════

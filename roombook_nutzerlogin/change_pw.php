@@ -4,35 +4,38 @@ require 'db.php';
 require_once "../roombook_nutzerlogin/_utils.php";
 
 start_session();
-require '_csrf.php';
-if (!isset($_SESSION['user_id'])) {
+send_security_headers();
+require 'csrf.php';
+$pwChangeUserId = $_SESSION['pw_change_user_id'] ?? null;
+if ($pwChangeUserId === null) {
     header("Location: index.php");
     exit;
 }
 
 $msg = '';
 $stmt = $mysqli->prepare("SELECT password, must_change_pw FROM tabelle_users WHERE id = ?");
-$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->bind_param("i", $pwChangeUserId);
 $stmt->execute();
 $stmt->bind_result($current_hash, $must_change_pw);
 $stmt->fetch();
 $stmt->close();
 
 if ($must_change_pw == 0) {
+    unset($_SESSION['pw_change_user_id']);
     header("Location: index.php");
     exit;
 }
-
-// Lade Top-Passwortliste in Array
-$topPasswords = file('top_passwords.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-$topPasswords = array_map('trim', $topPasswords);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrf = $_POST['csrf'] ?? '';
     if (!csrf_check($csrf)) {
         $msg = "Ungültige Anfrage.";
     } else {
-        $new_pw_plain = $_POST['new_pw'] ?? '';
+        $new_pw_plain = is_string($_POST['new_pw'] ?? null) ? $_POST['new_pw'] : '';
+
+        // Lade Top-Passwortliste in Array
+        $topPasswords = file('top_passwords.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $topPasswords = array_map('trim', $topPasswords);
 
         // Check Top Passwords
         if (in_array($new_pw_plain, $topPasswords, true)) {
@@ -54,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $new_hash = password_hash($new_pw_plain, PASSWORD_ARGON2ID);
 
             $stmt = $mysqli->prepare("UPDATE tabelle_users SET password = ?, must_change_pw = 0 WHERE id = ?");
-            $stmt->bind_param("si", $new_hash, $_SESSION['user_id']);
+            $stmt->bind_param("si", $new_hash, $pwChangeUserId);
             $stmt->execute();
             $stmt->close();
 

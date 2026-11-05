@@ -291,6 +291,8 @@ function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = n
     // ---- 2) Elemente je Raum (Anzahl über Varianten summiert) ---------------
     $elementsByRoom = [];
     if (!empty($rooms)) {
+        $DUMMY_ELEMENT_IDS = [2032, 2033, 2034, 2035, 2075];
+        $dummyListe = implode(',', array_map('intval', $DUMMY_ELEMENT_IDS));
         $idListe = implode(',', array_map('intval', array_keys($rooms)));
         $sqlEls = "SELECT rhe.TABELLE_Räume_idTABELLE_Räume AS RaumID,
                           e.ElementID,
@@ -300,6 +302,7 @@ function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = n
                    INNER JOIN tabelle_elemente e
                            ON e.idTABELLE_Elemente = rhe.TABELLE_Elemente_idTABELLE_Elemente
                    WHERE rhe.TABELLE_Räume_idTABELLE_Räume IN ($idListe)
+                            AND e.idTABELLE_Elemente NOT IN ($dummyListe)
                    GROUP BY rhe.TABELLE_Räume_idTABELLE_Räume, e.ElementID, e.Bezeichnung
                    HAVING SUM(rhe.Anzahl) <> 0";
 
@@ -332,8 +335,9 @@ function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = n
             $bereich = '(ohne Raumbereich)';
         }
         if (!isset($bereiche[$bereich])) {
-            $bereiche[$bereich] = ['gruppen' => []];
+            $bereiche[$bereich] = ['raeume' => [], 'gruppen' => []];
         }
+        $bereiche[$bereich]['raeume'][] = $room;   // Raumliste je Bereich (Word-Übersicht)
 
         $els = $elementsByRoom[$rid] ?? [];
 
@@ -423,18 +427,21 @@ function render_legende(bool $forWord): string
 }
 
 
+/**
+ * Raumtabelle. Word: je Raumbereich unter dessen Überschrift, daher ohne
+ * Spalte "Raumbereich". Web: Gesamttabelle mit dieser Spalte.
+ */
 function render_uebersicht(array $uebersicht, bool $forWord): string
 {
     if ($forWord) {
         $html = '<table class="rb-table">';
         $html .= '<colgroup>'
-            . '<col style="width:10%">
-               <col style="width:26%">
-               <col style="width:24%">'
-            . '<col style="width:10%">
-               <col style="width:10%">
-               <col style="width:10%">
-               <col style="width:10%">
+            . '<col style="width:12%">
+               <col style="width:40%">'
+            . '<col style="width:12%">
+               <col style="width:12%">
+               <col style="width:12%">
+               <col style="width:12%">
                </colgroup>';
     } else {
         $html = '<table class="table table-sm table-bordered table-striped align-middle rb-tight">';
@@ -442,8 +449,8 @@ function render_uebersicht(array $uebersicht, bool $forWord): string
 
     $html .= '<thead><tr>
             <th>Raumnr</th>
-            <th>Raumbezeichnung</th>
-            <th>Raumbereich</th>
+            <th>Raumbezeichnung</th>'
+        . ($forWord ? '' : '<th>Raumbereich</th>') . '
             <th>Geschoss</th>
             <th>Nutzfläche</th>
             <th>RG</th>
@@ -454,7 +461,7 @@ function render_uebersicht(array $uebersicht, bool $forWord): string
         $html .= '<tr>'
             . '<td>' . rb_cell(h($r['Raumnr']), $forWord) . '</td>'
             . '<td>' . rb_cell(h($r['Raumbezeichnung']), $forWord) . '</td>'
-            . '<td>' . rb_cell(h($r['Raumbereich']), $forWord) . '</td>'
+            . ($forWord ? '' : '<td>' . h($r['Raumbereich']) . '</td>')
             . '<td>' . rb_cell(h($r['Geschoss']), $forWord) . '</td>'
             . '<td>' . rb_cell(h(fmt_flaeche($r['Nutzfläche'])), $forWord) . '</td>'
             . '<td>' . rb_cell(h($r['Anwendungsgruppe']), $forWord) . '</td>'
@@ -471,8 +478,7 @@ function render_raum_tabelle(array $elemente, bool $forWord): string
     if ($forWord) {
         $html = '<table class="rb-table">';
         $html .= '<colgroup>'
-            . '<col style="width:7%"><col style="width:18%">'
-            . '<col style="width:65%"><col style="width:10%">'
+            . '<col style="width:10%"><col style="width:90%">'
             . '</colgroup>';
     } else {
         $html = '<table class="table table-sm table-bordered align-middle rb-tight">';
@@ -535,6 +541,9 @@ function render_raum_liste(array $elemente, bool $forWord): string
  *   Word: h1 (Raumbereich) / h2 (Raum)  -> Navigationsbereich
  *   Web : h3 / h5
  *
+ * Word: direkt unter jeder Raumbereichs-Überschrift stehen Einleitungssatz,
+ * Tabellenbeschreibung und die Raumtabelle dieses Bereichs. Web: dort steht die Gesamttabelle in der linken Spalte.
+ *
  * $mode: 'tabelle' (Default) oder 'liste'
  */
 function render_detail(array $bereiche, bool $forWord, string $mode = 'tabelle'): string
@@ -547,6 +556,14 @@ function render_detail(array $bereiche, bool $forWord, string $mode = 'tabelle')
     foreach ($bereiche as $bereich => $binfo) {
         $cls = $forWord ? '' : ' class="mt-4 pt-2 border-top"';
         $html .= "<$hBereich$cls>" . h($bereich) . "</$hBereich>";
+
+        if ($forWord) {
+            $html .= '<p>Im vorliegenden Kapitel wird der Funktionsbereich ' . h($bereich)
+                . ' [Zuordnung Abteilung ergänzen] beschrieben.</p>';
+            $html .= '<p>Details der medizintechnisch relevanten Räume im Bereich ' . h($bereich)
+                . '. Klassifizierung nach OVE E 8101 (Raumgruppe RG) und ÖNORM H6020.</p>';
+            $html .= render_uebersicht($binfo['raeume'], true);
+        }
 
         foreach ($binfo['gruppen'] as $gruppe) {
             $cls = $forWord ? '' : ' class="mt-3"';
@@ -664,7 +681,6 @@ if (($_GET['export'] ?? '') === 'word') {
     header('Content-Disposition: attachment; filename="' . $fileName . '"');
     header('Cache-Control: max-age=0');
 
-    $uebersichtHtml = render_uebersicht($daten['uebersicht'], true);
     $detailHtml = render_detail($daten['bereiche'], true, $mode);
 
     echo '<html xmlns:o="urn:schemas-microsoft-com:office:office" '
@@ -715,10 +731,7 @@ if (($_GET['export'] ?? '') === 'word') {
         . ($filterText !== '' ? '<br>Auswahl: ' . h($filterText) : '')
         . '</p>';
 
-    echo '<h1>Übersicht der MT-relevanten Räume</h1>';
-    echo $uebersichtHtml;
     echo '<p class="subtle">RG = Raumgruppe Ö-Norm 8101</p>';
-    echo '<br clear="all" style="mso-special-character:line-break;page-break-before:always">';
 
     echo $detailHtml;
 
@@ -781,7 +794,8 @@ $filterQuery = rb_filter_query($filterSel);
                         MT-relevanten Räume.
                         <p class="text-muted small mb-0"> (RG = Raum/-Anwendungsgruppe)</p>
                         <?php if ($filterText !== ''): ?>
-                            <p class="small text-primary mb-0"><i class="fas fa-filter"></i> <?php echo h($filterText); ?></p>
+                            <p class="small text-primary mb-0"><i
+                                        class="fas fa-filter"></i> <?php echo h($filterText); ?></p>
                         <?php endif; ?>
                     </div>
                     <div class="d-flex align-items-center gap-3">
