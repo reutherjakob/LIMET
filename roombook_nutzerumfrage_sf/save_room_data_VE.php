@@ -1,4 +1,10 @@
 <?php
+http_response_code(403);
+header('Content-Type: application/json');
+echo json_encode(['status' => 'error', 'message' => 'Umfrage abgeschlossen.']);
+exit;
+
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 global $mysqli;

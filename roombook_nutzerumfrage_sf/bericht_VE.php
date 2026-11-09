@@ -153,6 +153,7 @@ $sql = "SELECT t.*,
         FROM tabelle_room_requirements_from_user t
         JOIN tabelle_räume r ON t.roomID = r.idTABELLE_Räume
         WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+          AND t.created_at IS NOT NULL
             AND  r.`Raumtyp BH` <> 34
             AND  r.`Raumtyp BH` <> 35
         ORDER BY  t.raumnr, Bauabschnitt ";

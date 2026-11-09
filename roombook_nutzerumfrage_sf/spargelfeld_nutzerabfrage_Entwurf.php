@@ -31,9 +31,9 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
 
     echo '<div class="d-flex align-items-center justify-content-end">';
     if ($role !== 'spargelfeld_view') {
-      // echo '<button type="submit" id="saveBtn" class="btn btn-success">
-      //     <i class="far fa-save"></i> Anforderungen speichern
-      //   </button>';
+        echo '<button type="submit" id="saveBtn" class="btn btn-success">
+         <i class="far fa-save"></i> Anforderungen speichern
+       </button>';
     }
     echo '</div>
           </div> 
@@ -77,7 +77,7 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                                 </button>";
                 }
                 echo "</label>";
-                echo "<div class='col-6'>  <input readonly class='form-control flex-grow-1 fw-bold border-white' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
+                echo "<div class='col-5'>  <input readonly class='form-control flex-grow-1 fw-bold border-white' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
                 break;
 
             case 'multiselect':
@@ -170,7 +170,15 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
 
 $userValues = [];
 if ($roomId) {
-    $stmt = $mysqli->prepare("SELECT * FROM tabelle_room_requirements_from_user WHERE roomID = ?");
+    $stmt = $mysqli->prepare("SELECT verdunkelung, verdunkelung_kommentar,
+        lichtsteuerung, lichtsteuerung_kommentar,
+        hoehenverstellbare_labortische, hoehenverstellbare_labortische_kommentar,
+        giftschrank,
+        akkreditierung, akkreditierung_kommentar,
+        ve_wasser, ve_wasser_kommentar
+    FROM tabelle_room_requirements_from_user
+    WHERE roomID = ? AND entwurf_saved_at IS NOT NULL");
+
     if ($stmt) {
         $stmt->bind_param('i', $roomId);
         $stmt->execute();

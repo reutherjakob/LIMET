@@ -22,40 +22,24 @@ if (!isset($_POST['csrf_token']) || !csrf_check($_POST['csrf_token'])) {
 }
 
 $mysqli->set_charset('utf8mb4');
-
 $stringFields = [
     'roomname',
     'raumnr',
     'raumbereich_nutzer',
     'raumkategorieAbfrage',
-    'explosionsschutz',
-    'raumzuluft_besonders',
-    'spezialabwasser',
-    'vibrationsempfindlich_bodenstehend_kommentar',
-    'abluftwaescher_kommentar',
-    'spezialabwasser_kommentar',
-    'nutzwasser_kommentar',
-    'kuehlwasser_kommentar',
-    'raumtemp_kommentar',
-    'luftf_kommentar',
-    'spezialgas_kommentar',
-    'allgemeiner_kommentar',
+    'verdunkelung_kommentar',
+    'lichtsteuerung_kommentar',
+    'hoehenverstellbare_labortische_kommentar',
+    'akkreditierung_kommentar',
+    've_wasser_kommentar',
 ];
 
 $boolFields = [
-    'doppelfluegeltuer',
-    'vibrationsempfindlich_bodenstehend',
-    'nutzwasser',
-    'kuehlwasser',
-    'DL',
-    'N2',
-    'Vakuum',
-    'raumtemp',
-    'luftf',
-];
-
-$intFields = [
-    'abluftwaescher',
+    'verdunkelung',
+    'lichtsteuerung',
+    'hoehenverstellbare_labortische',
+    'akkreditierung',
+    've_wasser',
 ];
 
 $roomID = isset($_POST['roomID']) ? (int)$_POST['roomID'] : null;
@@ -65,8 +49,8 @@ if (!$roomID) {
 }
 
 $data = ['roomID' => $roomID];
-$data['username'] = $_SESSION['user_name'] ?? 'unknown';
-$data['created_at'] = date('Y-m-d H:i:s');
+$data['entwurf_username'] = $_SESSION['user_name'] ?? 'unknown';
+$data['entwurf_saved_at'] = date('Y-m-d H:i:s');
 
 foreach ($stringFields as $f) {
     $data[$f] = isset($_POST[$f]) ? trim($_POST[$f]) : '';
@@ -78,78 +62,39 @@ foreach ($boolFields as $f) {
         $data[$f] = $_POST[$f] === '1' ? 1 : 0;
     }
 }
-foreach ($intFields as $f) {
-    $data[$f] = isset($_POST[$f]) ? (int)$_POST[$f] : 0;
-}
 
-
-if (isset($_POST['raumabluft_besonders']) && is_array($_POST['raumabluft_besonders'])) {
-    $data['raumabluft_besonders'] = implode(',', array_map('trim', $_POST['raumabluft_besonders']));
-} elseif (isset($_POST['raumabluft_besonders']) && $_POST['raumabluft_besonders'] !== '') {
-    $data['raumabluft_besonders'] = trim($_POST['raumabluft_besonders']);
-} else {
-    $data['raumabluft_besonders'] = 'Nein';
-}
-
-
-if (isset($_POST['spezialgas']) && is_array($_POST['spezialgas'])) {
-    $data['spezialgas'] = implode(',', array_map('trim', $_POST['spezialgas']));
-} else {
-    $data['spezialgas'] = 'Nein';
-}
+$giftschrankOptionen = ['Nein', 'Unterbau_Digestor', 'Eigener_Schrank'];
+$data['giftschrank'] = in_array($_POST['giftschrank'] ?? '', $giftschrankOptionen, true)
+    ? $_POST['giftschrank']
+    : null;
 
 $data['nf'] = isset($_POST['nf']) && is_numeric($_POST['nf']) ? (float)$_POST['nf'] : null;
 
-$sql = "INSERT INTO tabelle_room_requirements_from_user2
+// Bestehende VE-Spalten stehen bewusst NICHT im UPDATE-Teil.
+$sql = "INSERT INTO tabelle_room_requirements_from_user
     (roomID, roomname, raumnr, raumbereich_nutzer, nf, raumkategorieAbfrage,
-     doppelfluegeltuer,
-     vibrationsempfindlich_bodenstehend, vibrationsempfindlich_bodenstehend_kommentar,
-     explosionsschutz,
-     abluftwaescher, abluftwaescher_kommentar,
-     spezialgas,
-     raumabluft_besonders, raumzuluft_besonders,
-     nutzwasser, nutzwasser_kommentar,
-     spezialabwasser, spezialabwasser_kommentar,
-     DL, N2, Vakuum,
-     kuehlwasser, kuehlwasser_kommentar,
-     raumtemp, raumtemp_kommentar,
-     luftf, luftf_kommentar,
-     username, created_at, spezialgas_kommentar, allgemeiner_kommentar)
-VALUES (?,?,?,?,?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?,?, ?,?, ?,?,?, ?,?, ?,?, ?,?, ?,?,?, ? )
+     verdunkelung, verdunkelung_kommentar,
+     lichtsteuerung, lichtsteuerung_kommentar,
+     hoehenverstellbare_labortische, hoehenverstellbare_labortische_kommentar,
+     giftschrank,
+     akkreditierung, akkreditierung_kommentar,
+     ve_wasser, ve_wasser_kommentar,
+     entwurf_username, entwurf_saved_at)
+VALUES (?,?,?,?,?,?, ?,?, ?,?, ?,?, ?, ?,?, ?,?, ?,?)
 ON DUPLICATE KEY UPDATE
-    roomname                                     = VALUES(roomname),
-    raumnr                                       = VALUES(raumnr),
-    raumbereich_nutzer                           = VALUES(raumbereich_nutzer),
-    nf                                           = VALUES(nf),
-    raumkategorieAbfrage                         = VALUES(raumkategorieAbfrage),
-    doppelfluegeltuer                            = VALUES(doppelfluegeltuer),
-    vibrationsempfindlich_bodenstehend           = VALUES(vibrationsempfindlich_bodenstehend),
-    vibrationsempfindlich_bodenstehend_kommentar = VALUES(vibrationsempfindlich_bodenstehend_kommentar),
-    explosionsschutz                             = VALUES(explosionsschutz),
-    abluftwaescher                               = VALUES(abluftwaescher),
-    abluftwaescher_kommentar                     = VALUES(abluftwaescher_kommentar),
-    spezialgas                                   = VALUES(spezialgas),
-    raumabluft_besonders                         = VALUES(raumabluft_besonders),
-    raumzuluft_besonders                         = VALUES(raumzuluft_besonders),
-    nutzwasser                                   = VALUES(nutzwasser),
-    nutzwasser_kommentar                         = VALUES(nutzwasser_kommentar),
-    spezialabwasser                              = VALUES(spezialabwasser),
-    spezialabwasser_kommentar                    = VALUES(spezialabwasser_kommentar),
-    DL                                           = VALUES(DL),
-    N2                                           = VALUES(N2),
-    Vakuum                                       = VALUES(Vakuum),
-    kuehlwasser                                  = VALUES(kuehlwasser),
-    kuehlwasser_kommentar                        = VALUES(kuehlwasser_kommentar),
-    raumtemp                                     = VALUES(raumtemp),
-    raumtemp_kommentar                           = VALUES(raumtemp_kommentar),
-    luftf                                        = VALUES(luftf),
-    luftf_kommentar                              = VALUES(luftf_kommentar),
-    username                                     = VALUES(username),
-    created_at                                   = VALUES(created_at),
-        spezialgas_kommentar                     = VALUES(spezialgas_kommentar),
-        allgemeiner_kommentar                    = VALUES(allgemeiner_kommentar)
-    
-    ";
+    verdunkelung                             = VALUES(verdunkelung),
+    verdunkelung_kommentar                   = VALUES(verdunkelung_kommentar),
+    lichtsteuerung                           = VALUES(lichtsteuerung),
+    lichtsteuerung_kommentar                 = VALUES(lichtsteuerung_kommentar),
+    hoehenverstellbare_labortische           = VALUES(hoehenverstellbare_labortische),
+    hoehenverstellbare_labortische_kommentar = VALUES(hoehenverstellbare_labortische_kommentar),
+    giftschrank                              = VALUES(giftschrank),
+    akkreditierung                           = VALUES(akkreditierung),
+    akkreditierung_kommentar                 = VALUES(akkreditierung_kommentar),
+    ve_wasser                                = VALUES(ve_wasser),
+    ve_wasser_kommentar                      = VALUES(ve_wasser_kommentar),
+    entwurf_username                         = VALUES(entwurf_username),
+    entwurf_saved_at                         = VALUES(entwurf_saved_at)";
 
 $stmt = $mysqli->prepare($sql);
 if (!$stmt) {
@@ -157,49 +102,27 @@ if (!$stmt) {
     exit;
 }
 
-foreach ($stringFields as $f) {
-    if (!isset($data[$f]) || $data[$f] === null) {
-        $data[$f] = '';
-    }
-}
-if (!isset($data['spezialgas'])) $data['spezialgas'] = '';
-
-// i s s s d s  i  i  s  s  i    s   s  s s      i s  s s  i i i  i s  i s  i s  s s
-$stmt->bind_param('isssdsiisiissssisssiiiisisisssss',
-    $data['roomID'],                                        // i
-    $data['roomname'],                                      // s
-    $data['raumnr'],                                        // s
-    $data['raumbereich_nutzer'],                            // s
-    $data['nf'],                                            // d
-    $data['raumkategorieAbfrage'],                          // s
-    $data['doppelfluegeltuer'],                             // i
-    $data['vibrationsempfindlich_bodenstehend'],            // i
-    $data['vibrationsempfindlich_bodenstehend_kommentar'],  // s
-    $data['explosionsschutz'],                              //     i
-    $data['abluftwaescher'],                                // i
-    $data['abluftwaescher_kommentar'],                      // s
-    $data['spezialgas'],                                    // s
-    $data['raumabluft_besonders'],                          // s
-    $data['raumzuluft_besonders'],                          // s
-    $data['nutzwasser'],                                    // i
-    $data['nutzwasser_kommentar'],                          // s
-    $data['spezialabwasser'],                               // s
-    $data['spezialabwasser_kommentar'],                     // s
-    $data['DL'],                                            // i
-    $data['N2'],                                            // i
-    $data['Vakuum'],                                        // i
-    $data['kuehlwasser'],                                   // i
-    $data['kuehlwasser_kommentar'],                         // s
-    $data['raumtemp'],                                      // i
-    $data['raumtemp_kommentar'],                            // s
-    $data['luftf'],                                         // i
-    $data['luftf_kommentar'],                               // s
-    $data['username'],                                      // s
-    $data['created_at'],                                     // s
-    $data['spezialgas_kommentar'],
-    $data['allgemeiner_kommentar']
+$stmt->bind_param('isssdsisisissisisss',
+    $data['roomID'],
+    $data['roomname'],
+    $data['raumnr'],
+    $data['raumbereich_nutzer'],
+    $data['nf'],
+    $data['raumkategorieAbfrage'],
+    $data['verdunkelung'],
+    $data['verdunkelung_kommentar'],
+    $data['lichtsteuerung'],
+    $data['lichtsteuerung_kommentar'],
+    $data['hoehenverstellbare_labortische'],
+    $data['hoehenverstellbare_labortische_kommentar'],
+    $data['giftschrank'],
+    $data['akkreditierung'],
+    $data['akkreditierung_kommentar'],
+    $data['ve_wasser'],
+    $data['ve_wasser_kommentar'],
+    $data['entwurf_username'],
+    $data['entwurf_saved_at']
 );
-
 if ($stmt->execute()) {
     echo json_encode(['status' => 'success', 'message' => 'Gespeichert.']);
 } else {

@@ -59,10 +59,11 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-
 $savedRoomIDs = [];
-/* $sqlSaved = "SELECT roomID FROM tabelle_room_requirements_from_user
-             WHERE roomID IN (SELECT idTABELLE_Räume FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ?)";
+$sqlSaved = "SELECT roomID FROM tabelle_room_requirements_from_user
+             WHERE entwurf_saved_at IS NOT NULL
+               AND roomID IN (SELECT idTABELLE_Räume FROM tabelle_räume
+                              WHERE tabelle_projekte_idTABELLE_Projekte = ?)";
 if ($stmtSaved = $mysqli->prepare($sqlSaved)) {
     $stmtSaved->bind_param("i", $projekt_id);
     $stmtSaved->execute();
@@ -72,7 +73,6 @@ if ($stmtSaved = $mysqli->prepare($sqlSaved)) {
     }
     $stmtSaved->close();
 }
-*/
 $mysqli->close();
 
 
@@ -107,6 +107,28 @@ foreach ($labortypen as $lt) {
         text-align: right;
         padding-right: 10px; /* Optional: Abstand zum Eingabefeld */
     }
+
+    .angaben-scroll {
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+    }
+
+    .angaben-titel {
+        margin: .5rem 0 .25rem;
+        padding-bottom: .15rem;
+        border-bottom: 1px solid #dee2e6;
+        font-size: .8rem;
+        font-weight: 700;
+    }
+
+    .angaben-tabelle {
+        margin-bottom: .5rem;
+        font-size: .75rem;
+    }
+
+    .angaben-tabelle td:first-child {
+        width: 55%;
+    }
 </style>
 
 
@@ -118,7 +140,7 @@ foreach ($labortypen as $lt) {
 <div class="container-fluid">
     <div class="row">
 
-        <div class="col-5">
+        <div class="col-4">
             <div class="card">
                 <div class="card-header bg-success text-white">
                     <div class="row">
@@ -178,20 +200,37 @@ foreach ($labortypen as $lt) {
             </div>
         </div>
         <!-- Rechte Spalte: Formular -->
-        <div class="col-7">
+        <div class="col-6">
             <div class="card" id="formContainer">
                 <div class="card-header"></div>
                 <div class="card-body">
                     Wählen sie einen Raum aus.
+                    Hier erscheinen die Fragen.
                 </div>
                 <div class="card-foter"></div>
 
             </div>
         </div>
+
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <strong id="angabenTitel">Bisherige Angaben</strong>
+                </div>
+                <div class="card-body p-2 angaben-scroll" id="angabenContainer">
+                    Wählen Sie einen Raum aus.
+                    Hier sind die bereits erfolgten Angaben gelistet.
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
 <script>
+    let aktuelleAngabenRaumID = null;
+
+
     function reinitPopovers(container = document) {
         container.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
             bootstrap.Popover.getOrCreateInstance(el, {trigger: 'manual', container: 'body'});
@@ -330,7 +369,7 @@ foreach ($labortypen as $lt) {
             let bauabschnitt = $(this).data("bauabschnitt") || '';
             let ebene = $(this).data("ebene") || '';
             let nf = $(this).data("nf") || '';
-
+            loadAngaben(roomID, raumnr);
             $.ajax({
                 url: "spargelfeld_nutzerabfrage_Entwurf.php",
                 method: "POST",
@@ -388,6 +427,25 @@ foreach ($labortypen as $lt) {
                 }
             });
         });
+
+        function loadAngaben(roomId, raumnr) {
+            aktuelleAngabenRaumID = roomId;
+            $('#angabenTitel').text('Bisherige Angaben – ' + raumnr);
+            $('#angabenContainer').html('<span class="text-muted small">Lädt …</span>');
+
+            $.get('load_previous_room_data.php', {roomId: roomId})
+                .done(function (html) {
+                    // Verhindert, dass eine langsame Antwort den neueren Raum überschreibt
+                    if (roomId !== aktuelleAngabenRaumID) return;
+                    $('#angabenContainer').html(html);
+                })
+                .fail(function (xhr) {
+                    if (roomId !== aktuelleAngabenRaumID) return;
+                    $('#angabenContainer').html(
+                        xhr.responseText || '<p class="text-danger">Angaben konnten nicht geladen werden.</p>'
+                    );
+                });
+        }
 
         // loadFormData-Funktion (gehört hierher, nicht in spargelfeld_nutzerabfrage_Ent.php)
         function loadFormData(roomId) {

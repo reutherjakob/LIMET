@@ -62,7 +62,8 @@ $stmt->close();
 
 $savedRoomIDs = [];
 $sqlSaved = "SELECT roomID FROM tabelle_room_requirements_from_user 
-             WHERE roomID IN (SELECT idTABELLE_Räume FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ?)";
+             WHERE roomID IN (SELECT idTABELLE_Räume FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ? AND 
+                                                                              LIMET_RB.tabelle_room_requirements_from_user.created_at IS NOT NULL)";
 if ($stmtSaved = $mysqli->prepare($sqlSaved)) {
     $stmtSaved->bind_param("i", $projekt_id);
     $stmtSaved->execute();

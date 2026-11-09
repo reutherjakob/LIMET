@@ -2,8 +2,7 @@
 global $mysqli;
 include "../roombook_nutzerlogin/db.php";
 require_once "../roombook_nutzerlogin/_utils.php";
-init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_view"]);
-
+init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_view", "spargelfeld_admin"]);
 header('Content-Type: application/json');
 
 $roomId = $_GET['roomId'] ?? null;
@@ -13,7 +12,15 @@ if (!$roomId || !is_numeric($roomId)) {
     exit;
 }
 
-$stmt = $mysqli->prepare("SELECT * FROM tabelle_room_requirements_from_user2 WHERE roomID = ?");
+$stmt = $mysqli->prepare("SELECT verdunkelung, verdunkelung_kommentar,
+        lichtsteuerung, lichtsteuerung_kommentar,
+        hoehenverstellbare_labortische, hoehenverstellbare_labortische_kommentar,
+        giftschrank,
+        akkreditierung, akkreditierung_kommentar,
+        ve_wasser, ve_wasser_kommentar
+    FROM tabelle_room_requirements_from_user
+    WHERE roomID = ? AND entwurf_saved_at IS NOT NULL");
+
 if (!$stmt) {
     echo json_encode(['error' => '[translate:Datenbankfehler]']);
     exit;

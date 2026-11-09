@@ -960,11 +960,11 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 }
             ],
             initComplete: function () {
-                    const api = this.api();
-                    api.columns.adjust();
-                    relocateControls(api, '#CardHeaderAenderungsliste');
-                    api.on('draw', () => updateSbButton(api));
-                },
+                const api = this.api();
+                api.columns.adjust();
+                relocateControls(api, '#CardHeaderAenderungsliste');
+                api.on('draw', () => updateSbButton(api));
+            },
 
             footerCallback: function () {
                 const api = this.api();
@@ -1014,6 +1014,76 @@ $excelfilename = buildExcelFilename('Änderungsliste');
     // ---------- Arbeitspaket-Auswahl ----------
     const AP_NONE = '__ohne__';   // Platzhalter für Räume ohne Arbeitspaket
 
+    // AP-Bezeichnungen (nur Anzeige). In der DB steht nur die Nummer (`Anmerkung allgemein`).
+    // Liefert die API irgendwann selbst einen Namen (AP_NAME_COL), hat dieser Vorrang.
+    const AP_NAMEN = {
+        '4.1.1': 'ZNA',
+        '4.1.2': 'EVA',
+        '4.1.3': 'Räume Diagnostik, Behandlung und ambulante Bereiche übergeordnet',
+        '4.1.4': 'Ambulanzgruppe 1 (ACH, URO, PCH)',
+        '4.1.5': 'Ambulanzgruppe 2 (OTR, AN)',
+        '4.1.6': 'Ambulanzgruppe 3 (2., 3., 6. Med)',
+        '4.1.7': 'Ambulanzgruppe 4 (4., 5. Med, NEU, Konsil)',
+        '4.1.8': 'Räume Pflege- und Tagesklinikbereiche übergeordnet',
+        '4.1.9': 'Intensivmedizin',
+        '4.1.10': 'Interventionelles Gefäßzentrum',
+        '4.1.11': 'Endoskopie',
+        '4.1.12': 'Chirurgische Tagesklinik',
+        '4.1.13': 'Z-OP',
+        '4.1.14': 'Allgemeine Räume übergeordnet',
+        '4.1.15': 'Forschung',
+        '4.1.16': 'Hygiene',
+        '4.2.1': '1. MED - Onkologie, Hämatologie und Palliativmedizin',
+        '4.2.2': '2. MED - Pneumologie',
+        '4.2.3': '3. MED - Kardiologie',
+        '4.2.4': '4. MED Gastroenterologie und Hepatologie',
+        '4.2.5': '5. MED Endokrinologie, Rheumatologie und Akutgeriatrie',
+        '4.2.6': '6. MED Nephrologie',
+        '4.2.7': 'Neurologie',
+        '4.2.8': 'Anästhesie, Intensiv- und Schmerzmedizin',
+        '4.2.9': 'Allgemein- Viszeral- und Tumorchirurgie',
+        '4.2.10': 'Orthopädie und Traumatologie',
+        '4.2.11': 'Plastische, Ästhetische und Rekonstruktive Chirurgie',
+        '4.2.12': 'Urologie',
+        '4.2.13': 'Diagnostische und Interventionelle Radiologie',
+        '4.2.14': 'Brustgesundheitszentrum',
+        '4.2.15': 'Radioonkologie',
+        '4.2.16': 'Nuklearmedizin',
+        '4.2.17': 'Physikalische Medizin',
+        '4.2.18': 'Zentrallaboratorium',
+        '4.2.19': 'Pathologie und Mikrobiologie',
+        '4.2.20': 'Apotheke',
+        '5.1.1': 'Übergeordnete TPL - Koordination KB/NKB',
+        '5.1.2': 'NKB admin. Bereiche',
+        '5.1.3': 'Allgemeine Räume nicht-klinisch',
+        '5.1.4': 'Klinisch-Administrativer-Dienst',
+        '5.1.5': 'Bettenaufbereitung/-lagerung',
+        '5.1.6': 'Speisenversorgung',
+        '5.1.7': 'Wäscheversorgung',
+        '5.1.8': 'Sterilgutversorgung',
+        '5.1.9': 'Materialversorgung',
+        '5.1.10': 'Transport Inhouse (intrahouse und interhouse)',
+        '5.1.11': 'Abfallwirtschaft',
+        '5.1.12': 'Reinigung',
+        '5.1.13': 'Verkehr und Stellplätze',
+        '5.1.14': 'Sonderfunktionen',
+        '5.1.15': 'Fremdvermietete Flächen',
+        '5.2.2': 'Werkstätten',
+    };
+
+    /** Name zu einer AP-Nummer; bei Unter-APs (z. B. 4.1.17.D) wird auf die übergeordnete Nummer zurückgegriffen. */
+    function apNameFor(nr, fromApi = '') {
+        if (fromApi) return fromApi;
+        let key = String(nr ?? '').trim();
+        while (key) {
+            if (AP_NAMEN[key]) return AP_NAMEN[key];
+            const cut = key.lastIndexOf('.');
+            if (cut < 0) break;
+            key = key.slice(0, cut);
+        }
+        return '';
+    }
+
     function apSelection() {
         const all = $('#selAP option').length;
         const sel = $('#selAP').val() || [];
@@ -1049,7 +1119,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 $('#apHint').text('Arbeitspaket-Spalte in tabelle_räume nicht gefunden.');
             } else {
                 res.arbeitspakete.forEach(ap => {
-                    const label = ap.nr + (ap.name ? ' – ' + ap.name : '') + ' (' + ap.raeume + ' Räume)';
+                    const name = apNameFor(ap.nr, ap.name);
+                    const label = ap.nr + (name ? ' – ' + name : '') + ' (' + ap.raeume + ' Räume)';
                     $sel.append(new Option(label, ap.nr, true, true));
                 });
                 if (res.ohneAp > 0) {
@@ -1117,7 +1188,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             lastMeta = res.meta;
             lastRange = {von: von, bis: bis};
             setBudgetMap(res.budgets);              // aktuelle Status, falls inzwischen geändert
-            rawRows = withStatusEnd(res.rows);
+            rawRows = withStatusEnd(res.rows)
+                .map(r => Object.assign(r, {apName: apNameFor(r.apNr, r.apName)}));
             $('#emptyState').addClass('d-none');
             $('#tableWrap').removeClass('d-none');
             renderRows();

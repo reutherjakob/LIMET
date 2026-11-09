@@ -15,7 +15,9 @@ $gewerkID = getPostInt('gewerk');
 $ghgID = getPostInt('ghg');
 $gugID = getPostInt('gug');
 
-$sql = "SELECT tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
+$sql = "SELECT tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, 
+       tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, 
+       tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
         FROM tabelle_projekt_element_gewerk
         WHERE tabelle_projekte_idTABELLE_Projekte = ? AND tabelle_elemente_idTABELLE_Elemente = ?";
 
