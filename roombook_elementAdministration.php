@@ -39,7 +39,7 @@ require_once '_utils/_csrf.php';
     <!--- Boostrap Selct2 css -->
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
           rel="stylesheet">
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 </head>
 
@@ -350,8 +350,6 @@ require_once '_utils/_csrf.php';
                                                 type: "POST",
                                                 success: function (data) {
                                                     $("#elementPricesInOtherProjects-2").html(data)
-
-
                                                     $.ajax({
                                                         url: "getDevicesAndTheirServicePricesForElements.php",
                                                         data: {"elementID": elementID},

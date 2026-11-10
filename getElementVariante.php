@@ -36,7 +36,7 @@ $row = $result->fetch_assoc();
     <!--- for the import of getElementGewerke.php on roombook_elementsInProject.php --->
     <div class='col-xxl-6'>
         <div class="card">
-            <div class='card-header d-inline-flex customCardx  flex-nowrap'>
+            <div class='card-header d-inline-flex customCardx  flex-nowrap align-items-center justify-content-between'>
                 <div class=' d-flex align-items-center flex-nowrap'>
                     <div class='form-group d-flex align-items-center mr-2'>
                         <label for='variante'>Variante </label>
@@ -74,6 +74,13 @@ $row = $result->fetch_assoc();
                                     data-bs-toggle='modal'
                                     data-bs-target='#addVariantenParameterToElementModal'><i
                                         class='fas fa-upload'></i> Variantenparameter übernehmen
+                            </button>
+
+                            <button type='button' id='openinfomodal'
+                                    class='btn btn-outline-dark btn-sm' value='addVariantenParameters'
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#infomodal'><i
+                                        class='fas fa-info-circle'></i>
                             </button>
                         </div>
                     </div>
@@ -237,6 +244,23 @@ $row = $result->fetch_assoc();
 </div>
 
 
+
+<div class="modal fade" id="infomodal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+             </div>
+            <div class="modal-body">
+                Hier lassen sich die eienr Varainte eines Elemntes zugeordneten Kosten anpassen.
+                Die entsprechenden Elemente Werden hierdurch nicht geändert.
+             </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- ALERT Modal -->
 <div class="modal fade" id="alertModal" role="dialog">
     <div class="modal-dialog modal-sm">
@@ -294,6 +318,9 @@ $row = $result->fetch_assoc();
 <script src="_utils/_utils.js"></script>
 <script src="saveElementParameters.js"></script>
 <script>
+
+
+
     var tablePossibleElementParameters;
 
     document.getElementById('kosten').addEventListener('keydown', function (event) {
@@ -336,7 +363,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                  url: "/_utils/de-DE.json",
+                url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -367,7 +394,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                  url: "/_utils/de-DE.json",
+                url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -405,7 +432,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                  url: "/_utils/de-DE.json",
+                url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.'
             },

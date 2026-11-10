@@ -8,7 +8,9 @@ function getGewerkOptions($mysqli, $projectID, $selectedGewerk): string
 {
     $sql = "SELECT Gewerke_Nr, Bezeichnung, idTABELLE_Auftraggeber_Gewerke
             FROM tabelle_projekte 
-            INNER JOIN tabelle_auftraggeber_gewerke ON tabelle_projekte.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_gewerke.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes
+            INNER JOIN tabelle_auftraggeber_gewerke 
+                ON tabelle_projekte.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = 
+                   tabelle_auftraggeber_gewerke.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes
             WHERE tabelle_projekte.idTABELLE_Projekte = ?
             ORDER BY tabelle_auftraggeber_gewerke.Gewerke_Nr";
 

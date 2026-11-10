@@ -385,6 +385,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
                     type: "POST",
                     success: function (data) {
                         $("#elementVarianten").html(data);
+
                     }
                 });
 

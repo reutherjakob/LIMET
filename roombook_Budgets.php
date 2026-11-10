@@ -183,6 +183,7 @@ $excelfilename = buildExcelFilename('Budgets');
             0: {label: 'Offen', cls: 'warning', icon: 'fa-minus'},
             1: {label: 'Freigegeben', cls: 'success', icon: 'fa-check'},
             2: {label: 'Abgelehnt', cls: 'danger', icon: 'fa-times'},
+            3: {label: 'Planfortschreibung', cls: 'info', icon: 'fa-map'},
         };
 
         function statusBadge(s) {

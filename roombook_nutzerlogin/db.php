@@ -1,5 +1,5 @@
 <?php
-
+ini_set('display_errors', '0');
 if (__FILE__ === $_SERVER['SCRIPT_FILENAME']) {    // Datei wurde direkt aufgerufen
     http_response_code(404);
     exit;

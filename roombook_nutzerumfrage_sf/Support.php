@@ -28,7 +28,7 @@ $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admi
 </head>
 
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php"; ?>
 
 <body class="">
 <div class="container-fluid">
@@ -40,14 +40,14 @@ $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admi
             <p>
                 Für inhaltliche Fragen Kontaktieren Sie bitte Ihre geschätzte Nutzervertretung.
                 C. Czerwenka; <a href="mailto:christoph.czerwenka@ages.at">christoph.czerwenka@ages.at</a>; Tel:
-                ++435055532531
+                +435055532531
             </p>
             <p>
                 Im Falle von Website/Login/Usability Problemen kontaktieren Sie gerne:
-                A. Nikodijevic <a href="mailto:ages-sf@limet.at">ages-sf@limet.at</a>; Tel: +431470483313
+                <!---   A. Nikodijevic <a href="mailto:ages-sf@limet.at">ages-sf@limet.at</a>; Tel: +431470483313-->
 
-                <!--- W. Fuchs; <a href="mailto:fuchs@limet.at">fuchs@limet.at</a>; Tel: +431470483316 -->
-           </p>
+                W. Fuchs; <a href="mailto:fuchs@limet.at">fuchs@limet.at</a>; Tel: +431470483316
+            </p>
 
         </div>
     </div>

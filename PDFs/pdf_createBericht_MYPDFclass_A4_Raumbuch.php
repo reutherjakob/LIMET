@@ -123,6 +123,18 @@ class MYPDF extends TCPDF
             } else if ($_SESSION["projectPlanungsphase"] === "Entwurf") {
                 $Disclaimer = $Disclaimer . $Entwurf . $Disclaimer2;
             }
+
+            if ($_SESSION["Einbring"] === 1) {
+                $Disclaimer = "Die beschriebenen Komponenten weisen die jeweils größten Abmessungen "
+                    . "und/oder Gewichtslasten je Anlage auf. Die vollständigen Systeme bestehen aus"
+                    . " mehreren, hier nicht angeführten Elementen, die jedoch kleiner und/oder leichter als"
+                    . " das größte bzw. schwerste Einzelteil sind. Die angegebenen Werte sind produktneutrale"
+                    . " Maximalspezifikationen, was bedeutet, dass beispielsweise das Gewicht von Leitfabrikat "
+                    . "A und die Abmessungen von Leitfabrikat B verwendet wurden. Die hier angeführten Parameter"
+                    . " dienen exklusiv der Bestimmung der Einbringwege.";
+                unset($_SESSION["Einbring"]);
+
+            }
             $height = $this->getStringHeight(180, $Disclaimer, 0, 'J', 0, 6);
             $this->SetY(275 - $height);
             $this->MultiCell(180, 6, $Disclaimer, 0, 'L', 0, 0);

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Improved Inflation Calculator</title>
-    <link rel="stylesheet" href="../_utils/style.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -19,6 +18,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <link rel="stylesheet" href="../_utils/style.css" type="text/css" media="screen"/>
 </head>
 <body>
 <div id="limet-navbar"></div>
@@ -26,7 +27,7 @@
     <?php
     // 25 FX
     if (!function_exists('utils_connect_sql')) {
-        include "_utils/_utils.php";
+        include "../_utils/_utils.php";
     }
 
     init_page_serversides("x");
@@ -59,12 +60,13 @@
     if (is_array($device_type_raw)) {
         foreach ($device_type_raw as $type) {
             $type = trim($type ?? '');
-            if ($type !== '' && ctype_alpha($type) && strlen($type) <= 50) { // Basic validation
+            if ($type !== '') {
                 $device_type[] = $type;
             }
         }
     }
 
+    // Only allow device types that exist in the database
     $valid_types = array_column($all_types, 'Typ');
     $device_type = array_intersect($device_type, $valid_types);
 
@@ -136,7 +138,7 @@
             "SELECT * FROM tabelle_preise WHERE TABELLE_Geraete_idTABELLE_Geraete IN (" . implode(',', array_fill(0, count($geraete_ids), '?')) . ")" .
             ($where_sql ? " AND " . implode(' AND ', $where) : ""),
             array_merge($geraete_ids, $params),
-            roombook_inflationsrechner . phpstr_repeat('i', count($geraete_ids)) . $types
+            str_repeat('i', count($geraete_ids)) . $types
         );
     }
     $mysqli->close();
@@ -222,6 +224,14 @@
         }
     }
     $average_percentage_change = $total_entries ? round($total_percentage_change / $total_entries, 2) : 0;
+
+    // Chart data uses the same prices as the results (respects "Exclude Outliers")
+    $chart_data = [];
+    foreach ($price_changes as $geraet_id => $months) {
+        foreach ($months as $month => $stats) {
+            $chart_data[$geraet_id][$month] = $stats['raw_prices'];
+        }
+    }
     ?>
 
     <div class="card mb-4">
@@ -232,12 +242,14 @@
                     <div class="col-auto">
                         <label for="start_date" class="form-label mb-0">Start Date:</label>
                         <input type="text" id="start_date" name="start_date" class="form-control datepicker"
-                               value="<?= htmlspecialchars($start_date) ?>" autocomplete="off" placeholder="YYYY-MM-DD">
+                               value="<?= htmlspecialchars($start_date ?? '') ?>" autocomplete="off"
+                               placeholder="YYYY-MM-DD">
                     </div>
                     <div class="col-auto">
                         <label for="end_date" class="form-label mb-0">End Date:</label>
                         <input type="text" id="end_date" name="end_date" class="form-control datepicker"
-                               value="<?= htmlspecialchars($end_date) ?>" autocomplete="off" placeholder="YYYY-MM-DD">
+                               value="<?= htmlspecialchars($end_date ?? '') ?>" autocomplete="off"
+                               placeholder="YYYY-MM-DD">
                     </div>
                     <div class="col-auto">
                         <label for="device_type"> </label>
@@ -305,7 +317,7 @@
         <div class="col-xxl-9">
             <div class="card mb-4">
                 <div class="card-header">Normalized Price Development per Month for Each Device</div>
-                <div class="card-body" style="max-height: 70vh; overflow-y: auto;">
+                <div class="card-body overflow-auto">
                     <canvas id="priceDevelopmentChart"></canvas>
                 </div>
             </div>
@@ -316,10 +328,11 @@
                         <h5>Device Results:</h5>
                         <ul class="list-group">
                             <?php foreach ($overall_development as $geraet_id => $dev): ?>
+                                <?php $rate = $annual_inflation[$geraet_id] ?? 'Insufficient Data'; ?>
                                 <li class="list-group-item">
                                     <?= htmlspecialchars($geraete_map[$geraet_id] ?? 'N/A') ?> <br>
                                     Overall Percentage Change: <strong><?= $dev ?>%</strong> <br>
-                                    Annual Inflation Rate: <strong><?= $annual_inflation[$geraet_id] ?>%</strong>
+                                    Annual Inflation Rate: <strong><?= is_numeric($rate) ? "$rate%" : $rate ?></strong>
                                 </li>
                             <?php endforeach; ?>
                         </ul>
@@ -359,7 +372,7 @@
         const ctx = document.getElementById('priceDevelopmentChart').getContext('2d');
         if (!ctx) return;
 
-        const data = <?php echo json_encode($data); ?>;
+        const data = <?php echo json_encode($chart_data); ?>;
         const geraeteMap = <?php echo json_encode($geraete_map); ?>;
         const datasets = [];
         const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#1abc9c', '#e67e22', '#8e44ad', '#34495e', '#2ecc71'];

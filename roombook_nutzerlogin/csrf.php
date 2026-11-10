@@ -11,7 +11,8 @@ function csrf_token()
 
 function csrf_check($token): bool
 {
-    return hash_equals($_SESSION['csrf_token'] ?? '', $token);
+    $sessionToken = $_SESSION['csrf_token'] ?? '';
+    return is_string($token) && $sessionToken !== '' && hash_equals($sessionToken, $token);
 }
 
 ?>

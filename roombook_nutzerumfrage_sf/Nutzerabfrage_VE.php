@@ -4,9 +4,9 @@ require_once "../roombook_nutzerlogin/_utils.php";
 if (!function_exists('loadEnv')) {
     include "../roombook_nutzerlogin/db.php";
 }
-require_once "../roombook_nutzerumfrage_V1_2026/raumtypen.php"; // lädt $labortypen
+require_once "../roombook_nutzerumfrage_sf/raumtypen.php"; // lädt $labortypen
 
-require_once "../roombook_nutzerlogin/_csrf.php";
+require_once "../roombook_nutzerlogin/csrf.php";
 $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin", "spargelfeld_view"]);
 $user_name = $_SESSION["user_name"];
 $projekt_id = 95;
@@ -62,7 +62,8 @@ $stmt->close();
 
 $savedRoomIDs = [];
 $sqlSaved = "SELECT roomID FROM tabelle_room_requirements_from_user 
-             WHERE roomID IN (SELECT idTABELLE_Räume FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ?)";
+             WHERE roomID IN (SELECT idTABELLE_Räume FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ? AND 
+                                                                              LIMET_RB.tabelle_room_requirements_from_user.created_at IS NOT NULL)";
 if ($stmtSaved = $mysqli->prepare($sqlSaved)) {
     $stmtSaved->bind_param("i", $projekt_id);
     $stmtSaved->execute();
@@ -111,7 +112,7 @@ foreach ($labortypen as $lt) {
 
 
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php"; ?>
 
 
 <body class="">
@@ -333,7 +334,7 @@ foreach ($labortypen as $lt) {
             let nf = $(this).data("nf") || '';
 
             $.ajax({
-                url: "spargelfeld_nutzerabfrage_1.php",
+                url: "spargelfeld_nutzerabfrage_VE.php",
                 method: "POST",
                 data: {
                     roomID: roomID,
@@ -368,7 +369,7 @@ foreach ($labortypen as $lt) {
             const roomID = $form.find('[name="roomID"]').val();
 
             $.ajax({
-                url: 'save_room_data.php', // war: spargelfeld_save.php
+                url: 'save_room_data_VE.php', // war: spargelfeld_save.php
                 type: 'POST',
                 data: $(this).serialize() + '&csrf_token=' + encodeURIComponent(csrfToken),
                 dataType: 'json',
@@ -390,9 +391,9 @@ foreach ($labortypen as $lt) {
             });
         });
 
-        // loadFormData-Funktion (gehört hierher, nicht in spargelfeld_nutzerabfrage_1.php)
+        // loadFormData-Funktion (gehört hierher, nicht in spargelfeld_nutzerabfrage_VE.php)
         function loadFormData(roomId) {
-            $.get('load_room_data_userinputs.php', {roomId: roomId}, function (response) {
+            $.get('load_room_data_userinputs_VE.php', {roomId: roomId}, function (response) {
                 if (response.error || response.newRoom) return;
 
                 const data = response.data;

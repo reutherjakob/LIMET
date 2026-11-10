@@ -47,44 +47,50 @@ class EditablePivot {
 
     loadDetails() {
         // consolidateMultipleElementsperRoom();
-        fetch('../controllers/PivotTableController.php', {
+        $.ajax({
+            url: '../controllers/PivotTableController.php',
             method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: new URLSearchParams({
-                action: "getElementDetails",
+            dataType: 'json',
+            data: {
+                action: 'getElementDetails',
                 relationId: this.currentCellData.relationId,
                 roomId: this.currentCellData.roomId,
                 elementId: this.currentCellData.elementId,
                 variantId: this.currentCellData.variantId,
-                bestand:this.currentCellData.bestand
-            })
+                bestand: this.currentCellData.bestand
+            }
         })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success) throw new Error(data.message || 'Fehler beim Laden der Daten.');
-                const d = data.data;
-                document.getElementById('edit-raum-info').value = `${d.Raumnr} - ${d.Raumbezeichnung}`;
-                document.getElementById('edit-element-info').value = `${d.ElementID} ${d.Bezeichnung}`;
-                document.getElementById('edit-current-amount').value = d.Anzahl ?? this.currentCellData.currentAmount;
-                document.getElementById('edit-new-amount').value = d.Anzahl ?? this.currentCellData.currentAmount;
-                document.getElementById('edit-element-comments').value = d.element_comments || '';
-                document.getElementById('edit-neuBestand').value = d.neuBestand ?? '1';
-                document.getElementById('edit-variant-name').value = d.variantId || '1';
-                document.getElementById('edit-change-comment').value = '';
-                document.getElementById('edit-confirm').checked = false;
-                document.getElementById('save-element-change').disabled = true;
-
-                if (d.relationId === 0) {  //History Modal
-                    document.getElementById("show-history-btn").style.display = "none";
-                } else {
-                    document.getElementById("show-history-btn").style.display = "block";
-                    document.getElementById("show-history-btn").value = d.relationId;
-                    document.getElementById('ElementName4Header').innerHTML = `${d.ElementID} ${d.Bezeichnung}`;
-
+            .done((data) => {
+                if (!data.success) {
+                    alert(data.message || 'Fehler beim Laden der Daten.');
+                    return;
                 }
+
+                const d = data.data;
+                $('#edit-raum-info').val(`${d.Raumnr} - ${d.Raumbezeichnung}`);
+                $('#edit-element-info').val(`${d.ElementID} ${d.Bezeichnung}`);
+                $('#edit-current-amount').val(d.Anzahl ?? this.currentCellData.currentAmount);
+                $('#edit-new-amount').val(d.Anzahl ?? this.currentCellData.currentAmount);
+                $('#edit-element-comments').val(d.element_comments || '');
+                $('#edit-neuBestand').val(d.neuBestand ?? '1');
+                $('#edit-variant-name').val(d.variantId || '1');
+                $('#edit-change-comment').val('');
+                $('#edit-confirm').prop('checked', false);
+                $('#save-element-change').prop('disabled', true);
+
+                if (d.relationId === 0) {  // History Modal
+                    $('#show-history-btn').css('display', 'none');
+                } else {
+                    $('#show-history-btn').css('display', 'block').val(d.relationId);
+                    $('#ElementName4Header').html(`${d.ElementID} ${d.Bezeichnung}`);
+                }
+
                 this.currentCellData.relationId = d.relationId;
             })
-            .catch(err => alert(err.message));
+            .fail((xhr, status, error) => {
+                alert(xhr.responseJSON?.message || error || 'Fehler beim Laden der Daten.');
+            });
+
         new bootstrap.Modal(document.getElementById('editElementModal')).show();
     }
 

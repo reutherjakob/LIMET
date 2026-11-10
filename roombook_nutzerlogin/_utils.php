@@ -4,10 +4,19 @@ function start_session(): void
     if (session_status() === PHP_SESSION_NONE) {
         session_start([
             'cookie_httponly' => true,
-            'cookie_secure' => isset($_SERVER['HTTPS']),
+            'cookie_secure' => true,
             'cookie_samesite' => 'Strict',
+            'use_strict_mode' => true,
+            'use_only_cookies' => true,
         ]);
     }
+}
+
+function send_security_headers(): void
+{
+    header('X-Frame-Options: DENY');
+    header('X-Content-Type-Options: nosniff');
+    header('Referrer-Policy: no-referrer');
 }
 
 function init_page($allowed_roles): string
@@ -24,7 +33,7 @@ function init_page($allowed_roles): string
 function check_login_new(): void
 {
     if (!isset($_SESSION['user_id'])) {
-        header("Location: ../../Nutzerlogin/index.php");
+        header("Location: ../../roombook_nutzerlogin/index.php");
         exit;
     }
 
@@ -47,7 +56,7 @@ function check_role_based_access($allowed_roles): string
         }
     } else {
         if ($role !== $allowed_roles) {
-            header("Location: ../../Nutzerlogin/index.php");
+            header("Location: ../../roombook_nutzerlogin/index.php");
             exit;
         }
     }

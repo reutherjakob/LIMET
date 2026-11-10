@@ -22,7 +22,6 @@ if (isset($_SESSION['username'])) {
     header("Location: roombook_projects.php");
     exit;
 }
-$_SESSION["darkmode"] = false;
 require '_utils/_csrf.php';
 ?>
 

@@ -1,5 +1,5 @@
 <?php
-require_once "_utils.php";
+require_once "../_utils/_utils.php";
 init_page_serversides("x");
 ?>
 

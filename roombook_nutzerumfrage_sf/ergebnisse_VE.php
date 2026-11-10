@@ -6,15 +6,16 @@ if (!function_exists('loadEnv')) {
     include "../roombook_nutzerlogin/db.php";
 }
 
-$role = init_page(["internal_rb_user", "spargelfeld_admin", "spargelfeld_view"]);
+$role = init_page(["internal_rb_user", "spargelfeld_admin", "spargelfeld_view", "spargelfeld_ext_user"]);
+
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 
 $projektid = 95;
 
-require_once "form_fields_forNutzergruppe1.php"; // $formFields (Basis)
+require_once "form_fields_forNutzergruppe_VE.php"; // $formFields (Basis)
 require_once "raumtyp_resolver.php";             // getRaumtypById / applyRaumtypOverrides
-require_once "../roombook_nutzerumfrage_V1_2026/raumtypen.php";   // lädt $labortypen
+require_once "../roombook_nutzerumfrage_sf/raumtypen.php";   // lädt $labortypen
 
 $baseFormFields = $formFields;
 
@@ -104,6 +105,7 @@ $sql = "SELECT t.*,
         FROM tabelle_room_requirements_from_user t
         JOIN tabelle_räume r ON t.roomID = r.idTABELLE_Räume
         WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+          AND t.created_at IS NOT NULL
             AND  r.`Raumtyp BH` <> 34
             AND  r.`Raumtyp BH` <> 35
         ORDER BY t.created_at DESC";
@@ -128,8 +130,6 @@ function renderCell($val, $type)
             return ((int)$val === 1) ? 'Ja' : 'Nein';
         case 'num':
             return ($val === null || $val === '') ? '' : htmlspecialchars($val);
-        case 'date':
-            return htmlspecialchars((string)$val);
         case 'text':
         default:
             return htmlspecialchars((string)$val);
@@ -159,7 +159,7 @@ function renderCell($val, $type)
 
 <body>
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php"; ?>
 
 <div class="container-fluid mt-3">
     <div class="card">

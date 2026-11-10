@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,31 +41,24 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {}
 }</component>
-  <component name="GitHubPullRequestState"><![CDATA[{
-  "prStates": [
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
     {
-      "id": {
-        "id": "PR_kwDOKp49586-evgR",
-        "number": 70
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOKp49586-evgR&quot;,
+        &quot;number&quot;: 70
       },
-      "lastSeen": 1769170786755
+      &quot;lastSeen&quot;: 1769170786755
     },
     {
-      "id": {
-        "id": "PR_kwDOKp49587G04hY",
-        "number": 74
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOKp49587G04hY&quot;,
+        &quot;number&quot;: 74
       },
-      "lastSeen": 1776066601063
-    },
-    {
-      "id": {
-        "id": "PR_kwDOKp49588AAAABJRmN9A",
-        "number": 83
-      },
-      "lastSeen": 1792394801827
+      &quot;lastSeen&quot;: 1776066601063
     }
   ]
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://FuxWolfgang@github.com/reutherjakob/LIMET.git&quot;,
@@ -98,49 +91,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug._utils.php.executor": "Run",
-    "PHP Web Page.Unnamed.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
-    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
-    "git-widget-placeholder": "#83 on Werq__08__26",
-    "last_opened_file_path": "C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "database.query.execution",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug._utils.php.executor&quot;: &quot;Run&quot;,
+    &quot;PHP Web Page.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Werq__08__26&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/roombook_nutzerumfrage_sf&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mariadb"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mariadb&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "TEXT"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;TEXT&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_nutzerumfrage_sf" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_nutzerumfrage_V1_2026" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\IFCQuest" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\LOGIN" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_spargelfeld" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_wip" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\DB_analysis" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils\DB_analysis" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -164,7 +157,7 @@
         <item itemvalue="JavaScript Debug._utils.php" />
         <item itemvalue="PHP Script._pdf_createBericht_Custom_utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
-        <item itemvalue="JavaScript Debug._utils.php" />
+        <item itemvalue="PHP Script._pdf_createBericht_Custom_utils.php" />
       </list>
     </recent_temporary>
   </component>
@@ -677,62 +670,20 @@
       <workItem from="1792134727463" duration="624000" />
       <workItem from="1792153845032" duration="2149000" />
       <workItem from="1792394617346" duration="9803000" />
-    </task>
-    <task id="LOCAL-00215" summary="SF Umfrage DONE.&#10;&#10;LOGIN speichert nun VERSCHLÜSSELTE Userdaten in tabelle_user.&#10;&#10;Bugfixes.&#10;&#10;KOR Seiten -&gt; LeitungsAbgleich seite - Ansatz dark mode.">
-      <option name="closed" value="true" />
-      <created>1775549651505</created>
-      <option name="number" value="00215" />
-      <option name="presentableId" value="LOCAL-00215" />
-      <option name="project" value="LOCAL" />
-      <updated>1775549651505</updated>
-    </task>
-    <task id="LOCAL-00216" summary="Feedback Center getuned.&#10;lose TOdo finalisiert.&#10;Kommentar bei preise ergänzt.&#10;Alle lose workflocw gefixed.&#10;RB specs verbessert. und sortiert.&#10;raum kopie erweitert. &#10;&#10;RB texte verbessert.">
-      <option name="closed" value="true" />
-      <created>1775572206172</created>
-      <option name="number" value="00216" />
-      <option name="presentableId" value="LOCAL-00216" />
-      <option name="project" value="LOCAL" />
-      <updated>1775572206172</updated>
-    </task>
-    <task id="LOCAL-00217" summary="Bugfixes;&#10;Sf Umfrage;&#10;Kor Liste">
-      <option name="closed" value="true" />
-      <created>1775818516003</created>
-      <option name="number" value="00217" />
-      <option name="presentableId" value="LOCAL-00217" />
-      <option name="project" value="LOCAL" />
-      <updated>1775818516003</updated>
-    </task>
-    <task id="LOCAL-00218" summary="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.">
-      <option name="closed" value="true" />
-      <created>1776073907805</created>
-      <option name="number" value="00218" />
-      <option name="presentableId" value="LOCAL-00218" />
-      <option name="project" value="LOCAL" />
-      <updated>1776073907806</updated>
-    </task>
-    <task id="LOCAL-00219" summary="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.&#10;element Admin - pagelength option ergänzt.">
-      <option name="closed" value="true" />
-      <created>1776082650440</created>
-      <option name="number" value="00219" />
-      <option name="presentableId" value="LOCAL-00219" />
-      <option name="project" value="LOCAL" />
-      <updated>1776082650440</updated>
-    </task>
-    <task id="LOCAL-00220" summary="Ui upgrade while workin">
-      <option name="closed" value="true" />
-      <created>1776161080246</created>
-      <option name="number" value="00220" />
-      <option name="presentableId" value="LOCAL-00220" />
-      <option name="project" value="LOCAL" />
-      <updated>1776161080246</updated>
-    </task>
-    <task id="LOCAL-00221" summary="Element parameter Änderungen Website">
-      <option name="closed" value="true" />
-      <created>1776240583329</created>
-      <option name="number" value="00221" />
-      <option name="presentableId" value="LOCAL-00221" />
-      <option name="project" value="LOCAL" />
-      <updated>1776240583329</updated>
+      <workItem from="1792419960444" duration="364000" />
+      <workItem from="1792485319087" duration="156000" />
+      <workItem from="1792485845457" duration="596000" />
+      <workItem from="1792656083312" duration="3483000" />
+      <workItem from="1792665763177" duration="4404000" />
+      <workItem from="1793629457315" duration="3667000" />
+      <workItem from="1793697527738" duration="4413000" />
+      <workItem from="1793718162155" duration="4039000" />
+      <workItem from="1793795131912" duration="9550000" />
+      <workItem from="1793866065788" duration="3427000" />
+      <workItem from="1793893076040" duration="2502000" />
+      <workItem from="1793955712983" duration="6213000" />
+      <workItem from="1794214263871" duration="3963000" />
+      <workItem from="1794318369230" duration="545000" />
     </task>
     <task id="LOCAL-00222" summary="Element parameter Änderungen Website">
       <option name="closed" value="true" />
@@ -1070,7 +1021,63 @@
       <option name="project" value="LOCAL" />
       <updated>1792403155415</updated>
     </task>
-    <option name="localTasksCounter" value="264" />
+    <task id="LOCAL-00264" summary="Bugfixes">
+      <option name="closed" value="true" />
+      <created>1792419970045</created>
+      <option name="number" value="00264" />
+      <option name="presentableId" value="LOCAL-00264" />
+      <option name="project" value="LOCAL" />
+      <updated>1792419970045</updated>
+    </task>
+    <task id="LOCAL-00265" summary="Bugfixes.">
+      <option name="closed" value="true" />
+      <created>1792660914914</created>
+      <option name="number" value="00265" />
+      <option name="presentableId" value="LOCAL-00265" />
+      <option name="project" value="LOCAL" />
+      <updated>1792660914914</updated>
+    </task>
+    <task id="LOCAL-00266" summary="Bugfixes.">
+      <option name="closed" value="true" />
+      <created>1792665931313</created>
+      <option name="number" value="00266" />
+      <option name="presentableId" value="LOCAL-00266" />
+      <option name="project" value="LOCAL" />
+      <updated>1792665931313</updated>
+    </task>
+    <task id="LOCAL-00267" summary="Upgrade Kort Liste">
+      <option name="closed" value="true" />
+      <created>1793616671001</created>
+      <option name="number" value="00267" />
+      <option name="presentableId" value="LOCAL-00267" />
+      <option name="project" value="LOCAL" />
+      <updated>1793616671001</updated>
+    </task>
+    <task id="LOCAL-00268" summary="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs.">
+      <option name="closed" value="true" />
+      <created>1793634371596</created>
+      <option name="number" value="00268" />
+      <option name="presentableId" value="LOCAL-00268" />
+      <option name="project" value="LOCAL" />
+      <updated>1793634371596</updated>
+    </task>
+    <task id="LOCAL-00269" summary="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen.">
+      <option name="closed" value="true" />
+      <created>1793872197829</created>
+      <option name="number" value="00269" />
+      <option name="presentableId" value="LOCAL-00269" />
+      <option name="project" value="LOCAL" />
+      <updated>1793872197829</updated>
+    </task>
+    <task id="LOCAL-00270" summary="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen.">
+      <option name="closed" value="true" />
+      <created>1794219234699</created>
+      <option name="number" value="00270" />
+      <option name="presentableId" value="LOCAL-00270" />
+      <option name="project" value="LOCAL" />
+      <updated>1794219234699</updated>
+    </task>
+    <option name="localTasksCounter" value="271" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1100,11 +1107,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden" />
-    <MESSAGE value="IFC Quest - import seems to work" />
-    <MESSAGE value="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots." />
-    <MESSAGE value="Neue Seite: Geräte- und Wartungspreise Liste" />
-    <MESSAGE value="Fragekatalog angepasst" />
     <MESSAGE value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
     <MESSAGE value="Bestand Eintragen bugfix." />
     <MESSAGE value="Merge remote-tracking branch 'origin/bildsupport' into bildsupport&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;documentationV2.php" />
@@ -1125,7 +1127,12 @@
     <MESSAGE value="Excel Filenames überall;&#10;Bugfixes," />
     <MESSAGE value="Umstrukturierung der Files;&#10;Ungenutzen Code entfernt; &#10;CRSF überall;&#10;KOR Änderungsverfolgung Seite;" />
     <MESSAGE value="Bugfixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes" />
+    <MESSAGE value="Bugfixes." />
+    <MESSAGE value="Bugfixes.&#10;Upgrade El. Historie" />
+    <MESSAGE value="Upgrade Kort Liste" />
+    <MESSAGE value="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs." />
+    <MESSAGE value="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen." />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1166,8 +1173,8 @@
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/save_room_data.php</url>
-          <line>82</line>
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_sf/save_room_data_VE.php</url>
+          <line>88</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -1191,14 +1198,24 @@
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php</url>
-          <line>347</line>
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_sf/bericht_VE.php</url>
+          <line>348</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php</url>
-          <line>453</line>
+          <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_sf/bericht_VE.php</url>
+          <line>454</line>
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/PDFs/pdf_createKostenOverallBauabschnittBudgetPDF.php</url>
+          <line>214</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/roombook_icons_legend.php</url>
+          <line>6</line>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/roombook_image_support/projectGallery.js</url>

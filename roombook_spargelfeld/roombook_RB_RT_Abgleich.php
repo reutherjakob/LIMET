@@ -35,7 +35,7 @@
  */
 
 require_once '../_utils/_utils.php';
-require_once '../roombook_nutzerumfrage_V1_2026/raumtypen.php';   // definiert $labortypen
+require_once '../roombook_nutzerumfrage_sf/raumtypen.php';   // definiert $labortypen
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1141,7 +1141,7 @@ $rtKeys = raumtyp_all_keys();
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="../_utils/_utils.js"></script>
 <script>
     const PROJECT_ID = <?= (int)$projectID ?>;
     const SELF = location.pathname.split('/').pop();

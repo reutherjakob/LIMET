@@ -20,7 +20,8 @@ $sqlSummary = "
         SUM(CASE WHEN t.roomID IS NULL THEN 1 ELSE 0 END) AS open_rooms,
         SUM(CASE WHEN t.roomID IS NOT NULL THEN 1 ELSE 0 END) AS filled_rooms
     FROM tabelle_räume r
-    LEFT JOIN tabelle_room_requirements_from_user t ON r.idTABELLE_Räume = t.roomID
+    LEFT JOIN tabelle_room_requirements_from_user t
+    ON r.idTABELLE_Räume = t.roomID AND t.entwurf_saved_at IS NOT NULL   
     WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
       AND  r.`Raumtyp BH` <> 34 
             AND  r.`Raumtyp BH` <> 35 
@@ -65,7 +66,7 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
 
 <body>
 <div id="limet-navbar"></div>
-<?php require_once "../roombook_nutzerumfrage_V1_2026/_utils.php"; ?>
+<?php require_once "../roombook_nutzerumfrage_sf/_utils.php"; ?>
 <div class="container-fluid mt-3">
     <div class="card">
         <div class="card-header">
@@ -177,11 +178,15 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                 <!-- TAB: Offene Räume -->
                 <div class="tab-pane fade" id="open-rooms" role="tabpanel" aria-labelledby="open-rooms-tab">
                     <?php
-                    $sqlOpenRooms = "SELECT idTABELLE_Räume as roomID, Raumbezeichnung as roomname, Raumnr, Bauabschnitt, Nutzfläche, `Raumbereich Nutzer` as rb 
-                                     FROM tabelle_räume 
-                                     WHERE tabelle_projekte_idTABELLE_Projekte = ? 
-                                       AND idTABELLE_Räume NOT IN (SELECT roomID FROM tabelle_room_requirements_from_user) 
-                                     ORDER BY Raumbezeichnung";
+                    $sqlOpenRooms = "SELECT idTABELLE_Räume as roomID, Raumbezeichnung as roomname, Raumnr, Bauabschnitt, Nutzfläche, `Raumbereich Nutzer` as rb
+                 FROM tabelle_räume
+                 WHERE tabelle_projekte_idTABELLE_Projekte = ?
+                   AND `Raumtyp BH` NOT IN (34, 35)
+                   AND idTABELLE_Räume NOT IN (
+                       SELECT roomID FROM tabelle_room_requirements_from_user
+                       WHERE entwurf_saved_at IS NOT NULL
+                   )
+                 ORDER BY Raumbezeichnung";
                     if ($stmt2 = $mysqli->prepare($sqlOpenRooms)) {
                         $stmt2->bind_param("i", $projektid);
                         $stmt2->execute();

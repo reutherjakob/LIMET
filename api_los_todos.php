@@ -140,7 +140,10 @@ function handleGetStatistics($mysqli, &$response)
                 COUNT(*) as total,
                 SUM(CASE WHEN l.Vergabe_abgeschlossen = 0 THEN 1 ELSE 0 END) as offen,
                 SUM(CASE WHEN l.Vergabe_abgeschlossen = 1 THEN 1 ELSE 0 END) as fertig,
-                SUM(CASE WHEN l.Vergabe_abgeschlossen = 2 THEN 1 ELSE 0 END) as wartend
+                SUM(CASE WHEN l.Vergabe_abgeschlossen = 2 THEN 1 ELSE 0 END) as wartend,
+                SUM(CASE WHEN l.Vergabe_abgeschlossen = 3 THEN 1 ELSE 0 END) as entfallen,
+                SUM(CASE WHEN l.Vergabe_abgeschlossen = 4 THEN 1 ELSE 0 END) as bestand
+
             FROM tabelle_lose_ToDos t
             INNER JOIN tabelle_lose_extern l ON t.id_tabelle_lose_extern = l.idtabelle_Lose_Extern";
 

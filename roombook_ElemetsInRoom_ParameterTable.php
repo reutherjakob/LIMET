@@ -72,7 +72,7 @@ require_once '_utils/_csrf.php';
     </div>
 </div>
 
-
+<script>let $projectID </script>
 <script src="roombookSpecifications_constDeclarations.js"></script>
 <script>
     var columnsDefinitionShort = columnsDefinition.filter(column =>

@@ -1,10 +1,16 @@
 <?php
+http_response_code(403);
+header('Content-Type: application/json');
+echo json_encode(['status' => 'error', 'message' => 'Umfrage abgeschlossen.']);
+exit;
+
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 global $mysqli;
 include "../roombook_nutzerlogin/db.php";
 require_once "../roombook_nutzerlogin/_utils.php";
-require_once "../roombook_nutzerlogin/_csrf.php";
+require_once "../roombook_nutzerlogin/csrf.php";
 
 init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin"]);
 header('Content-Type: application/json');

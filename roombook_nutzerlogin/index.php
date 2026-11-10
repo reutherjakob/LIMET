@@ -1,3 +1,10 @@
+<?php
+require_once "_utils.php";
+start_session();
+send_security_headers();
+require 'csrf.php';
+$csrf = csrf_token();
+?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -61,7 +68,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="consentCheckbox" name="consentCheckbox" required>
                                 <label class="form-check-label" for="consentCheckbox">
-                                    Ich habe die <a href="../Nutzerumfrage/DSGVO_Nutzerumfrage.php" target="_blank" rel="noopener">Datenschutzerklärung</a>
+                                    Ich habe die <a href="../roombook_nutzerumfrage_sf/DSGVO_Nutzerumfrage.php" target="_blank" rel="noopener">Datenschutzerklärung</a>
                                     gelesen und stimme der Verarbeitung meiner personenbezogenen Daten zu.
                                 </label>
                             </div>
@@ -78,13 +85,7 @@
                         </div>
 
                     </div>
-                    <input type="hidden" name="csrf"
-                           value="<?php
-                           require_once "_utils.php";
-                           start_session();
-                           require '_csrf.php';
-                           echo csrf_token(); ?>">
-                    <input type="hidden" name="hashed_password" id="hashed_password"/>
+                    <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf, ENT_QUOTES, 'UTF-8') ?>">
                 </form>
 
             </div>
@@ -105,12 +106,8 @@ include '../roombook_nutzerlogin/footer.html';
    //     loginBtn.prop('disabled', !this.checked);
    // });
 
-    $('#loginForm').submit(async function (e) {
+    $('#loginForm').submit(function (e) {
         e.preventDefault();
-        const passwordInput = this.querySelector('input[name="password"]');
-       // const hashedPasswordInput = this.querySelector('#hashed_password');
-       // hashedPasswordInput.value = await hashPassword(passwordInput.value);
-        // passwordInput.value = ''; // optional, clear plain password field
 
         $.post('login.php', $(this).serialize(), function (data) {
             if (data.status === 'success') {

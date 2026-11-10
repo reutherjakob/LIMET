@@ -4,9 +4,9 @@ include "../roombook_nutzerlogin/db.php";
 require_once "../roombook_nutzerlogin/_utils.php";
 $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_view", "spargelfeld_admin"]);
 
-require_once "form_fields_forNutzergruppe1.php"; // Array $formFields
+require_once "form_fields_forNutzergruppe_VE.php"; // Array $formFields
 require_once 'raumtyp_resolver.php';
-require_once "../roombook_nutzerumfrage_V1_2026/raumtypen.php"; // lädt $labortypen
+require_once "../roombook_nutzerumfrage_sf/raumtypen.php"; // lädt $labortypen
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

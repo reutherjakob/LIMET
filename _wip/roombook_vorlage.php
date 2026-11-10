@@ -22,7 +22,7 @@
  *     - POST-Endpunkte (eigene .php-Dateien) beginnen mit:
  *           require_once __DIR__ . '/_utils.php';     // bzw. Pfad zu utils/
  *           check_login();
- *           require_once __DIR__ . '/csrf.php';
+ *           require_once __DIR__ . '/_csrf.php';
  *           require_csrf();
  *     - Ausgaben in HTML immer mit h() escapen.
  *
@@ -33,7 +33,7 @@
  *
  *  4. Tabellen
  *     - class="table table-sm table-striped table-hover border border-light border-5"
- *     - DataTables: language url = WEB_ROOT + 'utils/de-DE.json'
+ *     - DataTables: language url = WEB_ROOT + '_utils/de-DE.json'
  *     - Such-/Button-Controls in den Card-Header verschieben:
  *           relocateControls(this.api(), '#XyCardHeader');   (in initComplete)
  *       Alternativ manuell:
@@ -56,9 +56,9 @@ $WEB_ROOT = '../';              // relativer URL-Pfad von dieser Seite zum Proje
 // ===== SERVERSEITE =====
 require_once $PHP_ROOT . '/_utils/_utils.php';
 init_page_serversides();
-require_once $PHP_ROOT . '/_utils/csrf.php';
+require_once $PHP_ROOT . '/_utils/_csrf.php';
 
-$pageTitle     = 'Seitentitel';
+$pageTitle = 'Seitentitel';
 $excelfilename = buildExcelFilename('');
 ?>
 <!DOCTYPE html>
@@ -87,7 +87,8 @@ $excelfilename = buildExcelFilename('');
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
     <!-- ================= DATATABLES 2.2.1 (BS5-Bundle inkl. Extensions + JSZip) ================= -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"/>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
     <!-- DataTables Standard-Theme (NICHT zusammen mit dem BS5-Bundle nutzen, nur bei Bedarf statt dessen):
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.min.css">
@@ -95,11 +96,13 @@ $excelfilename = buildExcelFilename('');
 
     <!-- ================= SELECT2 4.1.0 + BOOTSTRAP-5-THEME ================= -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!-- ================= BOOTSTRAP-DATEPICKER 1.10.0 (tenderCalender / ElementLots) ================= -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
 
     <!-- ================= CHART.JS 2.5.0 ================= -->
@@ -176,15 +179,15 @@ $excelfilename = buildExcelFilename('');
 <!-- ================= SEITEN-SCRIPT (immer innerhalb von <body>) ================= -->
 <script charset="utf-8">
     // ----- Werte aus PHP -----
-    const WEB_ROOT      = <?= json_encode($WEB_ROOT) ?>;
+    const WEB_ROOT = <?= json_encode($WEB_ROOT) ?>;
     const excelfilename = <?= json_encode($excelfilename) ?>;
-    const csrfToken     = $('meta[name="csrf"]').attr('content');
+    const csrfToken = $('meta[name="csrf"]').attr('content');
 
     $(function () {
 
         // ----- DataTable -----
         $('#MainTable').DataTable({
-            language: {url: WEB_ROOT + 'utils/de-DE.json'},
+            language: {url: WEB_ROOT + '_utils/de-DE.json'},
             pageLength: 25,
             layout: {
                 topStart: 'buttons',
@@ -221,7 +224,7 @@ $excelfilename = buildExcelFilename('');
         // new Chart(document.getElementById('MyChart'), {type: 'bar', data: {...}, options: {...}});
 
         // ----- Beispiel POST-Request -----
-        // $.post(WEB_ROOT + 'utils/endpunkt.php', {id: 1, csrf: csrfToken}, function (resp) {
+        // $.post(WEB_ROOT + '_utils/endpunkt.php', {id: 1, csrf: csrfToken}, function (resp) {
         //     console.log(resp);
         // });
     });
