@@ -63,7 +63,7 @@ if ($elementID > 0) {
             echo "<td>" . date_format($date, 'Y-m-d') . "</td>";
             echo "<td>" . htmlspecialchars($row["Quelle"] ?? '') . "</td>";
             echo "<td>" . htmlspecialchars($row['Gerät']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['Kommentar']??'') . "</td>";
+            echo "<td>" . htmlspecialchars($row['Kommentar'] ?? '') . "</td>";
             echo "<td>" . htmlspecialchars($row["Lieferant"] ?? ' ') . ' - ' .
                 htmlspecialchars($row['Hersteller'] ?? '') . "</td>";
             echo "<td>";
@@ -121,10 +121,19 @@ if (!empty($chartData)) {
         if ($('#TableDevicePricesInProjects tbody tr').length > 0 &&
             !$('#TableDevicePricesInProjects tbody tr td').hasClass('text-muted')) {
             new DataTable('#TableDevicePricesInProjects', {
-                paging: false,
+                paging: true,
+                pageLength: 5,
+                lengthMenu: [[5, 10, 20, -1], ['5 Zeilen', '10 Zeilen', '20 Zeilen', 'Alle']],
+
                 searching: false,
                 info: false,
                 order: [[3, "desc"]], // Datum absteigend
+                layout: {
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: 'pageLength',
+                    bottomEnd: 'paging'
+                },
                 language: {
                     url: "/_utils/de-DE.json",
                     decimal: ",",

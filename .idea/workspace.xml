@@ -5,26 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen.">
-      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/load_previous_room_data.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getElementGewerkeFiltered.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementGewerkeFiltered.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/get_khi_export.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_khi_export.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_besprechungsansicht/js/editablePivot.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_besprechungsansicht/js/editablePivot.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/Nutzerabfrage_Entwurf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/Nutzerabfrage_Entwurf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/Nutzerabfrage_VE.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/Nutzerabfrage_VE.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/adminpanel.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/adminpanel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/bericht_VE.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/bericht_VE.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/ergebnisse_VE.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/ergebnisse_VE.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/form_fields_forNutzergruppe_Entwurf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/form_fields_forNutzergruppe_Entwurf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/load_room_data_userinputs_Entwurf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/load_room_data_userinputs_Entwurf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/navbar_VE.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/navbar_VE.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/save_room_data_Entwurf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/save_room_data_Entwurf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/save_room_data_VE.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/save_room_data_VE.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/spargelfeld_nutzerabfrage_Entwurf.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/spargelfeld_nutzerabfrage_Entwurf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/saveElementGewerk.php" beforeDir="false" afterPath="$PROJECT_DIR$/saveElementGewerk.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -700,15 +682,8 @@
       <workItem from="1793866065788" duration="3427000" />
       <workItem from="1793893076040" duration="2502000" />
       <workItem from="1793955712983" duration="6213000" />
-      <workItem from="1794214263871" duration="3119000" />
-    </task>
-    <task id="LOCAL-00221" summary="Element parameter Änderungen Website">
-      <option name="closed" value="true" />
-      <created>1776240583329</created>
-      <option name="number" value="00221" />
-      <option name="presentableId" value="LOCAL-00221" />
-      <option name="project" value="LOCAL" />
-      <updated>1776240583329</updated>
+      <workItem from="1794214263871" duration="3963000" />
+      <workItem from="1794318369230" duration="545000" />
     </task>
     <task id="LOCAL-00222" summary="Element parameter Änderungen Website">
       <option name="closed" value="true" />
@@ -1094,7 +1069,15 @@
       <option name="project" value="LOCAL" />
       <updated>1793872197829</updated>
     </task>
-    <option name="localTasksCounter" value="270" />
+    <task id="LOCAL-00270" summary="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen.">
+      <option name="closed" value="true" />
+      <created>1794219234699</created>
+      <option name="number" value="00270" />
+      <option name="presentableId" value="LOCAL-00270" />
+      <option name="project" value="LOCAL" />
+      <updated>1794219234699</updated>
+    </task>
+    <option name="localTasksCounter" value="271" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
