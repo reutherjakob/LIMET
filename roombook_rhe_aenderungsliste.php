@@ -203,6 +203,11 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                                 ausgeben
                                 (Raum, Arbeitspaket, Gesamt)</label>
                         </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkExcelGliederung" checked>
+                            <label class="form-check-label small" for="chkExcelGliederung">Excel: Blatt
+                                „Kostengliederung“ ausgeben</label>
+                        </div>
                     </div>
                 </div>
 
@@ -246,6 +251,9 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                     <span class="fw-semibold">Änderungsliste</span>
                     <span id="faktorBadge" class="badge text-bg-warning d-none"></span>
                     <span id="periodLabel" class="badge text-bg-light border">kein Zeitraum geladen</span>
+                    <?php if (isset($_GET['debug'])): ?>
+                        <span class="badge text-bg-danger"><i class="fas fa-bug me-1"></i>Debug: Excel mit Nachrechnung</span>
+                    <?php endif; ?>
 
                     <div id="CardHeaderAenderungsliste" class="ms-auto d-flex align-items-center gap-2"></div>
                 </div>
@@ -297,6 +305,37 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                     </div>
                 </div>
             </div>
+
+            <!-- ============ Kostengliederung (Gewerk × Merkmal) ============ -->
+            <div id="glCard" class="card mt-3 d-none">
+                <div class="card-header d-flex flex-wrap align-items-center gap-2">
+                    <i class="fas fa-th"></i>
+                    <span class="fw-semibold">Kostengliederung</span>
+                    <span class="badge text-bg-light border">gefilterte Positionen</span>
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <label for="selGlRows" class="small text-nowrap mb-0">Zeilen</label>
+                        <select id="selGlRows" class="form-select form-select-sm w-auto">
+                            <option value="gesamt">nur Gesamt</option>
+                            <option value="bauabschnitt" selected>Bauabschnitt</option>
+                            <option value="bauetappe">Bauetappe</option>
+                            <option value="geschoss">Geschoss</option>
+                            <option value="raumbereich">Raumbereich Nutzer</option>
+                            <option value="ap">Arbeitspaket</option>
+                            <option value="budgetEnd">Budget Ende</option>
+                            <option value="art">Änderungsart</option>
+                        </select>
+                        <label for="selGlCols" class="small text-nowrap mb-0">Spalten</label>
+                        <select id="selGlCols" class="form-select form-select-sm w-auto">
+                            <option value="gewerk" selected>Gewerk</option>
+                            <option value="ghg">Gewerk / GHG</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="glWrap" class="table-responsive"></div>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -312,6 +351,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
     const eur = new Intl.NumberFormat('de-DE', {style: 'currency', currency: 'EUR'});
     const COL = {stkStart: 12, stkEnd: 13, epStart: 14, epEnd: 15, ppStart: 16, ppEnd: 17, ppDiff: 18};
     const DEFAULT_START = '2025-12-20';
+    // ?debug=1 -> Excel enthält Zusatzspalten je Zeile + Blatt „Nachrechnung“ (SUMIFS-Gegenprobe)
+    const DEBUG = new URLSearchParams(location.search).has('debug');
 
     // Budgets, deren Nummer so beginnt, werden standardmäßig ausgeblendet (Änderungsevidenzen)
     const BUDGET_HIDE_DEFAULT = /^AE[VG]/i;
@@ -637,6 +678,23 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         {header: 'Σ ENT Stk', key: 'entStk', width: 9},
         {header: 'Σ ENT Positionspreis', key: 'entPP', width: 16}
     ];
+    const XL_DEBUG_COLUMNS = [
+        {header: 'DEBUG Zeilentyp', key: 'typ', width: 11},
+        {header: 'Element-ID', key: 'elementId', width: 12},
+        {header: 'Bauabschnitt', key: 'bauabschnitt', width: 14},
+        {header: 'Bauetappe', key: 'bauetappe', width: 12},
+        {header: 'Geschoss', key: 'geschoss', width: 10},
+        {header: 'Raumbereich Nutzer', key: 'raumbereich', width: 20},
+        {header: 'Gewerk-Nr', key: 'gewerkNr', width: 10},
+        {header: 'Gewerk', key: 'gewerkName', width: 24},
+        {header: 'GHG', key: 'ghg', width: 10},
+        {header: 'GHG Bezeichnung', key: 'ghgName', width: 24},
+        {header: 'EP VE', key: 'veEP', width: 13},
+        {header: 'EP ENT', key: 'entEP', width: 13},
+        {header: 'Gliederung Zeile (Schlüssel)', key: 'glZeile', width: 24},
+        {header: 'Gliederung Spalte (Schlüssel)', key: 'glSpalte', width: 16}
+    ];
+    if (DEBUG) XL_COLUMNS.push(...XL_DEBUG_COLUMNS);
 
     let excelJsPromise = null;
 
@@ -680,6 +738,10 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         row.getCell('entPP').numFmt = XL_MONEY;
         row.getCell('veStk').numFmt = '0';
         row.getCell('entStk').numFmt = '0';
+        if (DEBUG) {
+            row.getCell('veEP').numFmt = XL_MONEY;
+            row.getCell('entEP').numFmt = XL_MONEY;
+        }
     }
 
     // Gruppenebenen für Ergebniszeilen (außen -> innen)
@@ -700,6 +762,280 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             label: r => ({apNr: r.apNr, apName: r.apName, raumnr: r.raumnr + ' Ergebnis'})
         }
     ];
+
+    // ======================================================================
+    // Kostengliederung: Zeilen = Merkmal (Bauabschnitt, …), Spalten = Gewerk
+    // ======================================================================
+    const GL_ROWS = {
+        gesamt: {label: 'Gesamt', get: () => 'Gesamt'},
+        bauabschnitt: {label: 'Bauabschnitt', get: r => r.bauabschnitt},
+        bauetappe: {label: 'Bauetappe', get: r => r.bauetappe},
+        geschoss: {label: 'Geschoss', get: r => r.geschoss},
+        raumbereich: {label: 'Raumbereich Nutzer', get: r => r.raumbereich},
+        ap: {label: 'Arbeitspaket', get: r => r.apNr ? r.apNr + (r.apName ? ' – ' + r.apName : '') : ''},
+        budgetEnd: {label: 'Budget Ende', get: r => r.budgetEnd},
+        art: {label: 'Änderungsart', get: r => r.art}
+    };
+    const GL_COLS = {
+        gewerk: {
+            label: 'Gewerk',
+            get: r => r.gewerkNr
+                ? {key: r.gewerkNr, nr: r.gewerkNr, name: r.gewerkName}
+                : {key: '', nr: '–', name: 'ohne Gewerk'}
+        },
+        ghg: {
+            label: 'Gewerk / GHG',
+            get: r => {
+                if (!r.gewerkNr) return {key: '', nr: '–', name: 'ohne Gewerk'};
+                const nr = r.gewerkNr + ' / ' + (r.ghg || '–');
+                return {key: nr, nr: nr, name: r.ghg ? r.ghgName : r.gewerkName + ' (ohne GHG)'};
+            }
+        }
+    };
+    const GL_LEER = '– ohne Angabe –';
+    const GL_OHNE = 'ohne Gewerk';
+
+    function glZero() {
+        return {start: 0, end: 0};
+    }
+
+    function glAdd(acc, r) {
+        acc.start += Number(r.ppStart) || 0;
+        acc.end += Number(r.ppEnd) || 0;
+    }
+
+    /** Leere Schlüssel ans Ende, sonst natürlich sortiert (1, 2, 10 …). */
+    function glCmp(a, b) {
+        return (a === '') - (b === '') || a.localeCompare(b, 'de', {numeric: true});
+    }
+
+    function glDims() {
+        return {
+            R: GL_ROWS[$('#selGlRows').val()] || GL_ROWS.gesamt,
+            C: GL_COLS[$('#selGlCols').val()] || GL_COLS.gewerk
+        };
+    }
+
+    /** Schlüssel, unter dem eine Position in der Gliederung landet (wie in der Excel-Spalte). */
+    function glKeys(r) {
+        const {R, C} = glDims();
+        return {zeile: String(R.get(r) ?? '').trim() || GL_LEER, spalte: C.get(r).key || GL_OHNE};
+    }
+
+    function buildPivot(rows) {
+        const {R, C} = glDims();
+        const cols = new Map(), groups = new Map();
+        const total = {cells: {}, sum: glZero()};
+
+        rows.forEach(r => {
+            const rk = String(R.get(r) ?? '').trim();
+            const c = C.get(r);
+            if (!cols.has(c.key)) cols.set(c.key, c);
+            if (!groups.has(rk)) groups.set(rk, {key: rk, cells: {}, sum: glZero()});
+            const g = groups.get(rk);
+            [(g.cells[c.key] ??= glZero()), g.sum, (total.cells[c.key] ??= glZero()), total.sum]
+                .forEach(acc => glAdd(acc, r));
+        });
+
+        const groupList = [...groups.values()].sort((a, b) => glCmp(a.key, b.key));
+        return {
+            rowLabel: R.label,
+            colLabel: C.label,
+            cols: [...cols.values()].sort((a, b) => glCmp(a.key, b.key)),
+            groups: groupList,
+            total: total,
+            showTotal: R !== GL_ROWS.gesamt && groupList.length > 0
+        };
+    }
+
+    function renderPivot() {
+        if (!table) return;
+        const rows = table.rows({search: 'applied'}).data().toArray();
+        const $w = $('#glWrap');
+        if (!rows.length) {
+            $w.html('<p class="text-muted small text-center py-4 mb-0">Keine Positionen im Filter.</p>');
+            return;
+        }
+        const p = buildPivot(rows);
+        const dash = '<span class="text-muted">–</span>';
+        const lines = [
+            ['Start', a => a ? eur.format(a.start) : dash],
+            ['Ende', a => a ? eur.format(a.end) : dash],
+            ['Δ', a => a ? signedMoney(a.end - a.start) : dash]
+        ];
+        const block = (label, g) => lines.map(([title, f], i) =>
+            '<tr>'
+            + (i === 0 ? '<th rowspan="3" class="align-top">' + esc(label) + '</th>' : '')
+            + '<td class="text-muted text-nowrap">' + title + '</td>'
+            + p.cols.map(c => '<td class="text-end text-nowrap">' + f(g.cells[c.key]) + '</td>').join('')
+            + '<td class="text-end text-nowrap fw-semibold">' + f(g.sum) + '</td>'
+            + '</tr>'
+        ).join('');
+
+        let h = '<table class="table table-sm table-bordered table-hover align-middle small mb-0">'
+            + '<thead class="table-light"><tr>'
+            + '<th>' + esc(p.rowLabel) + '</th><th></th>'
+            + p.cols.map(c => '<th class="text-end">' + esc(c.nr)
+                + '<div class="fw-normal text-muted">' + esc(c.name) + '</div></th>').join('')
+            + '<th class="text-end">Summe</th></tr></thead>';
+        p.groups.forEach(g => h += '<tbody class="table-group-divider">' + block(g.key || GL_LEER, g) + '</tbody>');
+        if (p.showTotal) {
+            h += '<tfoot class="table-light fw-bold table-group-divider">' + block('Gesamt', p.total) + '</tfoot>';
+        }
+        $w.html(h + '</table>');
+    }
+
+
+    /** Blatt „Kostengliederung“ (gleiche Werte wie die Tabelle auf der Seite, Δ/Summen als Formeln). */
+    function xlAddGliederung(wb, rows) {
+        const p = buildPivot(rows);
+        const nC = p.cols.length;
+        const cFirst = 3, cSum = cFirst + nC;               // A = Merkmal, B = VE/ENT/Δ
+        const XL_DIFF = '[Red]+"€"\\ #,##0.00;[Color10]-"€"\\ #,##0.00;"€"\\ 0.00';
+
+        const ws = wb.addWorksheet('Kostengliederung', {
+            views: [{state: 'frozen', xSplit: 2, ySplit: 1}],
+            pageSetup: {
+                paperSize: 9, orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0,
+                printTitlesRow: '1:1'
+            }
+        });
+        ws.columns = [{width: 32}, {width: 7}, ...p.cols.map(() => ({width: 16})), {width: 18}];
+        const L = i => ws.getColumn(i).letter;
+
+        const head = ws.addRow([p.rowLabel, '',
+            ...p.cols.map(c => c.nr + (c.name ? '\n' + c.name : '')), 'Summe']);
+        head.height = 45;
+        for (let c = 1; c <= cSum; c++) {
+            const cell = head.getCell(c);
+            cell.font = {bold: true};
+            cell.fill = {type: 'pattern', pattern: 'solid', fgColor: {argb: XL_GREY}};
+            cell.alignment = {vertical: 'bottom', horizontal: c >= cFirst ? 'right' : 'left', wrapText: true};
+        }
+
+        const styleBlock = (rs, {grey = false} = {}) => rs.forEach((row, i) => {
+            for (let c = 1; c <= cSum; c++) {
+                const cell = row.getCell(c);
+                if (grey) cell.fill = {type: 'pattern', pattern: 'solid', fgColor: {argb: XL_GREY}};
+                if (grey || c === cSum || c === 1) cell.font = {bold: true};
+                cell.border = i === 0 ? {top: {style: 'thin', color: {argb: 'FF808080'}}} : {};
+                if (c >= cFirst) cell.numFmt = i === 2 ? XL_DIFF : XL_MONEY;
+            }
+            row.getCell(1).alignment = {vertical: 'top', wrapText: true};
+        });
+
+        /** Drei Zeilen VE / ENT / Δ; vals(c, 'start'|'end') liefert Wert oder Formel. */
+        const writeBlock = (label, g, vals, opts) => {
+            const rVe = ws.addRow([label, 'VE']);
+            const rEnt = ws.addRow(['', 'ENT']);
+            const rD = ws.addRow(['', 'Δ']);
+            p.cols.forEach((c, i) => {
+                const col = cFirst + i, a = g.cells[c.key] || glZero();
+                rVe.getCell(col).value = vals(col, 'VE', a.start);
+                rEnt.getCell(col).value = vals(col, 'ENT', a.end);
+                rD.getCell(col).value = {
+                    formula: L(col) + rEnt.number + '-' + L(col) + rVe.number, result: a.end - a.start
+                };
+            });
+            [[rVe, g.sum.start], [rEnt, g.sum.end], [rD, g.sum.end - g.sum.start]].forEach(([row, res]) => {
+                row.getCell(cSum).value = {
+                    formula: nC ? 'SUM(' + L(cFirst) + row.number + ':' + L(cSum - 1) + row.number + ')' : '0',
+                    result: res
+                };
+            });
+            ws.mergeCells(rVe.number, 1, rD.number, 1);
+            styleBlock([rVe, rEnt, rD], opts);
+        };
+
+        p.groups.forEach(g => writeBlock(g.key || GL_LEER, g, (col, typ, v) => v));
+        const last = ws.rowCount;
+        if (p.showTotal) {
+            const sumIf = (col, typ, v) => ({
+                formula: 'SUMIF($B$2:$B$' + last + ',"' + typ + '",' + L(col) + '$2:' + L(col) + '$' + last + ')',
+                result: v
+            });
+            writeBlock('Gesamt', p.total, sumIf, {grey: true});
+        }
+        return p;
+    }
+
+    /**
+     * DEBUG: Blatt „Nachrechnung“ – gleicher Aufbau wie „Kostengliederung“ (gleiche Zellen-Adressen),
+     * aber jede Zahl per SUMIFS direkt aus den Positionszeilen des Blatts „Änderungsliste“.
+     * Abweichungen zur Kostengliederung werden rot markiert und unten gezählt.
+     */
+    function xlAddNachrechnung(wb, p, src) {
+        const nC = p.cols.length, cFirst = 3, cSum = cFirst + nC;
+        const ws = wb.addWorksheet('Nachrechnung', {views: [{state: 'frozen', xSplit: 2, ySplit: 1}]});
+        ws.columns = [{width: 32}, {width: 7}, ...p.cols.map(() => ({width: 16})), {width: 18}];
+        const L = i => ws.getColumn(i).letter;
+        const S = "'Änderungsliste'!";
+        const rng = key => S + '$' + src(key) + ':$' + src(key);
+
+        // Kopf = exakte Spalten-Schlüssel (wie in Spalte „Gliederung Spalte“)
+        const head = ws.addRow(['Zeilen-Schlüssel', '', ...p.cols.map(c => c.key || GL_OHNE), 'Summe']);
+        head.eachCell(c => {
+            c.font = {bold: true};
+            c.fill = {type: 'pattern', pattern: 'solid', fgColor: {argb: XL_GREY}};
+        });
+
+        const sumifs = (ppKey, rowRef, col) => 'SUMIFS(' + rng(ppKey) + ',' + rng('typ') + ',"Position"'
+            + (rowRef ? ',' + rng('glZeile') + ',"="&' + rowRef : '')
+            + ',' + rng('glSpalte') + ',"="&' + L(col) + '$1)';
+
+        const writeBlock = (key, g, withRowCrit) => {
+            const rs = [['VE', 'vePP', 'start'], ['ENT', 'entPP', 'end']].map(([typ, ppKey, f]) => {
+                const row = ws.addRow([key, typ]);
+                p.cols.forEach((c, i) => row.getCell(cFirst + i).value = {
+                    formula: sumifs(ppKey, withRowCrit ? '$A' + row.number : null, cFirst + i),
+                    result: (g.cells[c.key] || glZero())[f]
+                });
+                return row;
+            });
+            const rD = ws.addRow([key, 'Δ']);
+            p.cols.forEach((c, i) => {
+                const col = L(cFirst + i);
+                rD.getCell(cFirst + i).value = {formula: col + rs[1].number + '-' + col + rs[0].number};
+            });
+            [...rs, rD].forEach(row => {
+                row.getCell(cSum).value = {formula: 'SUM(' + L(cFirst) + row.number + ':' + L(cSum - 1) + row.number + ')'};
+                for (let c = cFirst; c <= cSum; c++) row.getCell(c).numFmt = XL_MONEY;
+            });
+            rs[0].eachCell(c => c.border = {top: {style: 'thin', color: {argb: 'FF808080'}}});
+        };
+
+        p.groups.forEach(g => writeBlock(g.key || GL_LEER, g, true));
+        if (p.showTotal) writeBlock('Gesamt', p.total, false);
+        const last = ws.rowCount;
+
+        // Vergleich mit „Kostengliederung“ (gleiche Adresse) -> rot bei Abweichung
+        const area = L(cFirst) + '2:' + L(cSum) + last;
+        ws.addConditionalFormatting({
+            ref: area,
+            rules: [{
+                type: 'expression', priority: 1,
+                formulae: ['ROUND(' + L(cFirst) + "2-'Kostengliederung'!" + L(cFirst) + '2,2)<>0'],
+                style: {fill: {type: 'pattern', pattern: 'solid', bgColor: {argb: 'FFFFC7CE'}}, font: {color: {argb: 'FF9C0006'}}}
+            }]
+        });
+
+        ws.addRow([]);
+        const chk = ws.addRow(['Abweichende Zellen zur Kostengliederung:', '']);
+        chk.getCell(cFirst).value = {
+            formula: "SUMPRODUCT(--(ROUND(" + area + "-'Kostengliederung'!" + area + ",2)<>0))", result: 0
+        };
+        chk.font = {bold: true};
+        const chk2 = ws.addRow(['Σ VE / Σ ENT aller Positionszeilen (Änderungsliste):', '']);
+        chk2.getCell(cFirst).value = {formula: 'SUMIFS(' + rng('vePP') + ',' + rng('typ') + ',"Position")'};
+        chk2.getCell(cFirst + 1).value = {formula: 'SUMIFS(' + rng('entPP') + ',' + rng('typ') + ',"Position")'};
+        chk2.getCell(cFirst).numFmt = chk2.getCell(cFirst + 1).numFmt = XL_MONEY;
+        [
+            'So nachrechnen: Jede Zahl oben ist SUMIFS über das Blatt „Änderungsliste“ – nur Zeilen mit Zeilentyp',
+            '„Position“ (Ergebniszeilen zählen nicht), Spalte „Gliederung Zeile“ = Zeilen-Schlüssel (Spalte A) und',
+            '„Gliederung Spalte“ = Spalten-Schlüssel (Zeile 1). Die Schlüssel stammen aus Bauabschnitt/Gewerk usw. der',
+            'gleichen Zeile. Rot = Wert weicht von derselben Zelle im Blatt „Kostengliederung“ ab. 0 Abweichungen = passt.'
+        ].forEach(t => ws.addRow([t]).getCell(1).font = {italic: true, color: {argb: 'FF595959'}});
+    }
 
     async function exportExcel() {
         if (!table) return;
@@ -734,7 +1070,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         ws.autoFilter = {from: 'A1', to: {row: 1, column: XL_COLUMNS.length}};
 
         const writeTotal = (labels, acc) => {
-            const row = ws.addRow(Object.assign({}, labels, acc));
+            const row = ws.addRow(Object.assign({}, labels, acc, DEBUG ? {typ: 'Ergebnis'} : {}));
             xlStyleRow(row, {grey: true, bold: true});
         };
 
@@ -775,7 +1111,16 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 veStk: Number(r.stkStart) || 0,
                 vePP: Number(r.ppStart) || 0,
                 entStk: Number(r.stkEnd) || 0,
-                entPP: Number(r.ppEnd) || 0
+                entPP: Number(r.ppEnd) || 0,
+                ...(DEBUG ? {
+                    typ: 'Position',
+                    elementId: r.elementId,
+                    bauabschnitt: r.bauabschnitt, bauetappe: r.bauetappe,
+                    geschoss: r.geschoss, raumbereich: r.raumbereich,
+                    gewerkNr: r.gewerkNr, gewerkName: r.gewerkName, ghg: r.ghg, ghgName: r.ghgName,
+                    veEP: r.epStart, entEP: r.epEnd,
+                    glZeile: glKeys(r).zeile, glSpalte: glKeys(r).spalte
+                } : {})
             });
             xlStyleRow(row);
 
@@ -792,6 +1137,13 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             diff.getCell('kommentar').alignment = {horizontal: 'right'};
             diff.getCell('entPP').font = {bold: true};
             diff.getCell('entPP').numFmt = XL_MONEY;
+        }
+
+        // Zweites Blatt: Kostengliederung nach Gewerk (× gewähltes Merkmal)
+        const gl = $('#chkExcelGliederung').is(':checked') || DEBUG ? xlAddGliederung(wb, rows) : null;
+        if (DEBUG && gl) {
+            xlAddNachrechnung(wb, gl, key => ws.getColumn(key).letter);
+            wb.calcProperties.fullCalcOnLoad = true;   // Excel rechnet beim Öffnen alles neu
         }
 
         // Info-Blatt mit den Einstellungen des Exports
@@ -811,6 +1163,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
             ['Ausgeblendete Budget-Status (Endbudget)',
                 hiddenStatus().map(s => STATUS[s].label).join(', ') || '–'],
             ['Angezeigte Änderungsarten', Array.from(activeArts()).join(', ')],
+            ['Kostengliederung', gl ? 'Zeilen: ' + gl.rowLabel + ' / Spalten: ' + gl.colLabel : '–'],
+            ...(DEBUG ? [['DEBUG', 'Zusatzspalten im Blatt „Änderungsliste“ + Blatt „Nachrechnung“ (SUMIFS-Gegenprobe)']] : []),
             ['Exportiert am', new Date().toLocaleString('de-DE')]
         ].forEach(v => {
             const row = info.addRow(v);
@@ -963,7 +1317,11 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 const api = this.api();
                 api.columns.adjust();
                 relocateControls(api, '#CardHeaderAenderungsliste');
-                api.on('draw', () => updateSbButton(api));
+                api.on('draw', () => {
+                    updateSbButton(api);
+                    renderPivot();   // Kostengliederung folgt immer den gefilterten Zeilen
+                });
+                renderPivot();
             },
 
             footerCallback: function () {
@@ -1192,6 +1550,7 @@ $excelfilename = buildExcelFilename('Änderungsliste');
                 .map(r => Object.assign(r, {apName: apNameFor(r.apNr, r.apName)}));
             $('#emptyState').addClass('d-none');
             $('#tableWrap').removeClass('d-none');
+            $('#glCard').removeClass('d-none');
             renderRows();
             $('#periodLabel').text(fmtDateDE(von) + ' bis ' + fmtDateDE(bis));
             showMsg(res.rows.length + ' Positionen aus ' + res.meta.logEntries + ' Raumbuch- und '
@@ -1247,6 +1606,8 @@ $excelfilename = buildExcelFilename('Änderungsliste');
         $('#hideLeftCardBtn').on('click', () => toggleLeftCol(false));
         $('#showLeftCardBtn').on('click', () => toggleLeftCol(true));
         $('#artFilter').on('change', 'input', () => table && table.draw());
+        $('#selGlRows, #selGlCols').on('change', renderPivot);
+
         $('#inpPreisSchwelle').on('input change', () => {
             if (rawRows.length) renderRows();
         });

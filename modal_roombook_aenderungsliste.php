@@ -165,6 +165,15 @@
                                             <span class="badge text-bg-light border">Spalten</span> = ein/aus.
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th>Kostengliederung</th>
+                                        <td>Zweite Tabelle unter der Änderungsliste: PP Start / Ende / Δ der
+                                            <strong>gefilterten</strong> Zeilen je <strong>Gewerk</strong> (oder Gewerk/GHG),
+                                            wahlweise weiter unterteilt nach Bauabschnitt, Bauetappe, Geschoss,
+                                            Raumbereich, Arbeitspaket, Budget oder Änderungsart. Landet im Excel als
+                                            eigenes Blatt „Kostengliederung“.
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                                 <p class="small text-muted mb-0">Filter und Anpassungen ändern nichts in der Datenbank.</p>
@@ -237,7 +246,7 @@
                         </h2>
                         <div id="infoHinweise" class="accordion-collapse collapse" aria-labelledby="infoHeadHinweise"
                              data-bs-parent="#infoAccordion">
-                            <div class="accordion-body">
+                             <div class="accordion-body">
                                 <ul class="small mb-0">
                                     <li>Gleiche Elemente/Varianten in einem Raum werden zu <strong>einer
                                             Position</strong> zusammengefasst.
@@ -247,6 +256,9 @@
                                         Budget verschoben, bleibt es sichtbar (das Endbudget zählt).
                                     </li>
                                     <li>Der Budget-Status ist immer der <strong>aktuelle</strong>, nicht der historische.
+                                    </li>
+                                    <li>Auch Gewerk/GHG und Raumdaten (Bauabschnitt, Geschoss …) sind der
+                                        <strong>aktuelle</strong> Stand – sie werden nicht protokolliert.
                                     </li>
                                     <li>Summen (Tabellenfuß, Zusammenfassung, Excel) beziehen sich auf die gefilterten
                                         Zeilen.

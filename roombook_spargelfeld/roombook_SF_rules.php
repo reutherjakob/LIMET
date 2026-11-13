@@ -1,7 +1,7 @@
 <?php
 
 // ─── Pfade zu den Definitions-Quellen — ggf. an euer Projekt anpassen ──────
-$PFAD_DB_CONFIG = '../roombook_spargelfeld/import_2_db_config.php';   // ELEMENT_MAPPING, PARAMETER_MAPPING, Konstanten
+$PFAD_DB_CONFIG = '../roombook_ifc_import/import_2_db_config.php';   // ELEMENT_MAPPING, PARAMETER_MAPPING, Konstanten
 $PFAD_RAUMTYPEN = '../roombook_nutzerumfrage_sf/raumtypen.php';            // $labortypen
 
 if (!function_exists('check_login')) {
@@ -32,7 +32,7 @@ $mz_warn_diff = defined('MZ_LAENGE_WARN_DIFF_CM') ? MZ_LAENGE_WARN_DIFF_CM : nul
 // Werkzeug-Links (rechte Spalte)
 // ══════════════════════════════════════════════════════════════════════════
 $werkzeug_links = [
-    ['icon' => 'fa-cat', 'href' => '/roombook_spargelfeld/import_excel.php', 'label' => 'Import Model Excel'],
+    ['icon' => 'fa-cat', 'href' => '/roombook_ifc_import/import_excel.php', 'label' => 'Import Model Excel'],
     ['icon' => 'fa-spider', 'href' => '/roombook_spargelfeld/roombook_Raumtypen_zu_Raumbuch.php', 'label' => 'RT übernehmen'],
     ['icon' => 'fa-dog', 'href' => '/roombook_spargelfeld/roombook_RB_RT_Abgleich.php', 'label' => 'Abgleich RT - RB'],
     ['icon' => 'fa-frog', 'href' => '/roombook_spargelfeld/pdf_raumtypen_roombook_spargelfeld.php', 'label' => 'RT PDF'],
@@ -45,7 +45,7 @@ $werkzeug_links = [
 ];
 
 // ══════════════════════════════════════════════════════════════════════════
-// EBENE 1a — IMPORT-LOGIK (kuratiert)
+// EBENE 1a — IMPORT-LOGIK
 // ══════════════════════════════════════════════════════════════════════════
 $import_logik = [
     [
@@ -311,7 +311,6 @@ function params_badges(array $params): string
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
-</head>
 </head>
 
 <body class="bg-body-tertiary">

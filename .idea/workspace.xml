@@ -4,12 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen.">
-      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/roombook_info_durchlauferhitzer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/roombook_info_filterklassen.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/roombook_info_sicherheitsunterbauten.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Updates Nutzerumfrage">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addPriceToDevice.php" beforeDir="false" afterPath="$PROJECT_DIR$/addPriceToDevice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/api_aenderungsliste.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getDevicePrices.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDevicePrices.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modal_roombook_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/modal_roombook_aenderungsliste.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_ifc_import/api_compare_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ifc_import/api_compare_elements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_ifc_import/import_2_db_config.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ifc_import/import_2_db_config.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_ifc_import/import_excel.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ifc_import/import_excel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updateDevicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateDevicePrice.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -688,15 +695,7 @@
       <workItem from="1794214263871" duration="3963000" />
       <workItem from="1794318369230" duration="1820000" />
       <workItem from="1794472069980" duration="10598000" />
-      <workItem from="1794557050169" duration="2350000" />
-    </task>
-    <task id="LOCAL-00223" summary=" ifc_import">
-      <option name="closed" value="true" />
-      <created>1776954276165</created>
-      <option name="number" value="00223" />
-      <option name="presentableId" value="LOCAL-00223" />
-      <option name="project" value="LOCAL" />
-      <updated>1776954276165</updated>
+      <workItem from="1794557050169" duration="9519000" />
     </task>
     <task id="LOCAL-00224" summary=" ifc_import">
       <option name="closed" value="true" />
@@ -1082,7 +1081,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794318962315</updated>
     </task>
-    <option name="localTasksCounter" value="272" />
+    <task id="LOCAL-00272" summary="Updates Nutzerumfrage">
+      <option name="closed" value="true" />
+      <created>1794559719728</created>
+      <option name="number" value="00272" />
+      <option name="presentableId" value="LOCAL-00272" />
+      <option name="project" value="LOCAL" />
+      <updated>1794559719728</updated>
+    </task>
+    <option name="localTasksCounter" value="273" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1112,7 +1119,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
     <MESSAGE value="Bestand Eintragen bugfix." />
     <MESSAGE value="Merge remote-tracking branch 'origin/bildsupport' into bildsupport&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;documentationV2.php" />
     <MESSAGE value="Import Elemente aus SF Model Excel" />
@@ -1137,7 +1143,8 @@
     <MESSAGE value="Upgrade Kort Liste" />
     <MESSAGE value="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs." />
     <MESSAGE value="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen." />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen." />
+    <MESSAGE value="Updates Nutzerumfrage" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updates Nutzerumfrage" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1184,7 +1191,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/getDevicePrices.php</url>
-          <line>285</line>
+          <line>325</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">

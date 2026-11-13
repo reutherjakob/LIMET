@@ -179,12 +179,13 @@ function excel_group_push(array &$excel_groups, string $eid, array $vparams, arr
     }
 }
 
-function resolve(string $familie, string $laenge, string $tiefe, array $params_raw): array
-{
+function resolve(string $familie, string $laenge, string $tiefe, array $params_raw, ?string $raumtyp = null): array{
     $r = ['element_id' => null, 'variante_params' => [], 'element_params' => [], 'debug' => '', 'laenge_cm' => null, 'laenge_raw_used' => '', 'is_sondermass' => false, 'is_gruppe_secondary' => false, 'is_gruppe_member' => false, 'gruppe_cfg' => null, 'begleit_elemente' => []];
 
     $cfg = find_mapping($familie);
     if (!$cfg) return $r;
+    $cfg = apply_raumtyp_override($cfg, $raumtyp);          // ← neu
+    $r['raumtyp_override'] = $cfg['_raumtyp_override'] ?? null;  // ← neu
 
     $r['variante_params'] = $cfg['variante_params'] ?? [];
     $r['element_params'] = $cfg['element_params'] ?? $cfg['info_params'] ?? [];
@@ -326,6 +327,20 @@ $user_choices = (array)($body['user_choices'] ?? []); // { "eid|fp" => variante_
 
 $mysqli = utils_connect_sql();
 
+
+$stmt = $mysqli->prepare("
+    SELECT `Raumtyp BH` FROM tabelle_räume
+    WHERE idTABELLE_Räume = ? AND tabelle_projekte_idTABELLE_Projekte = ?
+");
+$stmt->bind_param('ii', $raum_id, $projekt_id);
+$stmt->execute();
+$raum_row = $stmt->get_result()->fetch_row();
+$stmt->close();
+if (!$raum_row) json_error('Raum gehört nicht zum aktuellen Projekt', 403);
+$raumtyp = trim((string)($raum_row[0] ?? ''));
+
+
+
 $managed_element_ids = get_all_managed_element_ids();
 
 // IDs of all params we know about from PARAMETER_MAPPING
@@ -402,7 +417,10 @@ foreach ($familien as $e) {
     $params_raw = $e['params'] ?? [];
     if (!$familie) continue;
 
-    $res = resolve($familie, $laenge, $tiefe, $params_raw);
+    $res = resolve($familie, $laenge, $tiefe, $params_raw, $raumtyp);
+    if ($res['element_id'] && $res['raumtyp_override']) {
+        $res['debug'] .= " · Raumtyp {$res['raumtyp_override']}-Override";
+    }
     if (!$res['element_id']) {
         $key = $familie . '||' . $laenge;
         $unmapped_familien[$key] ??= ['familie' => $familie, 'laenge' => $laenge, 'anzahl' => 0];
