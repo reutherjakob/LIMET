@@ -4,19 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Updates Nutzerumfrage">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addPriceToDevice.php" beforeDir="false" afterPath="$PROJECT_DIR$/addPriceToDevice.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/api_aenderungsliste.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getDevicePrices.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDevicePrices.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modal_roombook_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/modal_roombook_aenderungsliste.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_ifc_import/api_compare_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ifc_import/api_compare_elements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_ifc_import/import_2_db_config.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ifc_import/import_2_db_config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_ifc_import/import_excel.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ifc_import/import_excel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_spargelfeld/roombook_SF_rules.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateDevicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateDevicePrice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenV2PDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenV2PDF.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_befu.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_befu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_projects.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -695,15 +688,15 @@
       <workItem from="1794214263871" duration="3963000" />
       <workItem from="1794318369230" duration="1820000" />
       <workItem from="1794472069980" duration="10598000" />
-      <workItem from="1794557050169" duration="9519000" />
-    </task>
-    <task id="LOCAL-00224" summary=" ifc_import">
-      <option name="closed" value="true" />
-      <created>1777017675507</created>
-      <option name="number" value="00224" />
-      <option name="presentableId" value="LOCAL-00224" />
-      <option name="project" value="LOCAL" />
-      <updated>1777017675507</updated>
+      <workItem from="1794557050169" duration="11052000" />
+      <workItem from="1794823292520" duration="3923000" />
+      <workItem from="1794918148633" duration="4327000" />
+      <workItem from="1794926995550" duration="1530000" />
+      <workItem from="1794998400648" duration="1214000" />
+      <workItem from="1795077734605" duration="5342000" />
+      <workItem from="1795093175112" duration="1779000" />
+      <workItem from="1795164894896" duration="3745000" />
+      <workItem from="1795170342722" duration="6216000" />
     </task>
     <task id="LOCAL-00225" summary=" ifc_import">
       <option name="closed" value="true" />
@@ -1089,7 +1082,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794559719728</updated>
     </task>
-    <option name="localTasksCounter" value="273" />
+    <task id="LOCAL-00273" summary="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung">
+      <option name="closed" value="true" />
+      <created>1794570926574</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1794570926574</updated>
+    </task>
+    <option name="localTasksCounter" value="274" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1119,7 +1120,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bestand Eintragen bugfix." />
     <MESSAGE value="Merge remote-tracking branch 'origin/bildsupport' into bildsupport&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;documentationV2.php" />
     <MESSAGE value="Import Elemente aus SF Model Excel" />
     <MESSAGE value="fixed pdf" />
@@ -1144,7 +1144,8 @@
     <MESSAGE value="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs." />
     <MESSAGE value="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen." />
     <MESSAGE value="Updates Nutzerumfrage" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updates Nutzerumfrage" />
+    <MESSAGE value="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung" />
+    <option name="LAST_COMMIT_MESSAGE" value="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1228,6 +1229,11 @@
           <url>file://$PROJECT_DIR$/roombook_icons_legend.php</url>
           <line>6</line>
           <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/PDFs/pdf_createBauangabenV2PDF.php</url>
+          <line>482</line>
+          <option name="timeStamp" value="36" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/roombook_image_support/projectGallery.js</url>
