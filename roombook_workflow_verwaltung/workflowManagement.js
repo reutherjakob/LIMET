@@ -82,6 +82,7 @@ function loadWorkflows() {
         success: function (raw) {
             const data = parseResponse(raw);
             renderWorkflows(Array.isArray(data) ? data : []);
+            loadWorkflowStats();
         },
         error: function () {
             document.getElementById('wfContainer').innerHTML =
@@ -90,6 +91,295 @@ function loadWorkflows() {
     });
 }
 
+// ── Übersicht / Visualisierung (ALLE Workflows) ────────────────────────────────
+
+const wfOverview = {
+    currentProjectId: 0,
+    workflows: [],
+    filter: 'all',     // all | in | out
+    search: '',
+    chartWf: 'all',    // 'all' oder Workflow-ID
+    chart: null
+};
+
+const WF_SEGMENT_COLORS = ['bg-primary', 'bg-info', 'bg-success', 'bg-warning', 'bg-danger', 'bg-secondary', 'bg-dark'];
+// Bootstrap-Standardfarben als Hex (Chart.js braucht konkrete Farben)
+const WF_CHART_COLORS = ['#0d6efd', '#198754', '#dc3545', '#fd7e14', '#6f42c1', '#20c997',
+                         '#0dcaf0', '#d63384', '#ffc107', '#6c757d', '#6610f2', '#212529'];
+
+function loadWorkflowStats() {
+    $.ajax({
+        url: 'getWorkflowStats.php',
+        type: 'POST',
+        success: function (raw) {
+            const s = parseResponse(raw) || {};
+            wfOverview.currentProjectId = Number(s.currentProjectId) || 0;
+            wfOverview.workflows = Array.isArray(s.workflows) ? s.workflows : [];
+            renderOverview();
+        },
+        error: () => makeToaster('Workflow-Übersicht konnte nicht geladen werden.', false)
+    });
+}
+
+function wfDuration(wf) {
+    return (wf.steps || []).reduce((sum, s) => sum + (Number(s.tageMinDanach) || 0), 0);
+}
+
+function wfFiltered() {
+    const q = wfOverview.search.trim().toLowerCase();
+    return wfOverview.workflows.filter(wf => {
+        if (wfOverview.filter === 'in' && !wf.inProject) return false;
+        if (wfOverview.filter === 'out' && wf.inProject) return false;
+        if (!q) return true;
+        const hay = [wf.name, wf.typ]
+            .concat((wf.assignedProjects || []).map(p => p.name))
+            .concat((wf.usedInProjects || []).map(p => p.name))
+            .join(' ').toLowerCase();
+        return hay.includes(q);
+    });
+}
+
+function renderOverview() {
+    const wrap = document.getElementById('wfOverview');
+    const all = wfOverview.workflows;
+    if (!all.length) { wrap.classList.add('d-none'); return; }
+    wrap.classList.remove('d-none');
+
+    const currentId = wfOverview.currentProjectId;
+    document.getElementById('wfOvCntAll').textContent = all.length;
+    document.getElementById('wfOvCntIn').textContent  = all.filter(w => w.inProject).length;
+    document.getElementById('wfOvCntOut').textContent = all.filter(w => !w.inProject).length;
+
+    const list = wfFiltered();
+    const durations = list.map(wfDuration);
+    const maxDur = list.length ? Math.max(0, ...durations) : 0;
+    const minDur = list.length ? Math.min(...durations) : 0;
+    const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+    const fmt1 = n => n.toFixed(1).replace('.', ',');
+
+    // KPI-Kacheln (bezogen auf den aktuellen Filter)
+    const kpi = (label, value, sub) => `
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="border rounded p-2 h-100">
+                <div class="small text-muted">${label}</div>
+                <div class="fs-5 fw-semibold">${value}</div>
+                ${sub ? `<div class="small text-muted text-truncate" title="${escapeHtml(sub)}">${escapeHtml(sub)}</div>` : ''}
+            </div>
+        </div>`;
+    document.getElementById('wfOverviewKpis').innerHTML = list.length ? (
+        kpi('Workflows', list.length) +
+        kpi('Ø Schritte', fmt1(avg(list.map(w => (w.steps || []).length)))) +
+        kpi('Ø Dauer', Math.round(avg(durations)) + ' Tage') +
+        kpi('Längster', maxDur + ' Tage', list[durations.indexOf(maxDur)].name) +
+        kpi('Kürzester', minDur + ' Tage', list[durations.indexOf(minDur)].name) +
+        kpi('In Losen verwendet', list.filter(w => w.loseTotal > 0).length + ' / ' + list.length)
+    ) : '';
+
+    // Tabelle
+    const body = document.getElementById('wfOverviewBody');
+    if (!list.length) {
+        body.innerHTML = '<tr><td colspan="7" class="text-muted fst-italic small">Keine Workflows für diesen Filter.</td></tr>';
+    } else {
+        body.innerHTML = list.map((wf, i) => {
+            const steps = wf.steps || [];
+            const dur = durations[i];
+
+            let bar;
+            if (!steps.length) {
+                bar = '<span class="text-muted fst-italic small">keine Schritte</span>';
+            } else if (maxDur === 0) {
+                bar = '<span class="text-muted fst-italic small">keine Tagesangaben</span>';
+            } else {
+                let elapsed = 0;
+                bar = '<div class="progress" style="height:1.25rem">' + steps.map((s, k) => {
+                    const days = Number(s.tageMinDanach) || 0;
+                    const from = elapsed;
+                    elapsed += days;
+                    const width = days > 0 ? (days / maxDur * 100) : 0.8; // 0-Tage-Schritte als Markierung
+                    const tip = `${s.reihenfolge}. ${s.aufgabe} – ${days} Tag(e) (Tag ${from} → ${elapsed})`;
+                    const label = (days / maxDur) > 0.06 ? s.reihenfolge : '';
+                    return `<div class="progress-bar ${WF_SEGMENT_COLORS[k % WF_SEGMENT_COLORS.length]} border-end border-white"
+                                 role="progressbar" style="width:${width}%" title="${escapeHtml(tip)}">${label}</div>`;
+                }).join('') + '</div>';
+            }
+
+            const assigned = (wf.assignedProjects || []).length
+                ? wf.assignedProjects.map(p => `<span class="badge ${p.id === currentId ? 'bg-primary' : 'bg-light text-dark border'} me-1 mb-1">${escapeHtml(p.name)}</span>`).join('')
+                : '<span class="text-muted small">keinem Projekt zugeordnet</span>';
+
+            const used = (wf.usedInProjects || []).length
+                ? wf.usedInProjects.map(p => `<span class="badge ${p.id === currentId ? 'bg-success' : 'bg-light text-dark border'} me-1 mb-1"
+                        title="${p.lose} Los(e)">${escapeHtml(p.name)} <span class="badge bg-secondary ms-1">${p.lose}</span></span>`).join('')
+                : '<span class="text-muted small">nicht verwendet</span>';
+
+            const projBadge = wf.inProject ? ' <span class="badge bg-primary ms-1">dieses Projekt</span>' : '';
+            const shared = (wf.assignedProjects || []).length > 1
+                ? ` <i class="fas fa-share-alt text-warning ms-1" title="Wird von ${wf.assignedProjects.length} Projekten geteilt"></i>` : '';
+            const selected = String(wfOverview.chartWf) === String(wf.id) ? 'table-active' : '';
+
+            return `
+                <tr class="wf-ov-row ${selected}" role="button" data-wf-id="${wf.id}" title="Im Diagramm anzeigen">
+                    <td class="fw-semibold">${escapeHtml(wf.name)}${projBadge}${shared}</td>
+                    <td>${wf.typ ? `<span class="badge bg-secondary">${escapeHtml(wf.typ)}</span>` : '<span class="text-muted small">–</span>'}</td>
+                    <td class="text-center"><span class="badge bg-info text-dark">${steps.length}</span></td>
+                    <td class="text-center">
+                        <span class="fw-semibold">${dur}</span>
+                        ${dur >= 7 ? `<div class="small text-muted">≈ ${fmt1(dur / 7)} Wo.</div>` : ''}
+                    </td>
+                    <td>${bar}</td>
+                    <td>${assigned}</td>
+                    <td>${used}</td>
+                </tr>`;
+        }).join('');
+    }
+
+    // Diagramm-Auswahl neu befüllen (Auswahl beibehalten, falls noch im Filter)
+    const sel = document.getElementById('wfChartSelect');
+    if (wfOverview.chartWf !== 'all' && !list.some(w => String(w.id) === String(wfOverview.chartWf))) {
+        wfOverview.chartWf = 'all';
+    }
+    sel.innerHTML = '<option value="all">Alle gefilterten Workflows (Vergleich)</option>' +
+        list.map(w => `<option value="${w.id}">${escapeHtml(w.name)}</option>`).join('');
+    sel.value = String(wfOverview.chartWf);
+
+    renderWorkflowChart(list);
+}
+
+// ── Diagramm (Chart.js) ─────────────────────────────────────────────────────────
+
+function renderWorkflowChart(list) {
+    const wrapEl = document.getElementById('wfChartWrap');
+    const canvas = document.getElementById('wfChart');
+
+    if (wfOverview.chart) { wfOverview.chart.destroy(); wfOverview.chart = null; }
+    if (typeof Chart === 'undefined') {
+        wrapEl.innerHTML = '<div class="text-muted small">Diagramm-Bibliothek (Chart.js) konnte nicht geladen werden.</div>';
+        return;
+    }
+
+    const single = wfOverview.chartWf !== 'all'
+        ? list.find(w => String(w.id) === String(wfOverview.chartWf)) : null;
+
+    if (single) renderGanttChart(canvas, wrapEl, single);
+    else renderCompareChart(canvas, wrapEl, list.filter(w => (w.steps || []).length));
+}
+
+// Vergleich: je Workflow eine Treppenlinie – waagrechtes Stück = Dauer eines Schritts
+function renderCompareChart(canvas, wrapEl, list) {
+    wrapEl.style.height = '420px';
+
+    const datasets = list.map((wf, i) => {
+        const color = WF_CHART_COLORS[i % WF_CHART_COLORS.length];
+        let t = 0;
+        const pts = wf.steps.map(s => {
+            const p = { x: t, y: Number(s.reihenfolge) || 0, aufgabe: s.aufgabe, days: Number(s.tageMinDanach) || 0 };
+            t += p.days;
+            return p;
+        });
+        const last = wf.steps[wf.steps.length - 1];
+        pts.push({ x: t, y: Number(last.reihenfolge) || 0, end: true });
+        return {
+            label: wf.name,
+            data: pts,
+            stepped: 'after',
+            borderColor: color,
+            backgroundColor: color,
+            borderWidth: wf.inProject ? 3 : 1.5,
+            borderDash: wf.inProject ? [] : [5, 3],
+            pointRadius: ctx => (ctx.raw && ctx.raw.end) ? 0 : 3,
+            pointHoverRadius: 5
+        };
+    });
+
+    wfOverview.chart = new Chart(canvas, {
+        type: 'line',
+        data: { datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'nearest', intersect: false },
+            scales: {
+                x: { type: 'linear', min: 0, title: { display: true, text: 'Tage ab Start' } },
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, precision: 0 },
+                    title: { display: true, text: 'Workflowteil (Reihenfolge)' }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 14 } },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            const r = ctx.raw;
+                            if (r.end) return `${ctx.dataset.label}: Ende nach ${r.x} Tagen`;
+                            return `${ctx.dataset.label}: ${r.y}. ${r.aufgabe} – ab Tag ${r.x}, ${r.days} Tag(e)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Einzelner Workflow: Gantt (waagrechte Balken von Starttag bis Endtag je Schritt)
+function renderGanttChart(canvas, wrapEl, wf) {
+    const steps = wf.steps || [];
+    wrapEl.style.height = Math.max(220, steps.length * 34 + 90) + 'px';
+
+    let t = 0;
+    const meta = [];
+    const data = steps.map(s => {
+        const d = Number(s.tageMinDanach) || 0;
+        meta.push({ from: t, to: t + d, days: d });
+        const bar = [t, t + Math.max(d, 0.3)]; // 0-Tage-Schritte als schmale Markierung
+        t += d;
+        return bar;
+    });
+
+    wfOverview.chart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: steps.map(s => `${s.reihenfolge}. ${s.aufgabe}`),
+            datasets: [{
+                label: wf.name,
+                data,
+                backgroundColor: steps.map((_, k) => WF_CHART_COLORS[k % WF_CHART_COLORS.length]),
+                borderSkipped: false,
+                barPercentage: 0.7
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { type: 'linear', min: 0, title: { display: true, text: `Tage ab Start (gesamt ${t} Tage)` } },
+                y: {
+                    title: { display: true, text: 'Workflowteil (Reihenfolge)' },
+                    ticks: {
+                        callback: function (v) {
+                            const l = this.getLabelForValue(v);
+                            return l.length > 40 ? l.slice(0, 39) + '…' : l;
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: wf.name },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            const m = meta[ctx.dataIndex];
+                            return `Tag ${m.from} → ${m.to} (${m.days} Tag(e))`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
 function renderWorkflows(workflows) {
     const container = document.getElementById('wfContainer');
     const hint = document.getElementById('wfEmptyHint');
@@ -191,6 +481,8 @@ function saveStep($row) {
         success: function (raw) {
             const r = parseResponse(raw);
             makeToaster(r.status === 'ok' ? 'Gespeichert.' : 'Fehler: ' + (r.msg || ''), r.status === 'ok');
+            // Nur die Übersicht neu laden – aufgeklappte Karten bleiben offen
+            if (r.status === 'ok') loadWorkflowStats();
         },
         error: () => makeToaster('Verbindungsfehler.', false)
     });
@@ -450,6 +742,27 @@ $(document).ready(function () {
                 saveStep($(this).closest('tr'));
             }
         });
+
+    // Übersicht: Filter, Suche, Diagramm-Auswahl, Zeile -> Gantt
+    $('input[name="wfOvFilter"]').on('change', function () {
+        wfOverview.filter = this.value;
+        renderOverview();
+    });
+    $('#wfOverviewSearch').on('input', function () {
+        wfOverview.search = this.value;
+        renderOverview();
+    });
+    $('#wfChartSelect').on('change', function () {
+        wfOverview.chartWf = this.value;
+        renderOverview();
+    });
+    $('#wfOverviewBody').on('click', '.wf-ov-row', function () {
+        const id = String($(this).data('wf-id'));
+        // erneuter Klick auf dieselbe Zeile -> zurück zum Vergleich
+        wfOverview.chartWf = (String(wfOverview.chartWf) === id) ? 'all' : id;
+        renderOverview();
+        document.getElementById('wfChartWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
 
     // Anlege-Dialog
     $('#wfNewAddStageBtn').on('click', stageNewStep);

@@ -17,7 +17,7 @@
 
 <?php
 require_once '../_utils/_utils.php';
-init_page_serversides("No Redirect");
+init_page_serversides();
 $projectID = (int)$_SESSION["projectID"];
 ?>
 
@@ -45,13 +45,89 @@ $projectID = (int)$_SESSION["projectID"];
 
     <div class="row">
         <div class="col-12">
-            <div id="wfEmptyHint" class="alert alert-info d-none">
-                Diesem Projekt sind noch keine Workflows zugeordnet. Lege über
-                „Neuer Workflow“ einen an oder füge über „Bestehenden hinzufügen“
-                einen vorhandenen hinzu.
+            <div class="card px-0 mx-0">
+                <div class="card-header">
+                    <span class="fw-semibold"><i
+                                class="fas fa-chart-bar me-2"></i>Workflows im Projekt (Klicken zum Aufklappen)</span>
+                </div>
+                <div id="wfEmptyHint" class="alert alert-info d-none">
+                    Diesem Projekt sind noch keine Workflows zugeordnet. Lege über
+                    „Neuer Workflow“ einen an oder füge über „Bestehenden hinzufügen“
+                    einen vorhandenen hinzu.
+                </div>
+                <div id="wfContainer">
+                    <div class="text-muted fst-italic">Lädt…</div>
+                </div>
             </div>
-            <div id="wfContainer">
-                <div class="text-muted fst-italic">Lädt…</div>
+        </div>
+    </div>
+
+    <!-- Visualisierung / Übersicht aller Workflows des Projekts -->
+    <div class="row mt-4 d-none" id="wfOverview">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span class="fw-semibold"><i
+                                class="fas fa-chart-bar me-2"></i>Workflow-Übersicht (alle Workflows)</span>
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <div class="btn-group btn-group-sm" role="group" id="wfOverviewFilter">
+                            <input type="radio" class="btn-check" name="wfOvFilter" id="wfOvFilterAll" value="all"
+                                   checked>
+                            <label class="btn btn-outline-secondary" for="wfOvFilterAll">Alle <span
+                                        class="badge bg-secondary" id="wfOvCntAll">0</span></label>
+                            <input type="radio" class="btn-check" name="wfOvFilter" id="wfOvFilterIn" value="in">
+                            <label class="btn btn-outline-secondary" for="wfOvFilterIn">Im Projekt <span
+                                        class="badge bg-primary" id="wfOvCntIn">0</span></label>
+                            <input type="radio" class="btn-check" name="wfOvFilter" id="wfOvFilterOut" value="out">
+                            <label class="btn btn-outline-secondary" for="wfOvFilterOut">Nicht im Projekt <span
+                                        class="badge bg-secondary" id="wfOvCntOut">0</span></label>
+                        </div>
+                        <input type="search" id="wfOverviewSearch" class="form-control form-control-sm w-auto"
+                               placeholder="Suchen (Name / Typ / Projekt)…">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="wfOverviewKpis" class="row g-2 mb-3"></div>
+
+                    <!-- Zeit-Diagramm -->
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                        <span class="small fw-semibold text-muted">
+                            <i class="fas fa-chart-line me-1"></i>Zeitlicher Ablauf
+                            <span class="fw-normal">– x: Tage ab Start, y: Workflowteil (Reihenfolgennummer)</span>
+                        </span>
+                        <select id="wfChartSelect" class="form-select form-select-sm w-auto">
+                            <option value="all">Alle gefilterten Workflows (Vergleich)</option>
+                        </select>
+                    </div>
+                    <div id="wfChartWrap" class="position-relative border rounded p-2 mb-1" style="height:420px">
+                        <canvas id="wfChart"></canvas>
+                    </div>
+                    <div id="wfChartHint" class="small text-muted mb-3">
+                        Legende anklicken blendet Workflows ein/aus. Tabellenzeile anklicken zeigt den Workflow als
+                        Gantt-Diagramm.
+                    </div>
+
+                    <small class="text-muted d-block mb-1">
+                        Balkenlänge = Mindestdauer (Summe „Tage danach“), maßstabsgleich über alle angezeigten
+                        Workflows.
+                    </small>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Workflow</th>
+                                <th>Typ</th>
+                                <th class="text-center">Schritte</th>
+                                <th class="text-center text-nowrap">Dauer (Tage)</th>
+                                <th class="w-25">Ablauf</th>
+                                <th>Zugeordnete Projekte</th>
+                                <th>Verwendet in Losen</th>
+                            </tr>
+                            </thead>
+                            <tbody id="wfOverviewBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -62,6 +138,7 @@ include 'modale_workflow.php';
 ?>
 
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="../_utils/_utils.js"></script>
 <script src="workflowManagement.js"></script>
 </body>

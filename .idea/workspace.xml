@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung">
+      <change afterPath="$PROJECT_DIR$/roombook_workflow_verwaltung/getWorkflowStats.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenV2PDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenV2PDF.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookBestandElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookBestandElements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_AddTexts.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_AddTexts.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roombook_befu.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_befu.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_nutzerumfrage_sf/raumtypen.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_projects.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_workflow_verwaltung/roombook_workflows.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_workflow_verwaltung/roombook_workflows.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_workflow_verwaltung/workflowManagement.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_workflow_verwaltung/workflowManagement.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,11 +134,11 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_workflow_verwaltung" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_spargelfeld" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_wip" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\DB_analysis" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -697,14 +699,14 @@
       <workItem from="1795093175112" duration="1779000" />
       <workItem from="1795164894896" duration="3745000" />
       <workItem from="1795170342722" duration="6216000" />
-    </task>
-    <task id="LOCAL-00225" summary=" ifc_import">
-      <option name="closed" value="true" />
-      <created>1777022910544</created>
-      <option name="number" value="00225" />
-      <option name="presentableId" value="LOCAL-00225" />
-      <option name="project" value="LOCAL" />
-      <updated>1777022910544</updated>
+      <workItem from="1795179424144" duration="531000" />
+      <workItem from="1795180196257" duration="271000" />
+      <workItem from="1795180483177" duration="192000" />
+      <workItem from="1795425438355" duration="2119000" />
+      <workItem from="1795430124123" duration="6412000" />
+      <workItem from="1795448819632" duration="3324000" />
+      <workItem from="1795452323313" duration="705000" />
+      <workItem from="1795507873692" duration="3022000" />
     </task>
     <task id="LOCAL-00226" summary=" ifc_import">
       <option name="closed" value="true" />
@@ -1090,7 +1092,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794570926574</updated>
     </task>
-    <option name="localTasksCounter" value="274" />
+    <task id="LOCAL-00274" summary="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung">
+      <option name="closed" value="true" />
+      <created>1795179450724</created>
+      <option name="number" value="00274" />
+      <option name="presentableId" value="LOCAL-00274" />
+      <option name="project" value="LOCAL" />
+      <updated>1795179450724</updated>
+    </task>
+    <option name="localTasksCounter" value="275" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
