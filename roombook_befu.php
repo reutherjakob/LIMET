@@ -150,7 +150,8 @@ function rb_zusammenfassungen(): array
                 508, 1096, 1097, 1439, 901, 1568, 1569, 1570, 1571, 1572,   // Medienzellen / -kanäle
                 1594, 1595, 902, 1711, 903, 970,
                 1713, 1215, 897, 900, 974, 1712,                            // Ablagen / Hängeregale
-                1583, 1584, 1590, 1575,                                     // Medienzellen inkl. Tisch
+                1583, 1584, 1590, 1575,                         // Medienzellen inkl. Tisch
+                969 //Rollcontainer
             ],
         ],
         // 3
@@ -354,11 +355,11 @@ const RB_TXT_HWP_NEIN = '';
 // =============================================================================
 
 /** [Abkürzung, Bedeutung] – Reihenfolge = Ausgabereihenfolge. Leere Bedeutung -> gelber Platzhalter. */
+/** [Abkürzung, Bedeutung] – Reihenfolge = Ausgabereihenfolge. Leere Bedeutung -> gelber Platzhalter. */
 function rb_abkuerzungen(): array
 {
     return [
         ['ABI', 'Knöchel-Arm-Index'],
-        ['ABP', 'Arterieller Blutdruck'],
         ['AED', 'Automatisierter externer Defibrillator'],
         ['AGR', 'Akutgeriatrie und Remobilisation'],
         ['AMD', 'Arbeitsmedizinischer Dienst'],
@@ -369,32 +370,41 @@ function rb_abkuerzungen(): array
         ['BNK', 'Backup-Netzknoten'],
         ['BT1', 'Bauteil 1'],
         ['BT2', 'Bauteil 2'],
+        ['CF', 'Cystische Fibrose'],
         ['CO2', 'Kohlenstoffdioxid'],
-        ['CPAP', 'Kontinuierlicher Atemwegsüberdruck (continuous positive airway pressure)'],
-        ['CRRT', 'Kontinuierliches Nierenersatzverfahren (Continuous Renal Replacement Therapy)'],
+        ['CPAP', 'Kontinuierlicher Atemwegsüberdruck'],
+        ['CRRT', 'Kontinuierliches Nierenersatzverfahren'],
+        ['CRT', 'Kardiale Resynchronisationstherapie'],
         ['CT', 'Computertomographie'],
         ['DL-5 / -10', 'Druckluft'],
         ['DVE', 'Deckenversorgungseinheit'],
         ['EEG', 'Elektroenzephalogramm'],
         ['EKG', 'Elektrokardiogramm'],
+        ['ELISA', 'Enzyme-linked Immunosorbent Assay'],
         ['EMG', 'Elektromyographie'],
         ['EMU', 'Epilepsy Monitoring Unit'],
-        ['ERCP', 'Darstellung von Gallen- und Bauchspeicheldrüsengängen (Endoskopisch retrograde Cholangio-Pankreaticographie)'],
+        ['ERCP', 'Endoskopisch retrograde Cholangiopankreatikographie'],
         ['ESWT', 'Extrakorporale Stoßwellentherapie'],
         ['EVA', 'Erstversorgungsambulanz'],
         ['EVP / VEP', 'Elektrisch evozierte Potentiale'],
         ['EX-geschützt', 'Explosions-geschützt'],
         ['FD', 'Funktionsdiagnostik'],
         ['FEES', 'Fiberendoskopische Schluckuntersuchung'],
+        ['FT-IR', 'Fourier-Transformations-Infrarot'],
         ['GA', 'Gang'],
+        ['HbA1c', 'Hämoglobin A1c'],
         ['HD EEG', 'High Density Elektroenzephalogramm'],
         ['HF', 'High-Frequency'],
-        ['HNO', 'Hals Nasen Ohren'],
+        ['HF (Vitalparameter)', 'Herzfrequenz'],
+        ['HNO', 'Hals-Nasen-Ohren'],
         ['HSM', 'Herzschrittmacher'],
+        ['IBC', 'Intermediate Bulk Container'],
+        ['ICD', 'Implantierbarer Kardioverter-Defibrillator'],
         ['ICU', 'Intensive Care Unit'],
         ['IMCU', 'Intermediate Care Unit'],
         ['IVUS', 'Intravaskuläres Ultraschallsystem'],
         ['KAD', 'Klinisch administrativer Dienst'],
+        ['MALDI TOF', 'Matrix-Assistierte Laser-Desorption-Ionisierung mit Flugzeitanalyse'],
         ['MR / MRT', 'Magnetresonanztomographie'],
         ['MTDG', 'Medizinische, Therapeutische und Diagnostische Gesundheitsberufe'],
         ['MVE', 'Medizinische Versorgungseinheit'],
@@ -404,23 +414,29 @@ function rb_abkuerzungen(): array
         ['NIV', 'nicht invasiv'],
         ['NLG', 'Nervenleitgeschwindigkeitsmessung'],
         ['O2', 'Sauerstoff'],
-        ['OCT', 'Optische Kohärenztomographie (Optical coherence tomography)'],
+        ['OCT', 'Optische Kohärenztomographie'],
         ['OP', 'Operation'],
-        ['PCR', 'Polymerase-Kettenreaktion (polymerase chain reaction)'],
+        ['PAP', 'Papanicolaou'],
+        ['PCR', 'Polymerase-Kettenreaktion'],
         ['PDMS', 'Patientendatenmanagementsystem'],
         ['POC / POCT', 'Point of Care / Point of Care Testing'],
         ['RCU', 'Respiratory Care Unit'],
         ['RDG', 'Reinigungs- und Desinfektionsgerät'],
+        ['RR (Vitalparameter)', 'Riva-Rocci / Blutdruck'],
         ['S', 'Süden'],
         ['SK', 'Sonderklasse'],
         ['SPECT-CT', 'Single-Photon-Emissionscomputertomographie mit Computertomographie'],
+        ['TAVI', 'Transkatheter-Aortenklappenimplantation'],
         ['TEE', 'Transösophageale Echokardiographie'],
         ['TKF', 'Tiefkühlfach'],
+        ['TLC', 'Dünnschichtchromatographie'],
         ['U/B', 'Untersuchung- und Behandlung'],
         ['UK', 'Unterkonstruktion'],
         ['US', 'Ultraschall'],
+        ['UV/Vis', 'Ultraviolett-Visuell'],
         ['VA', 'Vakuum'],
         ['ZNA', 'Zentrale Notaufnahme'],
+        ['ZSV', 'Sicherheitsstromversorgung'],
     ];
 }
 
@@ -989,8 +1005,8 @@ function render_notfallwagen(string $bereich, array $liste, bool $forWord, bool 
 
     $satz = $gesamt === 1
         ? 'Der Notfallwagen im Bereich ' . h($bereich) . ' befindet sich ' . $wo . '.'
-        : 'Im Bereich ' . h($bereich) . ' befinden sich ' . $gesamt . ' Notfallwagen. Diese befinden sich ' . $wo . '.';
-    return "<p$pCls>" . $satz . '</p>';
+        : 'Im Bereich ' . h($bereich) . 'sind ' . $gesamt . ' Notfallwägen verortet; siese befinden sich ' . $wo . '.';
+    return '<p>&nbsp;</p>' . "<p$pCls>" . $satz . '</p>';
 }
 
 /**

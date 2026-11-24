@@ -47,19 +47,48 @@ function sql_placeholders(int $n): string
     return implode(',', array_fill(0, $n, '?'));
 }
 
-/** Hängt $text an $existing an – in neuer Zeile, falls bereits Text vorhanden ist. */
-/** Für den Duplikat-Vergleich: Zeilenumbrüche/Mehrfach-Leerzeichen vereinheitlichen, Groß/Klein ignorieren. */
-function normalize_for_compare(string $s): string
+/**
+ * Für den Duplikat-Vergleich vereinheitlichen:
+ * - HTML-Entities (&amp;, &quot;, &nbsp; …) dekodieren, falls Altdaten so gespeichert wurden
+ * - alle Unicode-Leerzeichen (inkl. geschütztes Leerzeichen, Tab, \r\n) -> ein Leerzeichen
+ * - unsichtbare Zeichen (Zero-Width, BOM, Soft-Hyphen) entfernen
+ * - typografische Anführungszeichen / Gedankenstriche auf ASCII abbilden
+ * - Groß/Klein ignorieren
+ */
+function normalize_for_compare(?string $s): string
 {
-    return mb_strtolower(trim(preg_replace('/\s+/u', ' ', $s)));
+    $s = (string)$s;
+    if ($s === '') {
+        return '';
+    }
+    // Ungültiges UTF-8 würde preg_replace mit /u scheitern lassen -> vorher reparieren
+    if (!mb_check_encoding($s, 'UTF-8')) {
+        $s = mb_convert_encoding($s, 'UTF-8', 'Windows-1252');
+    }
+    $s = html_entity_decode($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $s = str_replace(
+        ["\u{201C}", "\u{201D}", "\u{201E}", "\u{00AB}", "\u{00BB}", "\u{2018}", "\u{2019}", "\u{201A}", "\u{2013}", "\u{2014}", "\u{2212}"],
+        ['"', '"', '"', '"', '"', "'", "'", "'", '-', '-', '-'],
+        $s
+    );
+    $s = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}\x{00AD}]/u', '', $s) ?? $s;
+    // (*UCP): \s erkennt auch Unicode-Leerzeichen wie NBSP (U+00A0)
+    $s = preg_replace('/(*UCP)\s+/u', ' ', $s) ?? $s;
+    return mb_strtolower(trim($s), 'UTF-8');
 }
 
-function is_duplicate_text(string $existing, string $text): bool
+/** Steht $text (normalisiert) bereits in $existing? Gleicher Text = Duplikat. */
+function is_duplicate_text(?string $existing, ?string $text): bool
 {
     $needle = normalize_for_compare($text);
-    return $needle !== '' && mb_strpos(normalize_for_compare($existing), $needle) !== false;
+    if ($needle === '') {
+        return false;
+    }
+    $hay = normalize_for_compare($existing);
+    return $hay === $needle || mb_strpos($hay, $needle, 0, 'UTF-8') !== false;
 }
 
+/** Hängt $text an $existing an – in neuer Zeile, falls bereits Text vorhanden ist. */
 function append_anmerkung(string $existing, string $text): string
 {
     $prefix = ($existing !== '' && substr($existing, -1) !== "\n") ? "\n" : '';
@@ -204,6 +233,7 @@ if (isset($_POST['preview_rooms'])) {
                         'rooms' => $rooms,
                         'anmerkungField' => $anmerkungFieldInput,
                         'textToAdd' => $finalText,
+                        'rawText' => $textToAddInput,
                     ];
                 } else {
                     $updateMessage = 'Keine passenden Räume gefunden. Aktive Filter: '
@@ -265,9 +295,15 @@ if (isset($_POST['confirm_update'])) {
                     $upd = $mysqli->prepare("UPDATE tabelle_räume SET `$field` = ? WHERE idTABELLE_Räume = ?");
                     if ($upd) {
                         $undo = [];
+                        $dupSkipped = 0;
                         $mysqli->begin_transaction();
                         try {
                             foreach ($current as $roomId => $old) {
+                                // Exakt derselbe Anhang (inkl. Datum/Kürzel) steht schon drin -> nicht doppelt anhängen
+                                if (is_duplicate_text($old, $text)) {
+                                    $dupSkipped++;
+                                    continue;
+                                }
                                 $new = append_anmerkung($old, $text);
                                 $upd->bind_param('si', $new, $roomId);
                                 $upd->execute();
@@ -275,15 +311,19 @@ if (isset($_POST['confirm_update'])) {
                             }
                             $mysqli->commit();
 
-                            $_SESSION['last_update'] = [
-                                'projectID' => $projectID,
-                                'field' => $field,
-                                'text' => $text,
-                                'rooms' => $undo,
-                                'time' => date('d.m.Y H:i'),
-                            ];
-                            $updateMessage = 'Die Anmerkung wurde für ' . count($undo) . ' Räume aktualisiert.';
-                            $updateType = 'success';
+                            if ($undo) {
+                                $_SESSION['last_update'] = [
+                                    'projectID' => $projectID,
+                                    'field' => $field,
+                                    'text' => $text,
+                                    'rooms' => $undo,
+                                    'time' => date('d.m.Y H:i'),
+                                ];
+                            }
+                            $updateMessage = 'Die Anmerkung wurde für ' . count($undo) . ' Räume aktualisiert.'
+                                . ($dupSkipped ? " $dupSkipped Räume übersprungen, da der Text dort bereits steht." : '');
+                            $updateType = $dupSkipped ? 'warning' : 'success';
+                            $clearTextField = true;
                             $_SESSION['to_update'] = null;
                         } catch (Throwable $e) {
                             $mysqli->rollback();
@@ -427,7 +467,7 @@ $elementKeywordVal = $_POST['elementKeyword'] ?? $defaultElementKeyword;
 $raumbezeichnungVal = $_POST['raumbezeichnung'] ?? $defaultRaumbezeichnung;
 $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
 // Nach erfolgreichem Ausführen / Rückgängig: Textfeld leeren
-if ($updateType === 'success') {
+if ($updateType === 'success' || !empty($clearTextField)) {
     $textToAddVal = '';
 }
 
@@ -541,12 +581,20 @@ $filterConfig = [
                                             (<?= $isSelect ? 'Auswahl' : htmlspecialchars($cfg['textHint']) ?>)
                                         </small>
                                     </label>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary mode-toggle"
-                                            data-field="<?= $key ?>"
-                                            data-texthint="<?= htmlspecialchars($cfg['textHint']) ?>"
-                                            title="Zwischen Freitext und Auswahlliste wechseln">
-                                        <i class="fas <?= $isSelect ? 'fa-keyboard' : 'fa-list' ?>"></i>
-                                    </button>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" id="btnAll_<?= $key ?>"
+                                                class="btn btn-sm btn-outline-secondary btn-select-all <?= $isSelect ? '' : 'd-none' ?>"
+                                                data-field="<?= $key ?>"
+                                                title="Alle Einträge auswählen">
+                                            Alle
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary mode-toggle"
+                                                data-field="<?= $key ?>"
+                                                data-texthint="<?= htmlspecialchars($cfg['textHint']) ?>"
+                                                title="Zwischen Freitext und Auswahlliste wechseln">
+                                            <i class="fas <?= $isSelect ? 'fa-keyboard' : 'fa-list' ?>"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <input type="hidden" name="<?= $key ?>Mode" id="<?= $key ?>Mode"
                                        value="<?= $isSelect ? 'select' : 'text' ?>">
@@ -706,6 +754,7 @@ $filterConfig = [
         $('#' + field + 'Mode').val(mode);
         $('.mode-text[data-field="' + field + '"]').toggleClass('d-none', isSelect);
         $('.mode-select[data-field="' + field + '"]').toggleClass('d-none', !isSelect);
+        $('#btnAll_' + field).toggleClass('d-none', !isSelect);
 
         const $btn = $('.mode-toggle[data-field="' + field + '"]');
         $btn.find('i').toggleClass('fa-list', !isSelect).toggleClass('fa-keyboard', isSelect);
@@ -792,6 +841,13 @@ $filterConfig = [
             const field = $(this).data('field');
             const current = $('#' + field + 'Mode').val();
             setFilterMode(field, current === 'select' ? 'text' : 'select', true);
+        });
+
+        // "Alle": sämtliche Optionen des jeweiligen Select2 auswählen
+        $('.btn-select-all').on('click', function () {
+            const $sel = $('#' + $(this).data('field') + '_select');
+            $sel.find('option').prop('selected', true);
+            $sel.trigger('change'); // Select2 aktualisieren + markDirty über .track-dirty
         });
 
         // Änderungen an Suche/Text im Bestätigungsmodus -> Ausführen sperren
