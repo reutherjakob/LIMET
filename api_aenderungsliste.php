@@ -294,11 +294,36 @@ $apSelect = $hasAp
 
 $rooms = [];
 foreach (fetchAll($db,
-    "SELECT idTABELLE_Räume AS id, Raumnr, Raumbezeichnung $apSelect
+    "SELECT idTABELLE_Räume AS id, Raumnr, Raumbezeichnung,
+            Bauabschnitt, Bauetappe, Geschoss, `Raumbereich Nutzer` AS raumbereich $apSelect
        FROM `tabelle_räume`
       WHERE tabelle_projekte_idTABELLE_Projekte = ?",
     'i', [$projectId]) as $r) {
     $rooms[(int)$r['id']] = $r;
+}
+
+// ---------------------------------------------------------------------------
+// Gewerk / GHG je Element (aktuelle Zuordnung im Projekt, wie in den Kosten-PDFs)
+// ---------------------------------------------------------------------------
+
+$gewerke = [];
+foreach (fetchAll($db,
+    "SELECT peg.tabelle_elemente_idTABELLE_Elemente AS el,
+            g.Gewerke_Nr  AS gewerkNr,  g.Bezeichnung  AS gewerkName,
+            ghg.GHG       AS ghg,       ghg.Bezeichnung AS ghgName
+       FROM tabelle_projekt_element_gewerk peg
+       LEFT JOIN tabelle_auftraggeber_gewerke g
+              ON g.idTABELLE_Auftraggeber_Gewerke = peg.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+       LEFT JOIN tabelle_auftraggeber_ghg ghg
+              ON ghg.idtabelle_auftraggeber_GHG = peg.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG
+      WHERE peg.tabelle_projekte_idTABELLE_Projekte = ?",
+    'i', [$projectId]) as $r) {
+    $gewerke[(int)$r['el']] ??= [
+        'gewerkNr' => trim((string)$r['gewerkNr']),
+        'gewerkName' => trim((string)$r['gewerkName']),
+        'ghg' => trim((string)$r['ghg']),
+        'ghgName' => trim((string)$r['ghgName']),
+    ];
 }
 
 // ---------------------------------------------------------------------------
@@ -367,6 +392,8 @@ foreach ($log as $e) {
 }
 $stateEnd ??= $state;
 $stateStart = $state;
+$logCount = count($log);
+unset($log);
 
 // ---------------------------------------------------------------------------
 // Kosten (Einzelpreise) zu Start und Ende
@@ -450,30 +477,38 @@ foreach (array_keys($stateStart + $stateEnd) as $rheId) {
 // Aggregation je Raum / Element / Variante
 // ---------------------------------------------------------------------------
 
+/** Grundfilter je Raumbuch-Zeile (ohne Budget-Ausblendung) – auch für die Debug-Gegenprüfung. */
+$passes = function (array $s) use ($rooms, $onlyStandort, $hideBestand, $apAll, $apFilter): bool {
+    if (!$s['exists'] || $s['raum'] === null || $s['element'] === null || $s['variante'] === null) {
+        return false;
+    }
+    if (in_array($s['element'], DUMMY_ELEMENT_IDS, true)) {
+        return false;   // Dummy-Element -> ignorieren
+    }
+    if (!isset($rooms[$s['raum']])) {
+        return false;   // Raum gehört nicht (mehr) zum Projekt
+    }
+    if ($onlyStandort && $s['standort'] !== 1) {
+        return false;
+    }
+    if ($hideBestand && $s['neu'] === 0) {
+        return false;
+    }
+    if (!$apAll) {
+        $apNr = (string)($rooms[$s['raum']]['apNr'] ?? '');
+        if (!in_array($apNr === '' ? AP_NONE : $apNr, $apFilter, true)) {
+            return false;
+        }
+    }
+    return true;
+};
+
 $groups = [];
 $hiddenSeen = [];   // tatsächlich ausgeblendete Raumbuch-Zeilen (nach den übrigen Filtern)
 foreach (['Start' => $stateStart, 'End' => $stateEnd] as $phase => $states) {
     foreach ($states as $rheId => $s) {
-        if (!$s['exists'] || $s['raum'] === null || $s['element'] === null || $s['variante'] === null) {
+        if (!$passes($s)) {
             continue;
-        }
-        if (in_array($s['element'], DUMMY_ELEMENT_IDS, true)) {
-            continue;   // Dummy-Element -> ignorieren
-        }
-        if (!isset($rooms[$s['raum']])) {
-            continue;   // Raum gehört nicht (mehr) zum Projekt
-        }
-        if ($onlyStandort && $s['standort'] !== 1) {
-            continue;
-        }
-        if ($hideBestand && $s['neu'] === 0) {
-            continue;
-        }
-        if (!$apAll) {
-            $apNr = (string)($rooms[$s['raum']]['apNr'] ?? '');
-            if (!in_array($apNr === '' ? AP_NONE : $apNr, $apFilter, true)) {
-                continue;
-            }
         }
         if (isset($hiddenRows[$rheId])) {
             $hiddenSeen[$rheId] = true;
@@ -561,11 +596,20 @@ foreach ($groups as $key => $g) {
     $kommentare = $g['inEnd'] ? $g['kommentareEnd'] : $g['kommentareStart'];
 
     $el = $elements[$g['element']] ?? ['ElementID' => '', 'Bezeichnung' => '#' . $g['element']];
+    $gw = $gewerke[$g['element']] ?? ['gewerkNr' => '', 'gewerkName' => '', 'ghg' => '', 'ghgName' => ''];
     $rows[] = [
         'apNr' => (string)($room['apNr'] ?? ''),
         'apName' => (string)($room['apName'] ?? ''),
         'raumnr' => $room['Raumnr'],
         'raumbez' => $room['Raumbezeichnung'],
+        'bauabschnitt' => trim((string)($room['Bauabschnitt'] ?? '')),
+        'bauetappe' => trim((string)($room['Bauetappe'] ?? '')),
+        'geschoss' => trim((string)($room['Geschoss'] ?? '')),
+        'raumbereich' => trim((string)($room['raumbereich'] ?? '')),
+        'gewerkNr' => $gw['gewerkNr'],
+        'gewerkName' => $gw['gewerkName'],
+        'ghg' => $gw['ghg'],
+        'ghgName' => $gw['ghgName'],
         'elementId' => $el['ElementID'],
         'element' => $el['Bezeichnung'],
         'variante' => $varianten[$g['variante']] ?? ('#' . $g['variante']),
@@ -593,7 +637,7 @@ respond([
     'meta' => [
         'start' => $start,
         'end' => $end,
-        'logEntries' => count($log),
+        'logEntries' => $logCount,
         'costEntries' => count($costLog),
         'onlyStandort' => $onlyStandort,
         'hideBestand' => $hideBestand,

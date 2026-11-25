@@ -1,6 +1,6 @@
 <?php
 /**
- * raumbuch_mt_word.php
+ * roombook_befu.php
  * -----------------------------------------------------------------------------
  * MT-Raumbuch als Word-Dokument.
  *
@@ -18,6 +18,37 @@
  *                            stehen, z.B. f=1&bauabschnitt[]=A&bauetappe[]=1&raumbereich[]=OP
  *   Leere Werte werden als "(leer)" angeboten und ebenfalls filterbar.
  *
+ *   - Default ohne "f": alles angehakt AUSSER Bauteil 0 (BT0), falls vorhanden.
+ *
+ * Ausgabe-Optionen (GET, Checkboxen im Kopf, fehlend = Default aus rb_optionen_felder()):
+ *   - bt_gliederung=0|1  Gliederung nach Bauteil (Bauabschnitt), Default 1
+ *   - nummerierung=0|1   Raumbereiche nummerieren ("1  Raumbereich"), Default 1
+ *   - leer_aus=0|1       Räume ohne Elemente im Detailteil ausblenden, Default 1
+ *   - bo_aus=0|1         "Nutzung:" weglassen, wenn keine BO-Beschreibung existiert, Default 1
+ *   - bo_abw_ohne_mark=0|1  abweichende BO-Texte einer Raumgruppe ohne Gelb-Markierung
+ *                        und ohne Hinweis "abweichende ..." ausgeben, Default 0
+ *   - nfw_aus=0|1        Hinweis "kein Notfallwagen im Bereich" unterdrücken, Default 0
+ *   - titel_an=0|1       Titel/Projektkopf (Projekt, Stand, Auswahl, RG-Hinweis, Gewerke-Legende) im Word, Default 0
+ *   - abk_an=0|1         Abkürzungsverzeichnis (rb_abkuerzungen()) nach dem Inhaltsverzeichnis, Default 0
+ *
+ * Word beginnt mit einem Inhaltsverzeichnis (Feld TOC, Ebenen 1-3); Word füllt
+ * es beim Öffnen nicht selbst -> Strg+A, F9 bzw. Rechtsklick "Feld aktualisieren".
+ *
+ * Überschriften (Word):  H1 Bauteil / H2 Funktionsbereich / H3 Raum / H4 Gewerk
+ *   Ohne Bauteil-Gliederung rutscht alles eine Ebene hoch (H1 Funktionsbereich ...).
+ *   H4 Gewerk gibt es nur in der Auflistung (mode=liste).
+ *
+ * Raumgruppe (Anwendungsgruppe) leer oder "-" -> Ausgabe "nmg".
+ * Räume sind je Raumbereich nach Raumnummer sortiert (natürlich).
+ *
+ * Handwaschplatz: Nutzwasser = 1 ODER ein Element aus RB_HWP_ELEMENT_IDS im Raum.
+ *
+ * Je Raum(gruppe): "Nutzung:" (BO-Text, Spalte `Anmerkung FunktionBO`),
+ * Handwaschplatz (Spalte Nutzwasser), danach die Elemente. Elemente können
+ * laut rb_zusammenfassungen() zu einem Textelement zusammengefasst werden.
+ * Je Raumbereich: Lokalisierung der Notfallwagen (RB_NOTFALLWAGEN_IDS).
+ * Gelb markiert = bitte prüfen (abweichende/fehlende Angaben).
+ *
  * Das <style> im Word-Export ist Dokumentformatierung fuer Word.
  * -----------------------------------------------------------------------------
  */
@@ -32,55 +63,30 @@ $projectID = (int)($_SESSION['projectID'] ?? 0);
 // =============================================================================
 
 /**
- * Ordnet eine ElementID einer MT-Kategorie zu (anhand der ersten Ziffer).
- *   1 -> Ortsfest | 2 -> Ortsveränderlich | 5 -> MedGas | 3,4 -> Mobiliar | sonst -> Weiteres
+ * Gewerke kommen aus der Projekt-Zuordnung (tabelle_projekt_element_gewerk ->
+ * tabelle_auftraggeber_gewerke), also genau das, was die Nutzer pro Element
+ * gesetzt haben (saveElementGewerk.php) – gleiche Quelle wie die Kosten-PDFs.
+ * Elemente ohne Zuordnung landen unter RB_OHNE_GEWERK.
  */
-function mt_kategorie_fuer_elementid(string $elementId): string
+const RB_OHNE_GEWERK = '';
+const RB_OHNE_GEWERK_LABEL = 'ohne Gewerkzuordnung';
+
+/** Sortierung der Gewerke-Nummern (natürlich, "ohne Gewerk" zuletzt). */
+function mt_cmp_gewerk(string $a, string $b): int
 {
-    switch (substr(ltrim($elementId), 0, 1)) {
-        case '1':
-            return 'Ortsfest';
-        case '2':
-            return 'Ortsveränderlich';
-        case '5':
-            return 'MedGas';
-        case '3':
-        case '4':
-            return 'Mobiliar';
-        default:
-            return 'Weiteres';
+    if ($a === $b) return 0;
+    if ($a === RB_OHNE_GEWERK) return 1;
+    if ($b === RB_OHNE_GEWERK) return -1;
+    return strnatcasecmp($a, $b);
+}
+
+/** Überschrift eines Gewerks in der Auflistung. */
+function mt_gewerk_titel(string $nr, string $bez): string
+{
+    if ($nr === RB_OHNE_GEWERK) {
+        return RB_OHNE_GEWERK_LABEL;
     }
-}
-
-/** Kurzkürzel je Kategorie fuer die Tabellenspalte. */
-function mt_kat_kurz(string $kat): string
-{
-    static $map = [
-        'Ortsfest' => '_of',
-        'Ortsveränderlich' => '_ov',
-        'MedGas' => '_m_gas',
-        'Mobiliar' => '_möb',
-        'Unkategorisiert' => '_etc',
-    ];
-    return $map[$kat] ?? $kat;
-}
-
-/** Reihenfolge der Gewerke in der Auflistungs-Darstellung. */
-function mt_gewerk_reihenfolge(): array
-{
-    return ['Ortsfest', 'Ortsveränderlich', 'Mobiliar', 'MedGas', 'Weiteres'];
-}
-
-/** Legenden-Text (of = Ortsfest usw.). */
-function mt_legende_paare(): array
-{
-    return [
-        'of' => 'Ortsfest',
-        'ov' => 'Ortsveränderlich',
-        'gas' => 'MedGas',
-        'möb' => 'Mobiliar',
-        'w' => 'Weiteres',
-    ];
+    return $bez !== '' ? $nr . ' – ' . $bez : $nr;
 }
 
 /** Natürliche Sortierung von ElementIDs ("1.9" vor "1.10"). */
@@ -95,6 +101,393 @@ function mt_cmp_elementid(string $a, string $b): int
         if ($x !== $y) return $x <=> $y;
     }
     return 0;
+}
+
+
+// =============================================================================
+//  ZUSAMMENFASSUNG VON ELEMENTEN (nur Darstellung)
+// =============================================================================
+
+/**
+ * Regeln, nach denen mehrere Elemente eines Raumes zu EINEM textlichen
+ * Element zusammengefasst werden. Neue Regel = neuer Eintrag im Array,
+ * neues Element = ID in die passende 'ids'-Liste.
+ *
+ *   'ids'         : idTABELLE_Elemente der Elemente, die zur Regel gehören
+ *   'label'       : Ausgabetext; Platzhalter {teile} und {anzahl}
+ *   'teil_regex'  : (optional) Regex auf die Bezeichnung, Gruppe 1 = Teil für
+ *                   {teile} (z.B. "O2" aus "O2 Wandentnahmestelle").
+ *                   Ohne Treffer wird die ganze Bezeichnung verwendet.
+ *   'reihenfolge' : (optional) Sortierung der Teile; Unbekannte danach
+ *   'min_elemente': erst ab so vielen verschiedenen Elementen zusammenfassen
+ *
+ * Zusammengefasst wird je Raum und Gewerk. Nicht gelistete Elemente
+ * (z.B. Lagerschrank Endoskope, Rollcontainer) bleiben einzeln stehen.
+ */
+const RB_GASE_REIHENFOLGE = ['O2', 'VA', 'DL-5', 'DL-10', 'NGA', 'CO2', 'N2O'];
+
+function rb_zusammenfassungen(): array
+{
+    return [
+        // 1
+        'metallmoebel' => [
+            'label' => 'Metallmöbelverbau',
+            'ids' => [
+                714, 1977, 1992, 1069, 1976, 1972, 1980, 1981, 1274, 2084,   // 4.5.x  ISO pulverbeschichtet
+                1377, 1557, 1558, 1991, 1990,                               // 4.10.x ISO CrNi
+                716, 1978, 1952, 1953, 2037, 1961, 1070, 1967,              // 4.15.x DIN pulverbeschichtet
+                857, 1271, 1272, 809, 905, 810, 811, 1966, 817, 1230,       // 4.20.x DIN CrNi
+                368, 543, 581, 1555, 116,                                   // 4.40 / 4.65 / 4.70
+            ],
+        ],
+        // 2
+        'labormoebel' => [
+            'label' => 'Labormöbelverbau',
+            'ids' => [
+                1971, 1963,                                                 // Arbeitsplatten PP
+                504, 505, 507, 894, 498, 499, 500, 501, 502,                // Labortische
+                1610, 1611, 1612, 1614, 1624, 1432,                         // Lagerregale / Hochschränke
+                508, 1096, 1097, 1439, 901, 1568, 1569, 1570, 1571, 1572,   // Medienzellen / -kanäle
+                1594, 1595, 902, 1711, 903, 970,
+                1713, 1215, 897, 900, 974, 1712,                            // Ablagen / Hängeregale
+                1583, 1584, 1590, 1575,                         // Medienzellen inkl. Tisch
+                969 //Rollcontainer
+            ],
+        ],
+        // 3
+        'holzmoebel' => [
+            'label' => 'Holzmöbelverbau',
+            'ids' => [1994, 1995, 1996],
+        ],
+        // 4
+        'geraetetrageschiene' => [
+            'label' => 'Gerätetrageschiene',
+            'ids' => [74, 523, 524, 525, 527, 529],
+        ],
+        // 5
+        'mve_wand' => [
+            'label' => 'MVE - Wandmontiert',
+            'ids' => [310, 512, 2115],
+        ],
+        // 6
+        'mve_decke' => [
+            'label' => 'MVE - Deckenmontiert',
+            'ids' => [139, 1907],
+        ],
+        // 7
+        'wandentnahmestelle' => [
+            'label' => 'Wandentnahmestelle ({teile})',
+            'ids' => [67, 68, 69, 162, 163, 342],
+            'teil_regex' => '/^(\S+)\s+Wandentnahmestelle/iu',
+            'reihenfolge' => RB_GASE_REIHENFOLGE,
+        ],
+        // 8
+        'gase_mve' => [
+            'label' => 'MVE ({teile})',
+            'ids' => [75, 76, 77],
+            'teil_regex' => '/^(\S+)\s+in\s+MVE/iu',
+            'reihenfolge' => RB_GASE_REIHENFOLGE,
+        ],
+        // 9
+        'gase_dve' => [
+            'label' => 'DVE ({teile})',
+            'ids' => [64, 289, 65, 66, 202, 288],
+            'teil_regex' => '/^(\S+)\s+in\s+DVE/iu',
+            'reihenfolge' => RB_GASE_REIHENFOLGE,
+        ],
+        // 10
+        'notfallwagen' => [
+            'label' => 'Notfallwagen inkl. Bestückung, Defibrillator, Absaugpumpe',
+            'ids' => [
+                88,    // 2.21.14.1 Notfallwagen
+                563,   // 2.21.14.5 Notfallwagen MR
+                89,    // 2.21.23.1 Bestückung Notfallwagen
+                41,    // 2.32.14.1 Defibrillator mit Patientenmonitoring und HSM
+                37,    // 2.33.10.2 Absaugpumpe elektrisch - Akku
+            ],
+            // diese IDs nur zusammenfassen, wenn im selben Raum ein Anker vorhanden ist
+            'nur_mit_anker' => [41, 37],
+            'anker_ids' => [88, 563],   // Notfallwagen / Notfallwagen MR
+        ],
+        // 11
+        'med_kleingeraete' => [
+            'label' => 'Medizinische Kleingeräte ({teile})',
+            'ids' => [
+                481,   // 2.31.21.8 Pulsoximeter
+                90,    // 2.31.21.1 Blutdruckmessgerät - elektrisch
+                482,   // 2.31.21.9 Stirnthermometer
+                251,   // 2.31.21.5 Ohrthermometer
+            ],
+        ],
+    ];
+}
+
+/** Liefert den Aufzählungsteil, wenn das Element zur Regel gehört, sonst null. */
+function rb_regel_teil(array $regel, array $e): ?string
+{
+    if (!in_array((int)($e['ElementDbID'] ?? 0), $regel['ids'] ?? [], true)) {
+        return null;
+    }
+    $bez = trim((string)$e['Bezeichnung']);
+    $m = [];
+    if (!empty($regel['teil_regex']) && preg_match($regel['teil_regex'], $bez, $m) === 1
+        && isset($m[1]) && trim($m[1]) !== '') {
+        return trim($m[1]);
+    }
+    return $bez;
+}
+
+/**
+ * Darf das Element unter diese Regel fallen?
+ * IDs aus 'nur_mit_anker' nur, wenn im Raum eine der 'anker_ids' vorhanden ist.
+ */
+function rb_regel_erlaubt(array $regel, array $e, array $vorhanden): bool
+{
+    $id = (int)($e['ElementDbID'] ?? 0);
+    if (!in_array($id, $regel['nur_mit_anker'] ?? [], true)) {
+        return true;
+    }
+    foreach ($regel['anker_ids'] ?? [] as $a) {
+        if (isset($vorhanden[(int)$a])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Fasst die Elemente eines Raumes laut rb_zusammenfassungen() zusammen.
+ * Das Sammel-Element steht an der Stelle des ersten zugehörigen Elements
+ * (die Sortierung nach Gewerk/ElementID bleibt so erhalten).
+ */
+function rb_zusammenfassen(array $els): array
+{
+    $regeln = rb_zusammenfassungen();
+    $slots = [];     // Liste von Listen (Platzhalter für Sammel-Elemente)
+    $sammel = [];
+    $vorhanden = [];
+
+    foreach ($els as $x) {
+        if ((int)$x['Anzahl'] > 0) {
+            $vorhanden[(int)$x['ElementDbID']] = true;
+        }
+    }
+
+    foreach ($els as $e) {
+        $regelKey = null;
+        $teil = null;
+        foreach ($regeln as $key => $regel) {
+            if (!rb_regel_erlaubt($regel, $e, $vorhanden)) {   // NEU
+                continue;
+            }
+            $teil = rb_regel_teil($regel, $e);
+            if ($teil !== null) {
+                $regelKey = $key;
+                break;
+            }
+        }
+        if ($regelKey === null) {
+            $slots[] = [$e];
+            continue;
+        }
+        $k = $regelKey . '|' . $e['GewerkNr'];
+        if (!isset($sammel[$k])) {
+            $sammel[$k] = ['pos' => count($slots), 'regel' => $regelKey, 'teile' => [], 'elemente' => []];
+            $slots[] = [];
+        }
+        $sammel[$k]['teile'][$teil] = true;
+        $sammel[$k]['elemente'][] = $e;
+    }
+
+    foreach ($sammel as $s) {
+        $regel = $regeln[$s['regel']];
+        if (count($s['elemente']) < (int)($regel['min_elemente'] ?? 1)) {
+            $slots[$s['pos']] = $s['elemente'];
+            continue;
+        }
+        $teile = array_keys($s['teile']);
+        $ordnung = array_flip($regel['reihenfolge'] ?? []);
+        usort($teile, function ($a, $b) use ($ordnung) {
+            $ia = $ordnung[$a] ?? PHP_INT_MAX;
+            $ib = $ordnung[$b] ?? PHP_INT_MAX;
+            return $ia <=> $ib ?: strnatcasecmp($a, $b);
+        });
+        $erstes = $s['elemente'][0];
+        $slots[$s['pos']] = [[
+            'ElementDbID' => $erstes['ElementDbID'],
+            'ElementID' => $erstes['ElementID'],
+            'Bezeichnung' => strtr($regel['label'], [
+                '{teile}' => implode(', ', $teile),
+                '{anzahl}' => (string)array_sum(array_column($s['elemente'], 'Anzahl')),
+            ]),
+            'Anzahl' => array_sum(array_column($s['elemente'], 'Anzahl')),
+            'GewerkNr' => $erstes['GewerkNr'],
+            'GewerkBez' => $erstes['GewerkBez'],
+            'Zusammengefasst' => true,
+        ]];
+    }
+
+    return $slots ? array_merge(...$slots) : [];
+}
+
+
+// =============================================================================
+//  NOTFALLWAGEN / NUTZUNG / HANDWASCHPLATZ
+// =============================================================================
+
+/**
+ * Elemente, die als Notfallwagen zählen (idTABELLE_Elemente).
+ *   88 Notfallwagen, 519 Notfallrucksack, 563 Notfallwagen MR
+ * Zubehör zählt nur, wenn im Raum kein eigentlicher Notfallwagen steht
+ * (sonst würde Wagen + Bestückung doppelt gezählt).
+ *   89 Bestückung Notfallwagen
+ */
+const RB_NOTFALLWAGEN_IDS = [88, 519, 563];
+const RB_NOTFALLWAGEN_ZUBEHOER_IDS = [89];
+const RB_HWP_ELEMENT_IDS = [812, 1964, 1263];
+/** Texte Handwaschplatz (Raumparameter Nutzwasser). '' = keine Ausgabe. */
+const RB_TXT_HWP_JA = 'Medizinischer Handwaschplatz ist im Raum vorhanden.';
+const RB_TXT_HWP_NEIN = '';
+
+
+// =============================================================================
+//  ABKÜRZUNGSVERZEICHNIS (Word, Option abk_an)
+// =============================================================================
+
+/** [Abkürzung, Bedeutung] – Reihenfolge = Ausgabereihenfolge. Leere Bedeutung -> gelber Platzhalter. */
+/** [Abkürzung, Bedeutung] – Reihenfolge = Ausgabereihenfolge. Leere Bedeutung -> gelber Platzhalter. */
+function rb_abkuerzungen(): array
+{
+    return [
+        ['ABI', 'Knöchel-Arm-Index'],
+        ['AED', 'Automatisierter externer Defibrillator'],
+        ['AGR', 'Akutgeriatrie und Remobilisation'],
+        ['AMD', 'Arbeitsmedizinischer Dienst'],
+        ['ATL', 'Aktivitäten des täglichen Lebens'],
+        ['BGA', 'Blutgasanalyse'],
+        ['BIA', 'Bioelektrische Impedanzanalyse'],
+        ['BIPAP', 'Biphasischer positiver Atemwegsdruck'],
+        ['BNK', 'Backup-Netzknoten'],
+        ['BT1', 'Bauteil 1'],
+        ['BT2', 'Bauteil 2'],
+        ['CF', 'Cystische Fibrose'],
+        ['CO2', 'Kohlenstoffdioxid'],
+        ['CPAP', 'Kontinuierlicher Atemwegsüberdruck'],
+        ['CRRT', 'Kontinuierliches Nierenersatzverfahren'],
+        ['CRT', 'Kardiale Resynchronisationstherapie'],
+        ['CT', 'Computertomographie'],
+        ['DL-5 / -10', 'Druckluft'],
+        ['DVE', 'Deckenversorgungseinheit'],
+        ['EEG', 'Elektroenzephalogramm'],
+        ['EKG', 'Elektrokardiogramm'],
+        ['ELISA', 'Enzyme-linked Immunosorbent Assay'],
+        ['EMG', 'Elektromyographie'],
+        ['EMU', 'Epilepsy Monitoring Unit'],
+        ['ERCP', 'Endoskopisch retrograde Cholangiopankreatikographie'],
+        ['ESWT', 'Extrakorporale Stoßwellentherapie'],
+        ['EVA', 'Erstversorgungsambulanz'],
+        ['EVP / VEP', 'Elektrisch evozierte Potentiale'],
+        ['EX-geschützt', 'Explosions-geschützt'],
+        ['FD', 'Funktionsdiagnostik'],
+        ['FEES', 'Fiberendoskopische Schluckuntersuchung'],
+        ['FT-IR', 'Fourier-Transformations-Infrarot'],
+        ['GA', 'Gang'],
+        ['HbA1c', 'Hämoglobin A1c'],
+        ['HD EEG', 'High Density Elektroenzephalogramm'],
+        ['HF', 'High-Frequency'],
+        ['HF (Vitalparameter)', 'Herzfrequenz'],
+        ['HNO', 'Hals-Nasen-Ohren'],
+        ['HSM', 'Herzschrittmacher'],
+        ['IBC', 'Intermediate Bulk Container'],
+        ['ICD', 'Implantierbarer Kardioverter-Defibrillator'],
+        ['ICU', 'Intensive Care Unit'],
+        ['IMCU', 'Intermediate Care Unit'],
+        ['IVUS', 'Intravaskuläres Ultraschallsystem'],
+        ['KAD', 'Klinisch administrativer Dienst'],
+        ['MALDI TOF', 'Matrix-Assistierte Laser-Desorption-Ionisierung mit Flugzeitanalyse'],
+        ['MR / MRT', 'Magnetresonanztomographie'],
+        ['MTDG', 'Medizinische, Therapeutische und Diagnostische Gesundheitsberufe'],
+        ['MVE', 'Medizinische Versorgungseinheit'],
+        ['N', 'Norden'],
+        ['NCT', 'Non Contact Tonometer'],
+        ['NGA', 'Narkosegasabsaugung'],
+        ['NIV', 'nicht invasiv'],
+        ['NLG', 'Nervenleitgeschwindigkeitsmessung'],
+        ['O2', 'Sauerstoff'],
+        ['OCT', 'Optische Kohärenztomographie'],
+        ['OP', 'Operation'],
+        ['PAP', 'Papanicolaou'],
+        ['PCR', 'Polymerase-Kettenreaktion'],
+        ['PDMS', 'Patientendatenmanagementsystem'],
+        ['POC / POCT', 'Point of Care / Point of Care Testing'],
+        ['RCU', 'Respiratory Care Unit'],
+        ['RDG', 'Reinigungs- und Desinfektionsgerät'],
+        ['RR (Vitalparameter)', 'Riva-Rocci / Blutdruck'],
+        ['S', 'Süden'],
+        ['SK', 'Sonderklasse'],
+        ['SPECT-CT', 'Single-Photon-Emissionscomputertomographie mit Computertomographie'],
+        ['TAVI', 'Transkatheter-Aortenklappenimplantation'],
+        ['TEE', 'Transösophageale Echokardiographie'],
+        ['TKF', 'Tiefkühlfach'],
+        ['TLC', 'Dünnschichtchromatographie'],
+        ['U/B', 'Untersuchung- und Behandlung'],
+        ['UK', 'Unterkonstruktion'],
+        ['US', 'Ultraschall'],
+        ['UV/Vis', 'Ultraviolett-Visuell'],
+        ['VA', 'Vakuum'],
+        ['ZNA', 'Zentrale Notaufnahme'],
+        ['ZSV', 'Sicherheitsstromversorgung'],
+    ];
+}
+
+/** Abkürzungsverzeichnis als Word-Kapitel (Überschrift 1 + zweispaltige Tabelle). */
+function render_abkuerzungen(): string
+{
+    $html = '<h1>Abkürzungsverzeichnis</h1>'
+        . '<table class="rb-table"><colgroup><col style="width:18%"><col style="width:82%"></colgroup>'
+        . '<thead><tr' . rb_kopfzeile_attr(true) . '><th>Abkürzung</th><th>Bedeutung</th></tr></thead><tbody>';
+    foreach (rb_abkuerzungen() as [$abk, $text]) {
+        $html .= '<tr><td>' . rb_cell('<b>' . h($abk) . '</b>', true) . '</td>'
+            . '<td>' . rb_cell($text !== '' ? h($text) : rb_mark('[...]', true), true) . '</td></tr>';
+    }
+    return $html . '</tbody></table>';
+}
+
+
+// =============================================================================
+//  AUSGABE-OPTIONEN (Checkboxen, GET; fehlender Parameter = Default 1)
+// =============================================================================
+
+/**
+ *   GET-Name => [ 'label' => Anzeige, 'default' => Wert, wenn Parameter fehlt ]
+ */
+function rb_optionen_felder(): array
+{
+    return [
+        'bt_gliederung' => ['label' => 'Gliederung nach Bauteil', 'default' => true],
+        'nummerierung' => ['label' => 'Raumbereiche nummerieren', 'default' => true],
+        'leer_aus' => ['label' => 'Räume ohne Elemente ausblenden', 'default' => true],
+        'bo_aus' => ['label' => '"Nutzung" ohne BO-Beschreibung ausblenden', 'default' => true],
+        'bo_abw_ohne_mark' => ['label' => 'Abweichende BO-Beschreibungen nicht markieren', 'default' => true],
+        'nfw_aus' => ['label' => 'Hinweis "kein Notfallwagen" ausblenden', 'default' => true],
+        'titel_an' => ['label' => 'Titel / Projektkopf im Word ausgeben', 'default' => false],
+        'abk_an' => ['label' => 'Abkürzungsverzeichnis im Word ausgeben', 'default' => true],
+    ];
+}
+
+function rb_optionen_lesen(): array
+{
+    $opt = [];
+    foreach (rb_optionen_felder() as $k => $cfg) {
+        $opt[$k] = isset($_GET[$k]) ? (string)$_GET[$k] !== '0' : (bool)$cfg['default'];
+    }
+    return $opt;
+}
+
+/** Query-String der Optionen (fuer Links / Formular). */
+function rb_optionen_query(array $opt): string
+{
+    return http_build_query(array_map(fn($v) => $v ? 1 : 0, $opt));
 }
 
 
@@ -186,13 +579,59 @@ function rb_filter_optionen(array $alleRaeume): array
             $w = rb_filter_wert($room, $cfg['spalte']);
             $opt[$key][$w] = ($opt[$key][$w] ?? 0) + 1;
         }
-        uksort($opt[$key], function ($a, $b) {
-            if ($a === RB_LEER) return 1;
-            if ($b === RB_LEER) return -1;
-            return strnatcasecmp($a, $b);
-        });
+        uksort($opt[$key], fn($a, $b) => rb_cmp_leer_zuletzt((string)$a, (string)$b));
     }
     return $opt;
+}
+
+/** Natürliche Sortierung, leere Werte (''/RB_LEER) zuletzt. */
+function rb_cmp_leer_zuletzt(string $a, string $b): int
+{
+    $a = trim($a);
+    $b = trim($b);
+    if ($a === $b) return 0;
+    if ($a === '' || $a === RB_LEER) return 1;
+    if ($b === '' || $b === RB_LEER) return -1;
+    return strnatcasecmp($a, $b);
+}
+
+/** Raumsortierung: (Bauteil) -> Raumbereich -> Raumnummer (natürlich). */
+function rb_cmp_raum(array $a, array $b, bool $nachBauteil): int
+{
+    return ($nachBauteil ? rb_cmp_leer_zuletzt((string)$a['Bauabschnitt'], (string)$b['Bauabschnitt']) : 0)
+        ?: rb_cmp_leer_zuletzt((string)$a['Raumbereich'], (string)$b['Raumbereich'])
+            ?: strnatcasecmp(trim((string)$a['Raumnr']), trim((string)$b['Raumnr']));
+}
+
+/** Ist ein Bauabschnitt-Wert "Bauteil 0" (BT0, BT 0, 0, Bauteil 0)? */
+function rb_ist_bt0(string $wert): bool
+{
+    return preg_match('/^(BT|Bauteil)?\s*0+$/iu', trim($wert)) === 1;
+}
+
+/**
+ * Default-Filter (kein "f" in der URL): alles an, außer Bauteil 0.
+ */
+function rb_filter_default(array $optionen): array
+{
+    $sel = [];
+    foreach (rb_filter_felder() as $key => $cfg) {
+        $werte = array_map('strval', array_keys($optionen[$key] ?? []));
+        if ($key === 'bauabschnitt') {
+            $werte = array_values(array_filter($werte, fn($w) => !rb_ist_bt0($w)));
+        }
+        $sel[$key] = $werte;
+    }
+    return $sel;
+}
+
+/** Überschrift eines Bauteils. "BT1"/"Bauteil 1" bleiben, "1" -> "Bauteil 1". */
+function rb_bauteil_titel(string $wert): string
+{
+    if ($wert === RB_LEER || trim($wert) === '') {
+        return '(ohne Bauteil)';
+    }
+    return preg_match('/^(BT|Bauteil)/iu', $wert) === 1 ? $wert : 'Bauteil ' . $wert;
 }
 
 /** Anzahl abgewählter Werte (fuer Badge am Filter-Button). */
@@ -249,9 +688,11 @@ function rb_filter_query(?array $sel): string
 
 /**
  * Liest alle MT-relevanten Räume + ihre aggregierten Elemente aus der DB.
- * Rückgabe: [ 'uebersicht' => [...], 'bereiche' => [...], 'optionen' => [...], 'gesamt' => int ]
+ * $filter = null -> Default-Filter (alles außer BT0).
+ * Rückgabe: [ 'uebersicht' => [...], 'bauteile' => [...], 'optionen' => [...],
+ *             'gewerke' => [...], 'gesamt' => int, 'filter' => effektive Auswahl ]
  */
-function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = null): array
+function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = null, bool $nachBauteil = true): array
 {
     // ---- 1) Räume -----------------------------------------------------------
     $sqlRooms = "SELECT idTABELLE_Räume AS RaumID,
@@ -263,30 +704,38 @@ function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = n
                         Bauetappe,
                         Nutzfläche,
                         Anwendungsgruppe,
-                        H6020
+                        H6020,
+                        `Anmerkung FunktionBO` AS BO,
+                        Nutzwasser
                  FROM tabelle_räume
                  WHERE tabelle_projekte_idTABELLE_Projekte = $projectID
                    AND `MT-relevant` = 1
                    AND Entfallen = 0
-                 ORDER BY `Raumbereich Nutzer`, Anwendungsgruppe, Raumnr";
+                 ORDER BY `Raumbereich Nutzer`, Raumnr";
 
     $resRooms = $mysqli->query($sqlRooms);
     $alleRaeume = [];
-    $uebersicht = [];
     $rooms = [];
     if ($resRooms) {
         while ($r = $resRooms->fetch_assoc()) {
             $r['RaumID'] = (int)$r['RaumID'];
             $alleRaeume[] = $r;
-            if (!rb_filter_passt($r, $filter)) {
-                continue;
-            }
-            $rooms[$r['RaumID']] = $r;
-            $uebersicht[] = $r;
         }
     }
 
     $optionen = rb_filter_optionen($alleRaeume);
+    if ($filter === null) {
+        $filter = rb_filter_default($optionen);
+    }
+
+    foreach ($alleRaeume as $r) {
+        if (rb_filter_passt($r, $filter)) {
+            $rooms[$r['RaumID']] = $r;
+        }
+    }
+    // (Bauteil ->) Raumbereich -> Raumnummer, natürlich sortiert
+    uasort($rooms, fn($a, $b) => rb_cmp_raum($a, $b, $nachBauteil));
+    $uebersicht = array_values($rooms);
 
     // ---- 2) Elemente je Raum (Anzahl über Varianten summiert) ---------------
     $elementsByRoom = [];
@@ -294,52 +743,110 @@ function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = n
         $DUMMY_ELEMENT_IDS = [2032, 2033, 2034, 2035, 2075];
         $dummyListe = implode(',', array_map('intval', $DUMMY_ELEMENT_IDS));
         $idListe = implode(',', array_map('intval', array_keys($rooms)));
+        // Gewerk je Element über die Projekt-Zuordnung (LEFT JOIN: Elemente ohne
+        // Zuordnung bleiben drin). Die Zuordnung ist je Projekt+Element eindeutig
+        // (saveElementGewerk.php macht UPDATE statt zweitem INSERT); sie wird
+        // trotzdem vorab je Element verdichtet, damit Anzahl nie doppelt zählt.
         $sqlEls = "SELECT rhe.TABELLE_Räume_idTABELLE_Räume AS RaumID,
+                          e.idTABELLE_Elemente AS ElementDbID,
                           e.ElementID,
                           e.Bezeichnung,
+                          g.Gewerke_Nr,
+                          g.Bezeichnung AS GewerkBezeichnung,
                           SUM(rhe.Anzahl) AS Anzahl
                    FROM tabelle_räume_has_tabelle_elemente rhe
                    INNER JOIN tabelle_elemente e
                            ON e.idTABELLE_Elemente = rhe.TABELLE_Elemente_idTABELLE_Elemente
+                   LEFT JOIN (
+                        SELECT tabelle_elemente_idTABELLE_Elemente AS ElementPK,
+                               MIN(tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke) AS GewerkPK
+                        FROM tabelle_projekt_element_gewerk
+                        WHERE tabelle_projekte_idTABELLE_Projekte = $projectID
+                        GROUP BY tabelle_elemente_idTABELLE_Elemente
+                   ) peg ON peg.ElementPK = e.idTABELLE_Elemente
+                   LEFT JOIN tabelle_auftraggeber_gewerke g
+                           ON g.idTABELLE_Auftraggeber_Gewerke = peg.GewerkPK
                    WHERE rhe.TABELLE_Räume_idTABELLE_Räume IN ($idListe)
                             AND e.idTABELLE_Elemente NOT IN ($dummyListe)
-                   GROUP BY rhe.TABELLE_Räume_idTABELLE_Räume, e.ElementID, e.Bezeichnung
+                   GROUP BY rhe.TABELLE_Räume_idTABELLE_Räume, e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung,
+                            g.Gewerke_Nr, g.Bezeichnung
                    HAVING SUM(rhe.Anzahl) <> 0";
 
         $resEls = $mysqli->query($sqlEls);
         if ($resEls) {
             while ($e = $resEls->fetch_assoc()) {
                 $rid = (int)$e['RaumID'];
-                $kat = mt_kategorie_fuer_elementid($e['ElementID']);
+                $nr = trim((string)($e['Gewerke_Nr'] ?? ''));
+                $bez = trim((string)($e['GewerkBezeichnung'] ?? ''));
                 $elementsByRoom[$rid][] = [
+                    'ElementDbID' => (int)$e['ElementDbID'],
                     'ElementID' => $e['ElementID'],
                     'Bezeichnung' => $e['Bezeichnung'],
                     'Anzahl' => (int)$e['Anzahl'],
-                    'Kat' => mt_kat_kurz($kat),
-                    'KatVoll' => $kat,          // Klartext-Gewerk fuer Auflistung
+                    'GewerkNr' => $nr,          // '' = ohne Zuordnung
+                    'GewerkBez' => $bez,
                 ];
             }
         }
+        // je Raum: nach Gewerk, innerhalb des Gewerks nach ElementID
         foreach ($elementsByRoom as &$list) {
-            usort($list, fn($a, $b) => mt_cmp_elementid($a['ElementID'], $b['ElementID']));
+            usort($list, fn($a, $b) => mt_cmp_gewerk($a['GewerkNr'], $b['GewerkNr'])
+                ?: mt_cmp_elementid($a['ElementID'], $b['ElementID']));
         }
         unset($list);
     }
 
+    // In der Auswahl tatsächlich vorkommende Gewerke (fuer die Legende)
+    $gewerke = [];
+    foreach ($elementsByRoom as $list) {
+        foreach ($list as $e) {
+            $gewerke[$e['GewerkNr']] = $e['GewerkBez'];
+        }
+    }
+    uksort($gewerke, fn($a, $b) => mt_cmp_gewerk((string)$a, (string)$b));
+
     // ---- 3) Detail: nach Raumbereich gruppieren, gleich ausgestattete -------
     //         Räume zusammenfassen
+    //         Schlüssel = Bauteil + Raumbereich (ohne Gliederung: nur Raumbereich)
     $bereiche = [];
     foreach ($rooms as $rid => $room) {
-        $bereich = trim((string)$room['Raumbereich']);
-        if ($bereich === '') {
-            $bereich = '(ohne Raumbereich)';
+        $btKey = $nachBauteil ? rb_filter_wert($room, 'Bauabschnitt') : '';
+        $bereichName = trim((string)$room['Raumbereich']);
+        if ($bereichName === '') {
+            $bereichName = '(ohne Raumbereich)';
         }
+        $bereich = $btKey . "\x1F" . $bereichName;
         if (!isset($bereiche[$bereich])) {
-            $bereiche[$bereich] = ['raeume' => [], 'gruppen' => []];
+            $bereiche[$bereich] = ['bauteil' => $btKey, 'name' => $bereichName,
+                'raeume' => [], 'gruppen' => [], 'notfallwagen' => []];
         }
         $bereiche[$bereich]['raeume'][] = $room;   // Raumliste je Bereich (Word-Übersicht)
 
         $els = $elementsByRoom[$rid] ?? [];
+
+        // Notfallwagen in diesem Raum (vor dem Zusammenfassen gezählt)
+        $nfw = 0;
+        $nfwZubehoer = 0;
+        foreach ($els as $e) {
+            if ($e['Anzahl'] <= 0) {
+                continue;
+            }
+            if (in_array($e['ElementDbID'], RB_NOTFALLWAGEN_IDS, true)) {
+                $nfw += $e['Anzahl'];
+            } elseif (in_array($e['ElementDbID'], RB_NOTFALLWAGEN_ZUBEHOER_IDS, true)) {
+                $nfwZubehoer += $e['Anzahl'];
+            }
+        }
+        if ($nfw === 0) {
+            $nfw = $nfwZubehoer;
+        }
+        if ($nfw > 0) {
+            $bereiche[$bereich]['notfallwagen'][] = [
+                'Raumnr' => $room['Raumnr'],
+                'Raumbezeichnung' => $room['Raumbezeichnung'],
+                'Anzahl' => $nfw,
+            ];
+        }
 
         // Signatur = Menge der Elemente inkl. Anzahl. Leere Räume: eindeutig.
         if ($els === []) {
@@ -353,11 +860,27 @@ function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = n
         }
 
         if (!isset($bereiche[$bereich]['gruppen'][$sig])) {
-            $bereiche[$bereich]['gruppen'][$sig] = ['rooms' => [], 'elemente' => $els];
+            $bereiche[$bereich]['gruppen'][$sig] = ['rooms' => [],
+                'elemente' => rb_zusammenfassen($els)];
+        }
+
+        // Handwaschplatz: Raumparameter Nutzwasser = 1 ODER HWP-Element im Raum
+        $hwp = (int)($room['Nutzwasser'] ?? 0) === 1;
+        if (!$hwp) {
+            foreach ($els as $e) {
+                if ($e['Anzahl'] > 0 && in_array($e['ElementDbID'], RB_HWP_ELEMENT_IDS, true)) {
+                    $hwp = true;
+                    break;
+                }
+            }
         }
         $bereiche[$bereich]['gruppen'][$sig]['rooms'][] = [
             'Raumnr' => $room['Raumnr'],
             'Raumbezeichnung' => $room['Raumbezeichnung'],
+            'BO' => (string)($room['BO'] ?? ''),
+            'Nutzwasser' => (int)($room['Nutzwasser'] ?? 0),
+            'HWP' => $hwp
+
         ];
     }
 
@@ -383,11 +906,23 @@ function raumbuch_daten_laden(mysqli $mysqli, int $projectID, ?array $filter = n
     }
     unset($binfo);
 
+    // ---- 5) nach Bauteil verschachteln (Reihenfolge aus der Raumsortierung) --
+    $bauteile = [];
+    foreach ($bereiche as $binfo) {
+        $bt = $binfo['bauteil'];
+        if (!isset($bauteile[$bt])) {
+            $bauteile[$bt] = ['titel' => $nachBauteil ? rb_bauteil_titel($bt) : '', 'bereiche' => []];
+        }
+        $bauteile[$bt]['bereiche'][] = $binfo;
+    }
+
     return [
         'uebersicht' => $uebersicht,
-        'bereiche' => $bereiche,
+        'bauteile' => $bauteile,
         'optionen' => $optionen,
+        'gewerke' => $gewerke,
         'gesamt' => count($alleRaeume),
+        'filter' => $filter,
     ];
 }
 
@@ -407,23 +942,176 @@ function rb_cell(string $inner, bool $forWord): string
     return $forWord ? '<p class="cp">' . $inner . '</p>' : $inner;
 }
 
+/**
+ * Attribute der Tabellen-Kopfzeile. Word: als Überschriftszeile markieren
+ * (= "Überschriften wiederholen", Kopfzeile erscheint auf jeder Folgeseite).
+ */
+function rb_kopfzeile_attr(bool $forWord): string
+{
+    return $forWord
+        ? ' style="mso-yfti-irow:-1;mso-yfti-firstrow:yes;mso-yfti-lastfirstrow:yes;page-break-inside:avoid"'
+        : '';
+}
+
+/** Gelbe Markierung: Word per Highlight, Web per Bootstrap-<mark>. */
+function rb_mark(string $inner, bool $forWord): string
+{
+    return $forWord
+        ? '<span style="background:yellow;mso-highlight:yellow">' . $inner . '</span>'
+        : '<mark>' . $inner . '</mark>';
+}
+
+/** Freitext (mehrzeilig) escapen. */
+function rb_text_html(string $s): string
+{
+    return nl2br(h(trim($s)), false);
+}
+
+/** Vergleichsschlüssel für Texte (Leerraum normiert). */
+function rb_text_norm(string $s): string
+{
+    return preg_replace('/\s+/u', ' ', trim($s));
+}
+
+/** Aufzählung "a, b und c". */
+function rb_aufzaehlung(array $teile): string
+{
+    if (count($teile) <= 1) {
+        return (string)($teile[0] ?? '');
+    }
+    $letzter = array_pop($teile);
+    return implode(', ', $teile) . ' und ' . $letzter;
+}
+
+/**
+ * Satz zur Lokalisierung der Notfallwagen eines Raumbereichs.
+ * $liste: [ ['Raumnr','Raumbezeichnung','Anzahl'], ... ]
+ */
+function render_notfallwagen(string $bereich, array $liste, bool $forWord, bool $hinweisAus = false): string
+{
+    $pCls = $forWord ? '' : ' class="small mb-2"';
+    if (!$liste) {
+        if ($hinweisAus) {
+            return '';
+        }
+        return "<p$pCls>" . rb_mark('[Im Bereich ' . h($bereich) . ' ist kein Notfallwagen hinterlegt.]', $forWord) . '</p>';
+    }
+    $gesamt = (int)array_sum(array_column($liste, 'Anzahl'));
+    $orte = array_map(function ($n) {
+        return h(trim($n['Raumbezeichnung'])) . ' (' . h($n['Raumnr'])
+            . ($n['Anzahl'] > 1 ? ', ' . (int)$n['Anzahl'] . ' Stk.' : '') . ')';
+    }, $liste);
+    $wo = (count($liste) === 1 ? 'im Raum ' : 'in den Räumen ') . rb_aufzaehlung($orte);
+
+    $satz = $gesamt === 1
+        ? 'Der Notfallwagen im Bereich ' . h($bereich) . ' befindet sich ' . $wo . '.'
+        : 'Im Bereich ' . h($bereich) . 'sind ' . $gesamt . ' Notfallwägen verortet; siese befinden sich ' . $wo . '.';
+    return '<p>&nbsp;</p>' . "<p$pCls>" . $satz . '</p>';
+}
+
+/**
+ * "Nutzung: ..." je Raum/Gruppe aus der BO-Beschreibung.
+ * Bei abweichenden Texten in einer Gruppe: alle Varianten mit Raumnummer, gelb markiert.
+ */
+function render_nutzung(array $rooms, bool $forWord, bool $leerAusblenden = false, bool $abwOhneMark = false): string
+{
+    $pCls = $forWord ? '' : ' class="mb-1"';
+    $varianten = [];
+    foreach ($rooms as $r) {
+        $t = trim((string)($r['BO'] ?? ''));
+        $k = rb_text_norm($t);
+        if (!isset($varianten[$k])) {
+            $varianten[$k] = ['text' => $t, 'raeume' => []];
+        }
+        $varianten[$k]['raeume'][] = $r['Raumnr'];
+    }
+
+    if (count($varianten) === 1) {
+        $v = reset($varianten);
+        if ($v['text'] === '' && $leerAusblenden) {
+            return '';
+        }
+        $inner = $v['text'] !== ''
+            ? rb_text_html($v['text'])
+            : rb_mark('[keine BO-Beschreibung hinterlegt]', $forWord);
+        return "<p$pCls><b>Nutzung:</b> " . $inner . '</p>';
+    }
+
+    // Mehrere Varianten: je Variante mit Raumnummern; optional ohne Markierung/Hinweis
+    $html = "<p$pCls><b>Nutzung:</b>"
+        . ($abwOhneMark ? '' : ' ' . rb_mark('[abweichende BO-Beschreibungen – bitte abgleichen]', $forWord))
+        . '</p>';
+    foreach ($varianten as $v) {
+        if ($abwOhneMark && $v['text'] === '' && $leerAusblenden) {
+            continue;   // leere Variante ohne Hinweis nicht ausgeben
+        }
+        $quelle = '<b>' . h(implode(', ', $v['raeume'])) . ':</b> ';
+        $text = $v['text'] !== '' ? rb_text_html($v['text']) : '<i>(keine BO-Beschreibung)</i>';
+        $html .= "<p$pCls>" . ($abwOhneMark ? $quelle . $text : rb_mark($quelle . $text, $forWord)) . '</p>';
+    }
+    return $html;
+}
+
+/**
+ * Medizinischer Handwaschplatz (Nutzwasser = 1 oder HWP-Element).
+ *   Einzelraum              -> RB_TXT_HWP_JA
+ *   mehrere Räume           -> "... ist in den Räumen a, b und c vorhanden."
+ *   Räume ohne HWP werden nicht erwähnt.
+ */
+function render_handwaschplatz(array $rooms, bool $forWord): string
+{
+    $pCls = $forWord ? '' : ' class="mb-1"';
+    $mit = [];
+    foreach ($rooms as $r) {
+        if ((int)($r['HWP'] ?? 0) === 1) {
+            $mit[] = h($r['Raumnr']);
+        }
+    }
+    if (!$mit) {
+        return RB_TXT_HWP_NEIN !== '' ? "<p$pCls>" . h(RB_TXT_HWP_NEIN) . '</p>' : '';
+    }
+    if (count($mit) === count($rooms)) {
+        // alle Räume der Gruppe haben einen HWP
+        if (count($rooms) > 1) {
+            return "<p$pCls>Medizinischer Handwaschplatz ist in diesen Räumen jeweils vorhanden.</p>";
+        }
+        return RB_TXT_HWP_JA !== '' ? "<p$pCls>" . h(RB_TXT_HWP_JA) . '</p>' : '';
+    }
+    // nur ein Teil der Räume hat einen HWP -> diese aufzählen
+    $wo = count($mit) === 1 ? 'im Raum ' . $mit[0] : 'in den Räumen ' . rb_aufzaehlung($mit);
+    return "<p$pCls>Medizinischer Handwaschplatz ist " . $wo . ' vorhanden.</p>';
+}
+
+/** Raumgruppe: leer / "-" -> "nmg". */
+function rb_rg_anzeige($v): string
+{
+    $t = trim((string)$v);
+    return ($t === '' || $t === '-' || $t === '–') ? 'nmg' : $t;
+}
+
 function fmt_flaeche($v): string
 {
     if ($v === null || $v === '') return '';
     return number_format((float)$v, 2, ',', '.') . ' m²';
 }
 
-/** Legende (of = Ortsfest ...) einzeilig. */
-function render_legende(bool $forWord): string
+/** Gewerke-Legende (Nr = Bezeichnung) der in der Auswahl vorkommenden Gewerke. */
+function render_legende(array $gewerke, bool $forWord): string
 {
+    if (!$gewerke) {
+        return '';
+    }
     $paare = [];
-    foreach (mt_legende_paare() as $kurz => $lang) {
-        $paare[] = '<b>' . h($kurz) . '</b> = ' . h($lang);
+    foreach ($gewerke as $nr => $bez) {
+        $nr = (string)$nr;
+        $paare[] = $nr === RB_OHNE_GEWERK
+            ? '<b>–</b> = ' . h(RB_OHNE_GEWERK_LABEL)
+            : '<b>' . h($nr) . '</b> = ' . h($bez);
     }
     $inner = implode(' &nbsp;·&nbsp; ', $paare);
     return $forWord
-        ? '<p class="legende"><b>Legende Kat:</b> &nbsp;' . $inner . '</p>'
-        : '<p class="text-muted small mb-3"><b>Legende Kat:</b> ' . $inner . '</p>';
+        ? '<p class="legende"><b>Legende Gewerke:</b> &nbsp;' . $inner . '</p>'
+        : '<p class="text-muted small mb-3"><b>Legende Gewerke:</b> ' . $inner . '</p>';
 }
 
 
@@ -447,7 +1135,7 @@ function render_uebersicht(array $uebersicht, bool $forWord): string
         $html = '<table class="table table-sm table-bordered table-striped align-middle rb-tight">';
     }
 
-    $html .= '<thead><tr>
+    $html .= '<thead><tr' . rb_kopfzeile_attr($forWord) . '>
             <th>Raumnr</th>
             <th>Raumbezeichnung</th>'
         . ($forWord ? '' : '<th>Raumbereich</th>') . '
@@ -464,7 +1152,7 @@ function render_uebersicht(array $uebersicht, bool $forWord): string
             . ($forWord ? '' : '<td>' . h($r['Raumbereich']) . '</td>')
             . '<td>' . rb_cell(h($r['Geschoss']), $forWord) . '</td>'
             . '<td>' . rb_cell(h(fmt_flaeche($r['Nutzfläche'])), $forWord) . '</td>'
-            . '<td>' . rb_cell(h($r['Anwendungsgruppe']), $forWord) . '</td>'
+            . '<td>' . rb_cell(h(rb_rg_anzeige($r['Anwendungsgruppe'])), $forWord) . '</td>'
             . '<td>' . rb_cell(h($r['H6020']), $forWord) . '</td>'
             . '</tr>';
     }
@@ -472,7 +1160,7 @@ function render_uebersicht(array $uebersicht, bool $forWord): string
     return $html;
 }
 
-/** Elemente je Raum als Tabelle (Kat + Element). */
+/** Elemente je Raum als Tabelle (Gewerk-Nr + Element). */
 function render_raum_tabelle(array $elemente, bool $forWord): string
 {
     if ($forWord) {
@@ -484,8 +1172,8 @@ function render_raum_tabelle(array $elemente, bool $forWord): string
         $html = '<table class="table table-sm table-bordered align-middle rb-tight">';
     }
 
-    $html .= '<thead><tr> 
-            <th>Kat</th>
+    $html .= '<thead><tr' . rb_kopfzeile_attr($forWord) . '>
+            <th>Gewerk</th>
             <!--th>ElementID</th-->
             <th>Element</th>
          <!--th class="text-center">Anzahl</th-->
@@ -493,7 +1181,7 @@ function render_raum_tabelle(array $elemente, bool $forWord): string
 
     foreach ($elemente as $e) {
         $html .= '<tr>'
-            . '<td>' . rb_cell(h($e['Kat']), $forWord) . '</td>'
+            . '<td>' . rb_cell(h($e['GewerkNr'] !== RB_OHNE_GEWERK ? $e['GewerkNr'] : '–'), $forWord) . '</td>'
             . '<td>' . rb_cell(h($e['Bezeichnung']), $forWord) . '</td>'
             . '</tr>';
     }
@@ -502,33 +1190,30 @@ function render_raum_tabelle(array $elemente, bool $forWord): string
 }
 
 /**
- * Elemente je Raum als Auflistung: je Gewerk eine Subüberschrift, darunter
- * die Elemente aufgezählt.
+ * Elemente je Raum als Auflistung: je Gewerk eine Subüberschrift ($hTag,
+ * Word: Überschrift 4), darunter die Elemente aufgezählt.
  */
-function render_raum_liste(array $elemente, bool $forWord): string
+function render_raum_liste(array $elemente, bool $forWord, string $hTag = 'h4'): string
 {
-    // nach Gewerk (Klartext) gruppieren
+    // nach Gewerk gruppieren (Elemente sind bereits nach Gewerk sortiert)
     $byGewerk = [];
     foreach ($elemente as $e) {
-        $g = $e['KatVoll'] ?? 'Weiteres';
-        $byGewerk[$g][] = $e;
+        $byGewerk[$e['GewerkNr']][] = $e;
     }
 
     $html = '';
-    foreach (mt_gewerk_reihenfolge() as $gewerk) {
-        if (empty($byGewerk[$gewerk])) {
-            continue;
-        }
+    foreach ($byGewerk as $nr => $liste) {
+        $titel = mt_gewerk_titel((string)$nr, $liste[0]['GewerkBez']);
 
         if ($forWord) {
-            $html .= '<p class="gewerk">' . h($gewerk) . '</p>';
+            $html .= "<$hTag>" . h($titel) . "</$hTag>";
             $html .= '<ul class="rb-liste">';
         } else {
-            $html .= '<h6 class="fw-bold text-secondary mt-2 mb-1">' . h($gewerk) . '</h6>';
+            $html .= "<$hTag class=\"fw-bold text-secondary mt-2 mb-1\">" . h($titel) . "</$hTag>";
             $html .= '<ul class="mb-2">';
         }
 
-        foreach ($byGewerk[$gewerk] as $e) {
+        foreach ($liste as $e) {
             $html .= '<li>' . h($e['Bezeichnung']) . '</li>';
         }
         $html .= '</ul>';
@@ -537,61 +1222,105 @@ function render_raum_liste(array $elemente, bool $forWord): string
 }
 
 /**
- * Detailteil. Überschriften:
- *   Word: h1 (Raumbereich) / h2 (Raum)  -> Navigationsbereich
- *   Web : h3 / h5
+ * Detailteil. Überschriften (Word -> Navigationsbereich):
+ *   mit Bauteil-Gliederung:  H1 Bauteil / H2 Funktionsbereich / H3 Raum / H4 Gewerk
+ *   ohne:                    H1 Funktionsbereich / H2 Raum / H3 Gewerk
+ *   Web: dieselbe Struktur, beginnend bei h3.
  *
- * Word: direkt unter jeder Raumbereichs-Überschrift stehen Einleitungssatz,
- * Tabellenbeschreibung und die Raumtabelle dieses Bereichs. Web: dort steht die Gesamttabelle in der linken Spalte.
+ * Word: direkt unter jeder Raumbereichs-Überschrift stehen "Beschreibung
+ * Funktionsbereich" (Platzhalter), Einleitungssatz, Notfallwagen,
+ * Tabellenbeschreibung und die Raumtabelle dieses Bereichs.
+ * Web: dort steht die Gesamttabelle in der linken Spalte.
  *
- * $mode: 'tabelle' (Default) oder 'liste'
+ * $bauteile: [ btKey => ['titel' => ..., 'bereiche' => [ binfo, ... ]], ... ]
+ * $mode: 'liste' (Default) oder 'tabelle'
  */
-function render_detail(array $bereiche, bool $forWord, string $mode = 'tabelle'): string
+function render_detail(array $bauteile, array $gewerke, bool $forWord, string $mode = 'liste', array $opt = []): string
 {
-    $hBereich = $forWord ? 'h1' : 'h3';
-    $hRaum = $forWord ? 'h2' : 'h5';
+    $leerAus = !empty($opt['leer_aus']);
+    $boAus = !empty($opt['bo_aus']);
+    $nfwAus = !empty($opt['nfw_aus']);
+    $btGliederung = !empty($opt['bt_gliederung']);
+    $nummerieren = !empty($opt['nummerierung']);
 
-    $html = render_legende($forWord);
+    $tags = $forWord ? ['h1', 'h2', 'h3', 'h4'] : ['h3', 'h4', 'h5', 'h6'];
+    $o = $btGliederung ? 0 : 1;   // ohne Bauteil: eine Ebene hoch
+    $hBauteil = $tags[0];
+    $hBereich = $tags[1 - $o];
+    $hRaum = $tags[2 - $o];
+    $hGewerk = $tags[3 - $o];
 
-    foreach ($bereiche as $bereich => $binfo) {
-        $cls = $forWord ? '' : ' class="mt-4 pt-2 border-top"';
-        $html .= "<$hBereich$cls>" . h($bereich) . "</$hBereich>";
+    // Abstand zwischen Nummer und Name (Word: Tabulator)
+    $nrSep = $forWord ? '<span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;</span>' : '&nbsp;&nbsp;&nbsp;';
 
-        if ($forWord) {
-            $html .= '<p>Im vorliegenden Kapitel wird der Funktionsbereich ' . h($bereich)
-                . ' [Zuordnung Abteilung ergänzen] beschrieben.</p>';
-            $html .= '<p>Details der medizintechnisch relevanten Räume im Bereich ' . h($bereich)
-                . '. Klassifizierung nach OVE E 8101 (Raumgruppe RG) und ÖNORM H6020.</p>';
-            $html .= render_uebersicht($binfo['raeume'], true);
+    // Legende: Web oben im Detailteil; Word im Titelblock (nur mit titel_an)
+    $html = '';// $forWord ? '' : render_legende($gewerke, false);
+    $nr = 0;
+
+    foreach ($bauteile as $bt) {
+        if ($btGliederung) {
+            $cls = $forWord ? '' : ' class="mt-4 text-primary"';
+            $html .= "<$hBauteil$cls>" . h($bt['titel']) . "</$hBauteil>";
         }
 
-        foreach ($binfo['gruppen'] as $gruppe) {
-            $cls = $forWord ? '' : ' class="mt-3"';
-            $html .= "<$hRaum$cls>" . h($gruppe['heading']) . "</$hRaum>";
+        foreach ($bt['bereiche'] as $binfo) {
+            $bereich = $binfo['name'];
+            $nr++;
+            $cls = $forWord ? '' : ' class="mt-4 pt-2 border-top"';
+            $html .= "<$hBereich$cls>" . ($nummerieren ? $nr . $nrSep : '') . h($bereich) . "</$hBereich>";
 
-            if (empty($gruppe['elemente'])) {
-                $html .= $forWord
-                    ? '<p><i>Keine Elemente hinterlegt.</i></p>'
-                    : '<p class="text-muted fst-italic">Keine Elemente hinterlegt.</p>';
-                continue;
+            $pCls = $forWord ? '' : ' class="mb-1"';
+            if ($forWord) {
+                $html .= '<p>Im vorliegenden Kapitel wird der Funktionsbereich ' . h($bereich) . ' beschrieben.</p>';
+            }
+            $html .= "<p$pCls><b>Beschreibung Funktionsbereich:</b> " . rb_mark('[...]', $forWord) . '</p>';
+
+            if ($forWord) {
+                $html .= '<p class="MsoCaption">Details der medizintechnisch relevanten Räume im Bereich ' . h($bereich)
+                    . '. Klassifizierung nach OVE E 8101 (Raumgruppe RG) und ÖNORM H6020.</p>';
+                $html .= render_uebersicht($binfo['raeume'], true);
+                $html .= render_notfallwagen($bereich, $binfo['notfallwagen'] ?? [], true, $nfwAus);   // immer unter der Raumtabelle
+            } else {
+                $html .= render_notfallwagen($bereich, $binfo['notfallwagen'] ?? [], false, $nfwAus);
             }
 
-            $html .= ($mode === 'liste')
-                ? render_raum_liste($gruppe['elemente'], $forWord)
-                : render_raum_tabelle($gruppe['elemente'], $forWord);
+            foreach ($binfo['gruppen'] as $gruppe) {
+                if ($leerAus && empty($gruppe['elemente'])) {
+                    continue;
+                }
+                $cls = $forWord ? '' : ' class="mt-3"';
+                $html .= "<$hRaum$cls>" . h($gruppe['heading']) . "</$hRaum>";
+
+                $html .= render_nutzung($gruppe['rooms'], $forWord, $boAus, !empty($opt['bo_abw_ohne_mark']));
+                $html .= render_handwaschplatz($gruppe['rooms'], $forWord);
+
+                if (empty($gruppe['elemente'])) {
+                    $html .= $forWord
+                        ? '<p><i>Keine Elemente hinterlegt.</i></p>'
+                        : '<p class="text-muted fst-italic">Keine Elemente hinterlegt.</p>';
+                    continue;
+                }
+
+                $html .= ($mode === 'liste')
+                    ? render_raum_liste($gruppe['elemente'], $forWord, $hGewerk)
+                    : render_raum_tabelle($gruppe['elemente'], $forWord);
+            }
         }
     }
     return $html;
 }
 
 /** Filter-Panel (Bootstrap, nur Web). */
-function render_filter_panel(?array $sel, array $optionen, string $mode, bool $offen): string
+function render_filter_panel(?array $sel, array $optionen, string $mode, bool $offen, array $opt = []): string
 {
     $html = '<div class="collapse' . ($offen ? ' show' : '') . ' mb-3" id="filterPanel">'
         . '<form method="get" class="border rounded bg-light p-3">'
         . '<input type="hidden" name="f" value="1">'
-        . '<input type="hidden" name="mode" id="modeInput" value="' . h($mode) . '">'
-        . '<div class="row g-3">';
+        . '<input type="hidden" name="mode" id="modeInput" value="' . h($mode) . '">';
+    foreach ($opt as $k => $v) {   // Ausgabe-Optionen beim Filtern erhalten
+        $html .= '<input type="hidden" name="' . h($k) . '" value="' . ($v ? 1 : 0) . '">';
+    }
+    $html .= '<div class="row g-3">';
 
     foreach (rb_filter_felder() as $key => $cfg) {
         $html .= '<div class="col-md-4">'
@@ -627,7 +1356,7 @@ function render_filter_panel(?array $sel, array $optionen, string $mode, bool $o
     $html .= '</div>'
         . '<div class="d-flex gap-2 mt-3">'
         . '<button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-filter"></i> Filter anwenden</button>'
-        . '<a href="?mode=' . h($mode) . '" class="btn btn-sm btn-outline-secondary" id="filterResetBtn">'
+        . '<a href="?mode=' . h($mode) . '&amp;' . h(rb_optionen_query($opt)) . '" class="btn btn-sm btn-outline-secondary" id="filterResetBtn">'
         . '<i class="fas fa-undo"></i> Zurücksetzen</a>'
         . '</div>'
         . '</form></div>';
@@ -641,7 +1370,8 @@ function render_filter_panel(?array $sel, array $optionen, string $mode, bool $o
 // =============================================================================
 
 $filterSel = rb_filter_lesen();
-$mode = (($_GET['mode'] ?? '') === 'liste') ? 'liste' : 'tabelle';
+$mode = (($_GET['mode'] ?? '') === 'tabelle') ? 'tabelle' : 'liste';   // Default: Auflistung
+$ausgabeOpt = rb_optionen_lesen();
 
 
 // =============================================================================
@@ -663,8 +1393,9 @@ if (($_GET['export'] ?? '') === 'word') {
     if (method_exists($mysqli, 'set_charset')) {
         @$mysqli->set_charset('utf8mb4');
     }
-    $daten = raumbuch_daten_laden($mysqli, $projectID, $filterSel);
+    $daten = raumbuch_daten_laden($mysqli, $projectID, $filterSel, $ausgabeOpt['bt_gliederung']);
     $mysqli->close();
+    $filterSel = $daten['filter'];   // effektive Auswahl (inkl. Default ohne BT0)
 
     $projektName = trim($_SESSION['projectName'] ?? '');
     $planungphase = trim($_SESSION['projectPlanungsphase'] ?? '');
@@ -681,7 +1412,7 @@ if (($_GET['export'] ?? '') === 'word') {
     header('Content-Disposition: attachment; filename="' . $fileName . '"');
     header('Cache-Control: max-age=0');
 
-    $detailHtml = render_detail($daten['bereiche'], true, $mode);
+    $detailHtml = render_detail($daten['bauteile'], $daten['gewerke'], true, $mode, $ausgabeOpt);
 
     echo '<html xmlns:o="urn:schemas-microsoft-com:office:office" '
         . 'xmlns:w="urn:schemas-microsoft-com:office:word" '
@@ -695,8 +1426,10 @@ if (($_GET['export'] ?? '') === 'word') {
         @page { size: 21.0cm 29.7cm; margin: 1.4cm 1.4cm; mso-page-orientation: portrait; }
         body  { font-family:"Calibri",sans-serif; font-size:10pt; line-height:1.0; color:#000; }
         p     { margin:0 0 4pt; line-height:1.0; mso-line-height-rule:exactly; }
-        h1 { font-size:15pt; color:#1f3864; border-bottom:1pt solid #1f3864; margin:14pt 0 5pt; line-height:1.1; }
-        h2 { font-size:12pt; color:#2e4a7d; margin:9pt 0 3pt; line-height:1.1; }
+        h1 { font-size:16pt; color:#1f3864; border-bottom:1pt solid #1f3864; margin:16pt 0 6pt; line-height:1.1; }
+        h2 { font-size:14pt; color:#1f3864; margin:14pt 0 5pt; line-height:1.1; }
+        h3 { font-size:12pt; color:#2e4a7d; margin:9pt 0 3pt; line-height:1.1; }
+        h4 { font-size:10pt; color:#2e4a7d; margin:6pt 0 2pt; line-height:1.1; }
         table.rb-table { border-collapse:collapse; width:100%; table-layout:fixed;
                          margin:2pt 0 8pt; mso-table-lspace:0pt; mso-table-rspace:0pt; }
         table.rb-table th, table.rb-table td {
@@ -704,7 +1437,11 @@ if (($_GET['export'] ?? '') === 'word') {
             line-height:1.0; mso-line-height-rule:exactly; vertical-align:top;
                    mso-para-margin-top:0; mso-para-margin-bottom:0;   
             word-wrap:break-word; overflow-wrap:break-word; }
-        table.rb-table th { background:#e7edf5; text-align:left; }
+        table.rb-table thead { display:table-header-group; }
+        table.rb-table th { background:#e7edf5; text-align:left; font-weight:bold; }
+        p.MsoCaption { font-size:8.5pt; font-style:italic; color:#444; margin:6pt 0 2pt;
+                       mso-style-name:"Beschriftung"; page-break-after:avoid; }
+        p.toc-titel { font-size:16pt; font-weight:bold; color:#1f3864; margin:0 0 8pt; }
         .title   { font-size:18pt; font-weight:bold; color:#1f3864; }
         .subtle  { color:#666; font-size:9.5pt; }
         .legende { font-size:9pt; color:#333; }
@@ -717,23 +1454,40 @@ if (($_GET['export'] ?? '') === 'word') {
                line-height:1.0; mso-line-height-rule:exactly; }
 
         /* Auflistungs-Darstellung */
-        p.gewerk { font-weight:bold; color:#2e4a7d; font-size:10pt;
-                   margin:6pt 0 2pt; line-height:1.1; }
         ul.rb-liste { margin:0 0 6pt; padding-left:16pt; }
         ul.rb-liste li { font-size:9.5pt; margin:0;
                          line-height:1.0; mso-line-height-rule:exactly; }
     </style></head><body>';
 
-    echo '<div class="title">Medizintechnisches Raumbuch</div>';
-    echo '<p class="subtle">Projekt: ' . h($projektName)
-        . ($planungphase !== '' ? ' &nbsp;–&nbsp; PPH: ' . h($planungphase) : '')
-        . '<br>Stand: ' . h($datum)
-        . ($filterText !== '' ? '<br>Auswahl: ' . h($filterText) : '')
-        . '</p>';
+    if ($ausgabeOpt['titel_an']) {
+        echo '<div class="title">Medizintechnisches Raumbuch</div>';
+        echo '<p class="subtle">Projekt: ' . h($projektName)
+            . ($planungphase !== '' ? ' &nbsp;–&nbsp; PPH: ' . h($planungphase) : '')
+            . '<br>Stand: ' . h($datum)
+            . ($filterText !== '' ? '<br>Auswahl: ' . h($filterText) : '')
+            . '</p>';
 
-    echo '<p class="subtle">RG = Raumgruppe Ö-Norm 8101</p>';
+
+        echo '<p class="subtle">RG = Raumgruppe Ö-Norm 8101</p>';
+        echo render_legende($daten['gewerke'], true);
+        echo '<br clear="all" style="page-break-before:always">';
+    }
+
+    // Inhaltsverzeichnis (Word-Feld). Ebenen 1-3: Bauteil / Funktionsbereich / Raum
+    echo '<p class="toc-titel">Inhaltsverzeichnis</p>';
+    echo '<p class="MsoToc1"><!--[if supportFields]><span style="mso-element:field-begin"></span>'
+        . ' TOC \\o "1-3" \\h \\z \\u <span style="mso-element:field-separator"></span><![endif]-->'
+        . '<span>Zum Erstellen: Rechtsklick &rarr; &bdquo;Feld aktualisieren&ldquo; (oder Strg+A, F9).</span>'
+        . '<!--[if supportFields]><span style="mso-element:field-end"></span><![endif]--></p>';
+    echo '<br clear="all" style="page-break-before:always">';
+
+    if ($ausgabeOpt['abk_an']) {
+        echo render_abkuerzungen();
+        echo '<br clear="all" style="page-break-before:always">';
+    }
 
     echo $detailHtml;
+
 
     echo '</body></html>';
     exit;
@@ -749,15 +1503,17 @@ if (method_exists($mysqli, 'set_charset')) {
     @$mysqli->set_charset('utf8mb4');
 }
 $daten = ($projectID > 0)
-    ? raumbuch_daten_laden($mysqli, $projectID, $filterSel)
-    : ['uebersicht' => [], 'bereiche' => [], 'optionen' => [], 'gesamt' => 0];
+    ? raumbuch_daten_laden($mysqli, $projectID, $filterSel, $ausgabeOpt['bt_gliederung'])
+    : ['uebersicht' => [], 'bauteile' => [], 'optionen' => [], 'gewerke' => [], 'gesamt' => 0, 'filter' => null];
 $mysqli->close();
+$filterSel = $daten['filter'];   // effektive Auswahl (inkl. Default ohne BT0)
 
 $anzahlRaeume = count($daten['uebersicht']);
 $anzahlGesamt = (int)$daten['gesamt'];
 $anzahlAb = rb_filter_anzahl_ab($filterSel, $daten['optionen']);
 $filterText = rb_filter_beschreibung($filterSel, $daten['optionen']);
 $filterQuery = rb_filter_query($filterSel);
+$optQuery = rb_optionen_query($ausgabeOpt);
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -798,7 +1554,7 @@ $filterQuery = rb_filter_query($filterSel);
                                         class="fas fa-filter"></i> <?php echo h($filterText); ?></p>
                         <?php endif; ?>
                     </div>
-                    <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex flex-wrap justify-content-end align-items-center gap-3">
                         <button class="btn btn-sm <?php echo $anzahlAb > 0 ? 'btn-warning' : 'btn-outline-secondary'; ?>"
                                 type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel"
                                 aria-expanded="false" aria-controls="filterPanel">
@@ -807,12 +1563,31 @@ $filterQuery = rb_filter_query($filterSel);
                                 <span class="badge bg-dark ms-1"><?php echo $anzahlAb; ?> ab</span>
                             <?php endif; ?>
                         </button>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                <i class="fas fa-cog"></i> Optionen
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-2 text-nowrap">
+                                <?php foreach (rb_optionen_felder() as $optKey => $optCfg): ?>
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input" type="checkbox"
+                                               id="opt_<?php echo h($optKey); ?>"
+                                               data-rb-opt="<?php echo h($optKey); ?>"
+                                            <?php echo $ausgabeOpt[$optKey] ? 'checked' : ''; ?>>
+                                        <label class="form-check-label small" for="opt_<?php echo h($optKey); ?>">
+                                            <?php echo h($optCfg['label']); ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                         <div class="form-check form-switch mb-0">
                             <input class="form-check-input" type="checkbox" role="switch" id="modeSwitch"
                                 <?php echo $mode === 'liste' ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="modeSwitch" id="modeSwitchLabel">Tabelle</label>
                         </div>
-                        <a href="?export=word&amp;mode=tabelle" id="downloadBtn"
+                        <a href="?export=word&amp;mode=<?php echo h($mode); ?>" id="downloadBtn"
                            class="btn btn-sm btn-primary<?php echo $anzahlRaeume === 0 ? ' disabled' : ''; ?>">
                             <i class="fas fa-file-word"></i> Word-Dokument herunterladen
                         </a>
@@ -822,7 +1597,7 @@ $filterQuery = rb_filter_query($filterSel);
                 <div class="card-body">
                     <?php
                     if ($anzahlGesamt > 0) {
-                        echo render_filter_panel($filterSel, $daten['optionen'], $mode, $anzahlRaeume === 0);
+                        echo render_filter_panel($filterSel, $daten['optionen'], $mode, $anzahlRaeume === 0, $ausgabeOpt);
                     }
                     ?>
 
@@ -849,10 +1624,10 @@ $filterQuery = rb_filter_query($filterSel);
                                 <div class="card h-100">
                                     <div class="card-body">
                                         <div id="detail-tabelle">
-                                            <?php echo render_detail($daten['bereiche'], false, 'tabelle'); ?>
+                                            <?php echo render_detail($daten['bauteile'], $daten['gewerke'], false, 'tabelle', $ausgabeOpt); ?>
                                         </div>
                                         <div id="detail-liste" class="d-none">
-                                            <?php echo render_detail($daten['bereiche'], false, 'liste'); ?>
+                                            <?php echo render_detail($daten['bauteile'], $daten['gewerke'], false, 'liste', $ausgabeOpt); ?>
                                         </div>
                                     </div>
                                 </div>
@@ -869,6 +1644,19 @@ $filterQuery = rb_filter_query($filterSel);
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var filterQuery = <?php echo json_encode($filterQuery); ?>;
+        var optQuery = <?php echo json_encode($optQuery); ?>;
+
+        // --- Ausgabe-Optionen: Seite mit geändertem Parameter neu laden -----
+        document.querySelectorAll('[data-rb-opt]').forEach(function (cb) {
+            cb.addEventListener('change', function () {
+                var url = new URL(window.location.href);
+                url.searchParams.delete('export');
+                url.searchParams.set(cb.getAttribute('data-rb-opt'), cb.checked ? '1' : '0');
+                var msw = document.getElementById('modeSwitch');
+                if (msw) url.searchParams.set('mode', msw.checked ? 'liste' : 'tabelle');
+                window.location.href = url.toString();
+            });
+        });
 
         // --- Alle / Keine je Filtergruppe ----------------------------------
         document.querySelectorAll('[data-rb-set]').forEach(function (b) {
@@ -895,11 +1683,11 @@ $filterQuery = rb_filter_query($filterSel);
             var liste = sw.checked;
             var mode = liste ? 'liste' : 'tabelle';
             if (lbl) lbl.textContent = liste ? 'Auflistung' : 'Tabelle';
-            if (btn) btn.href = '?' + (filterQuery ? filterQuery + '&' : '') + 'export=word&mode=' + mode;
+            if (btn) btn.href = '?' + (filterQuery ? filterQuery + '&' : '') + optQuery + '&export=word&mode=' + mode;
             if (tab) tab.classList.toggle('d-none', liste);
             if (lst) lst.classList.toggle('d-none', !liste);
             if (modeInput) modeInput.value = mode;           // Modus bleibt beim Filtern erhalten
-            if (resetBtn) resetBtn.href = '?mode=' + mode;
+            if (resetBtn) resetBtn.href = '?mode=' + mode + '&' + optQuery;
         }
 
         sw.addEventListener('change', apply);

@@ -28,16 +28,36 @@
  * ══════════════════════════════════════════════════════════════════
  */
 
+function apply_raumtyp_override(array $cfg, ?string $raumtyp): array
+{
+    $raumtyp = trim((string)$raumtyp);
+    if ($raumtyp === '' || empty($cfg['raumtyp_overrides'])) return $cfg;
+    $ov = $cfg['raumtyp_overrides'][$raumtyp] ?? null;
+    if (!$ov) return $cfg;
+    $merged = array_replace($cfg, $ov);
+    unset($merged['raumtyp_overrides']);
+    $merged['_raumtyp_override'] = $raumtyp;
+    return $merged;
+}
+
+function collect_element_ids(array $cfg): array
+{
+    $ids = [];
+    if (isset($cfg['laengen'])) $ids = array_merge($ids, array_values($cfg['laengen']));
+    if (isset($cfg['breite_tiefe'])) $ids = array_merge($ids, array_values($cfg['breite_tiefe']));
+    if (isset($cfg['sondermass'])) $ids[] = $cfg['sondermass'];
+    if (isset($cfg['element_id'])) $ids[] = $cfg['element_id'];
+    return $ids;
+}
+
 function get_all_managed_element_ids(): array
 {
     $ids = [];
     foreach (ELEMENT_MAPPING as $cfg) {
-        if (isset($cfg['laengen'])) $ids = array_merge($ids, array_values($cfg['laengen']));
-        if (isset($cfg['breite_tiefe'])) $ids = array_merge($ids, array_values($cfg['breite_tiefe']));
-        if (isset($cfg['sondermass'])) $ids[] = $cfg['sondermass'];
-        if (isset($cfg['element_id'])) $ids[] = $cfg['element_id'];
-        // gruppe-Typ: element_id steckt im gruppe-Eintrag selbst
-        if (($cfg['typ'] ?? '') === 'gruppe' && isset($cfg['element_id'])) $ids[] = $cfg['element_id'];
+        $ids = array_merge($ids, collect_element_ids($cfg));
+        foreach (($cfg['raumtyp_overrides'] ?? []) as $ov) {
+            $ids = array_merge($ids, collect_element_ids($ov));
+        }
     }
     return array_unique($ids);
 }
@@ -166,18 +186,22 @@ const ELEMENT_MAPPING = [
     ],
 
     // Breite → Variante (Breite kommt aus MT_LIMET_Breite, nicht aus der Längen-Spalte)
-    '4-20-80-1' => [
+    '4-20-80-1' => [ // Hochregal DIN CrNi lfm
         'match' => 'prefix',
         'typ' => 'laengen',
-        'laenge_fallback' => 'MT_LIMET_Breite', // falls $laenge leer: aus diesem param lesen
+        'laenge_fallback' => 'MT_LIMET_Breite',
         'laengen' => [
             60 => '4.35.15.4',
             90 => '4.35.15.4',
             120 => '4.35.15.4',
         ],
-        'sondermass' => '4.35.15.4',
+        'sondermass' => '4.35.15.4',          // vorläufig: Labor-Lagerregal
         'element_params' => [],
         'variante_params' => ['MT_LIMET_Breite'],
+        'raumtyp_overrides' => [
+            // Lagerraum, Chemikalien → echtes Hochregal
+            '29' => ['typ' => 'fixed', 'element_id' => '4.20.80.1'],
+        ],
     ],
 
 
@@ -483,14 +507,27 @@ const ELEMENT_MAPPING = [
         'variante_params' => [],
     ],
 
-
     'TMO_-_LIMET_4-20-10-10 Hochschrank - Flügel DIN CrNi eintürig' => [
         'match' => 'exact',
         'typ' => 'fixed',
         'element_id' => '4.35.15.2',
         'element_params' => [],
         'variante_params' => ['MT_LIMET_Breite'],
+        // Raumtyp-ID (tabelle_räume.`Raumtyp BH`) => Keys, die überschrieben werden
+        //  'raumtyp_overrides' => [
+        //      '29' => ['element_id' => '4.20.10.14'],   // Lagerraum, Chemikalien
+        //  ],
     ],
+
+
+    'Hochregal CrNi' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '4.20.80.1',
+        'element_params' => [],
+        'variante_params' => ['MT_LIMET_Breite'],
+    ],
+
 
     'TMO_-_LIMET_00-0-0-00 Brüstungskanal AGES' => [
         'match' => 'exact',
@@ -518,15 +555,6 @@ const ELEMENT_MAPPING = [
         'element_params' => [],
         'variante_params' => ['MT_LIMET_Breite'],
     ],
-
-    'Hochregal CrNi' => [
-        'match' => 'exact',
-        'typ' => 'fixed',
-        'element_id' => '4.20.80.1',
-        'element_params' => [],
-        'variante_params' => ['MT_LIMET_Breite'],
-    ],
-
 
 
 ];

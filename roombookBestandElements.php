@@ -38,16 +38,18 @@ require_once '_utils/_csrf.php';
         <div class="card-header">
             <div class="row">
                 <div class="col-xxl-4"><b>Elemente im Bestand</b></div>
-                <div class="col-xxl-8 d-flex flex-nowrap justify-content-end align-items-center" id="CardHeader">
+
+
+                <div class="col-xxl-6 d-flex flex-nowrap justify-content-end align-items-center" >
 
                     <div class="form-check form-switch d-flex align-items-center mb-0 text-nowrap"
                          title="Zeigt zusätzlich alle Bestands-Elemente, zu denen noch keine Bestandsdaten erfasst wurden">
                         <input class="form-check-input mt-0" type="checkbox" role="switch" id="switchOhneBestandsdaten">
-                        <label class="form-check-label ms-2" for="switchOhneBestandsdaten">inkl. ohne
+                        <label class="form-check-label ms-2" for="switchOhneBestandsdaten">inkl. Elemente ohne
                             Bestandsdaten</label>
                     </div>
 
-                    <div class="form-check form-switch d-flex align-items-center mb-0 text-nowrap"
+                    <div class="form-check form-switch d-flex align-items-center mb-0 ms-2 me-2 text-nowrap"
                          title="Zeigt zusätzlich Neuanschaffungen (Elemente, die nicht im Bestand sind)">
                         <input class="form-check-input mt-0" type="checkbox" role="switch" id="switchNeuanschaffungen">
                         <label class="form-check-label ms-2" for="switchNeuanschaffungen">inkl.
@@ -60,9 +62,14 @@ require_once '_utils/_csrf.php';
                                title="Datum am Bericht"/>
                     </div>
 
-                    <button type="button" class="btn btn-outline-dark btn-sm" value="createBestandsPDF">
+                    <button type="button" class="btn btn-outline-dark btn-sm ms-2" value="createBestandsPDF">
                         <i class="far fa-file-pdf"></i> Bestands-PDF
                     </button>
+
+                </div>
+
+                <div class="col-xxl-2 d-flex flex-nowrap justify-content-end align-items-center" id="CardHeader">
+
                 </div>
             </div>
         </div>
@@ -194,7 +201,11 @@ require_once '_utils/_csrf.php';
                             return idx !== 0 && idx !== 11;
                         }
                     }
+                }, {
+                    extend: 'searchBuilder',
+                    className: 'btn btn-outline-dark bg-white btn-sm ms-1 fas fa-filter'
                 }
+
             ],
             mark: true,
             layout: {

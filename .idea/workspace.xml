@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen.">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung">
+      <change afterPath="$PROJECT_DIR$/roombook_workflow_verwaltung/getWorkflowStats.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookBestandElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookBestandElements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_AddTexts.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_AddTexts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_befu.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_befu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_workflow_verwaltung/roombook_workflows.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_workflow_verwaltung/roombook_workflows.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_workflow_verwaltung/workflowManagement.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_workflow_verwaltung/workflowManagement.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,11 +134,11 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_workflow_verwaltung" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\roombook_spargelfeld" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_wip" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\DB_analysis" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -683,39 +688,25 @@
       <workItem from="1793893076040" duration="2502000" />
       <workItem from="1793955712983" duration="6213000" />
       <workItem from="1794214263871" duration="3963000" />
-      <workItem from="1794318369230" duration="545000" />
-    </task>
-    <task id="LOCAL-00222" summary="Element parameter Änderungen Website">
-      <option name="closed" value="true" />
-      <created>1776954174940</created>
-      <option name="number" value="00222" />
-      <option name="presentableId" value="LOCAL-00222" />
-      <option name="project" value="LOCAL" />
-      <updated>1776954174940</updated>
-    </task>
-    <task id="LOCAL-00223" summary=" ifc_import">
-      <option name="closed" value="true" />
-      <created>1776954276165</created>
-      <option name="number" value="00223" />
-      <option name="presentableId" value="LOCAL-00223" />
-      <option name="project" value="LOCAL" />
-      <updated>1776954276165</updated>
-    </task>
-    <task id="LOCAL-00224" summary=" ifc_import">
-      <option name="closed" value="true" />
-      <created>1777017675507</created>
-      <option name="number" value="00224" />
-      <option name="presentableId" value="LOCAL-00224" />
-      <option name="project" value="LOCAL" />
-      <updated>1777017675507</updated>
-    </task>
-    <task id="LOCAL-00225" summary=" ifc_import">
-      <option name="closed" value="true" />
-      <created>1777022910544</created>
-      <option name="number" value="00225" />
-      <option name="presentableId" value="LOCAL-00225" />
-      <option name="project" value="LOCAL" />
-      <updated>1777022910544</updated>
+      <workItem from="1794318369230" duration="1820000" />
+      <workItem from="1794472069980" duration="10598000" />
+      <workItem from="1794557050169" duration="11052000" />
+      <workItem from="1794823292520" duration="3923000" />
+      <workItem from="1794918148633" duration="4327000" />
+      <workItem from="1794926995550" duration="1530000" />
+      <workItem from="1794998400648" duration="1214000" />
+      <workItem from="1795077734605" duration="5342000" />
+      <workItem from="1795093175112" duration="1779000" />
+      <workItem from="1795164894896" duration="3745000" />
+      <workItem from="1795170342722" duration="6216000" />
+      <workItem from="1795179424144" duration="531000" />
+      <workItem from="1795180196257" duration="271000" />
+      <workItem from="1795180483177" duration="192000" />
+      <workItem from="1795425438355" duration="2119000" />
+      <workItem from="1795430124123" duration="6412000" />
+      <workItem from="1795448819632" duration="3324000" />
+      <workItem from="1795452323313" duration="705000" />
+      <workItem from="1795507873692" duration="3022000" />
     </task>
     <task id="LOCAL-00226" summary=" ifc_import">
       <option name="closed" value="true" />
@@ -1077,7 +1068,39 @@
       <option name="project" value="LOCAL" />
       <updated>1794219234699</updated>
     </task>
-    <option name="localTasksCounter" value="271" />
+    <task id="LOCAL-00271" summary="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen.">
+      <option name="closed" value="true" />
+      <created>1794318962315</created>
+      <option name="number" value="00271" />
+      <option name="presentableId" value="LOCAL-00271" />
+      <option name="project" value="LOCAL" />
+      <updated>1794318962315</updated>
+    </task>
+    <task id="LOCAL-00272" summary="Updates Nutzerumfrage">
+      <option name="closed" value="true" />
+      <created>1794559719728</created>
+      <option name="number" value="00272" />
+      <option name="presentableId" value="LOCAL-00272" />
+      <option name="project" value="LOCAL" />
+      <updated>1794559719728</updated>
+    </task>
+    <task id="LOCAL-00273" summary="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung">
+      <option name="closed" value="true" />
+      <created>1794570926574</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1794570926574</updated>
+    </task>
+    <task id="LOCAL-00274" summary="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung">
+      <option name="closed" value="true" />
+      <created>1795179450724</created>
+      <option name="number" value="00274" />
+      <option name="presentableId" value="LOCAL-00274" />
+      <option name="project" value="LOCAL" />
+      <updated>1795179450724</updated>
+    </task>
+    <option name="localTasksCounter" value="275" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1107,8 +1130,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
-    <MESSAGE value="Bestand Eintragen bugfix." />
     <MESSAGE value="Merge remote-tracking branch 'origin/bildsupport' into bildsupport&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;documentationV2.php" />
     <MESSAGE value="Import Elemente aus SF Model Excel" />
     <MESSAGE value="fixed pdf" />
@@ -1132,7 +1153,9 @@
     <MESSAGE value="Upgrade Kort Liste" />
     <MESSAGE value="Upgrade Kor Liste.&#10;Bugfixes. Lose anlegen und PDFs." />
     <MESSAGE value="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen." />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes. Erweiterung KOR Liste.&#10;SF Abfrage V2 angefangen." />
+    <MESSAGE value="Updates Nutzerumfrage" />
+    <MESSAGE value="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung" />
+    <option name="LAST_COMMIT_MESSAGE" value="SF Import verbessert(Regale);&#10;Preise Inkl. Loszuordnung;&#10;KOR Äenderungen inkl. Kostengliederung" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1179,7 +1202,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/getDevicePrices.php</url>
-          <line>285</line>
+          <line>325</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -1216,6 +1239,11 @@
           <url>file://$PROJECT_DIR$/roombook_icons_legend.php</url>
           <line>6</line>
           <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/PDFs/pdf_createBauangabenV2PDF.php</url>
+          <line>482</line>
+          <option name="timeStamp" value="36" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/roombook_image_support/projectGallery.js</url>

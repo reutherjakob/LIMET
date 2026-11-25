@@ -360,6 +360,7 @@ $projectIcons = [
             document.getElementById("active").value = rowData[5] === "Ja" ? 1 : 0;
             document.getElementById("neubau").value = rowData[6] === 'Ja' ? 1 : 0;
             let projektArt = rowData[14];
+            console.log("Projekt Art:",projektArt);
             // console.log({
             //     id,
             //     projectName,

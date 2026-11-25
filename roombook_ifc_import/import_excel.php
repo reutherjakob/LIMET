@@ -91,14 +91,20 @@ function render_mapping_info_rows(): string
 
         // ── Festes Element ─────────────────────────────────────────
         $params = mi_param_list($cfg['variante_params'] ?? []);
+        $ov_html = '';
+        foreach (($cfg['raumtyp_overrides'] ?? []) as $rt => $ov) {
+            $ov_html .= '<br><span class="text-muted">Raumtyp ' . htmlspecialchars((string)$rt) . ' →</span> <code>'
+                . htmlspecialchars($ov['element_id'] ?? '–') . '</code>';
+        }
         $html .= '<tr>'
             . '<td>' . mi_fam($key) . '</td>'
-            . '<td><code>' . htmlspecialchars($cfg['element_id'] ?? '–') . '</code></td>'
+            . '<td><code>' . htmlspecialchars($cfg['element_id'] ?? '–') . '</code>' . $ov_html . '</td>'
             . '<td>' . ($params !== '' ? '<span class="text-muted">Variante: ' . $params . '</span>' : '<span class="text-muted">fix, keine Varianten</span>')
             . '</td></tr>';
     }
     return $html;
 }
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -240,19 +246,25 @@ function render_mapping_info_rows(): string
                                 <i class="fas fa-chevron-down float-end mt-1 small"></i>
                             </div>
                             <div id="mapping-info-collapse" class="collapse">
-                                <div class="card-body p-2 text-start" style="max-height: 480px; overflow-y: auto; font-size: .78rem">
+                                <div class="card-body p-2 text-start"
+                                     style="max-height: 480px; overflow-y: auto; font-size: .78rem">
                                     <p class="mb-1 fw-semibold">Grundregeln</p>
                                     <ul class="ps-3 mb-2">
                                         <li>Nur unten gelistete Revit-Familien werden gemappt. Unbekannte Familien
-                                            erscheinen als <em>nicht gemappt</em> und werden nicht verändert.</li>
+                                            erscheinen als <em>nicht gemappt</em> und werden nicht verändert.
+                                        </li>
                                         <li>Gemappte Elemente, die im Raum vorhanden sind, aber <strong>nicht im
-                                                Excel</strong> vorkommen, werden beim Sync auf <strong>Anzahl&nbsp;0</strong> gesetzt.</li>
+                                                Excel</strong> vorkommen, werden beim Sync auf
+                                            <strong>Anzahl&nbsp;0</strong> gesetzt.
+                                        </li>
                                         <li>Nicht gemappte Elemente im Raum bleiben unberührt.</li>
                                         <li>Zeilen mit identischen Varianten-Parametern werden zur selben Variante
-                                            zusammengezählt (Anzahl++); abweichende Werte erzeugen eine neue Variante.</li>
+                                            zusammengezählt (Anzahl++); abweichende Werte erzeugen eine neue Variante.
+                                        </li>
                                     </ul>
                                     <p class="mb-1 fw-semibold">Gemappte Familien</p>
-                                    <table class="table table-sm table-bordered align-top mb-0" style="font-size: .73rem">
+                                    <table class="table table-sm table-bordered align-top mb-0"
+                                           style="font-size: .73rem">
                                         <thead class="table-light" style="position: sticky; top: -8px">
                                         <tr>
                                             <th style="width: 38%">Revit-Familie</th>
